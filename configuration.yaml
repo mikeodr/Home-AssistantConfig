@@ -35,10 +35,10 @@ homeassistant:
 frontend:
 
 panel_iframe:
-    terminal:
-        title: Terminal
-        icon: mdi:console
-        url: http://hass:7681
+  terminal:
+    title: Terminal
+    icon: mdi:console
+    url: http://hass:7681
 
 # Enables configuration UI
 config:
@@ -83,8 +83,8 @@ device_tracker:
     site_id: default
     port: 8443
     new_device_defaults:
-        track_new_devices: False
-        hide_if_away: False
+      track_new_devices: False
+      hide_if_away: False
 
 # Lights
 light:

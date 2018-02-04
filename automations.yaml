@@ -1,24 +1,95 @@
-  - alias: Lights ON when sunsets -1 hr earlier and anyone home
-    trigger:
-       platform: sun
-       event: sunset
-       offset: "-01:00:00"
-    condition:
-       condition: state
-       entity_id: group.all_devices
-       state: 'home'
-    action:
-       service: light.turn_on
-       entity_id: light.living
+- alias: Lights ON when sunsets -1 hr earlier and anyone home
+  trigger:
+     platform: sun
+     event: sunset
+     offset: "-01:00:00"
+  condition:
+     condition: state
+     entity_id: group.all_devices
+     state: 'home'
+  action:
+     service: light.turn_on
+     entity_id: light.living
 
-  - alias: Lights OFF when bedtime work day
-    trigger:
-       platform: time
-       at: '23:30:00'
-    action:
-       - service: light.turn_off
-         entity_id: group.all_lights
-    condition:
+- alias: Lights OFF when bedtime work day
+  trigger:
+     platform: time
+     at: '23:30:00'
+  action:
+     - service: light.turn_off
+       entity_id: group.all_lights
+  condition:
+    - condition: time
+      weekday:
+        - sun
+        - mon
+        - tue
+        - wed
+        - thu
+
+- alias: OFF nobody home
+  trigger:
+    platform: state
+    entity_id: group.all_devices
+    from: 'home'
+    to: 'not_home'
+  action:
+    - service: homeassistant.turn_off
+      entity_id:
+        - group.all_lights
+        - switch.switch1
+
+- alias: Lights ON when arrival past sunset
+  trigger:
+     platform: state
+     entity_id: group.all_devices
+     from: 'not_home'
+     to: 'home'
+  condition:
+     condition: sun
+     after: sunset
+     after_offset: "-1:00:00"
+  action:
+     service: homeassistant.turn_on
+     entity_id:
+       - group.all_lights
+
+- alias: Presence Notifications
+  trigger:
+     platform: state
+     entity_id: device_tracker.tiffs_phone
+  action:
+     service: notify.pushbullet
+     data_template:
+       title: "HASS Presence Notification"
+       message: >
+         {{ trigger.to_state.attributes.friendly_name }} is {% if trigger.to_state.state == 'home' %}back{% else %}away{% endif %}.
+
+- alias: HASS Update notification
+  trigger:
+    - platform: state
+      entity_id: updater.updater
+  action:
+     service: notify.pushbullet
+     data_template:
+      title: 'New Home Assistant Release'
+      message: "Home Assistant  {{ states.updater.updater.state }}  is now available."
+
+- alias: Space Heater On Evening and Morning Work Days
+  trigger:
+    - platform: time
+      at: '22:00:00'
+    - platform: time
+      at: '07:00:00'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: group.all_devices
+        state: 'home'
+      - condition: numeric_state
+        entity_id: sensor.dark_sky_temperature
+        below: 4
       - condition: time
         weekday:
           - sun
@@ -26,108 +97,37 @@
           - tue
           - wed
           - thu
+          - fri
+  action:
+    service: homeassistant.turn_on
+    entity_id: switch.switch1
 
-  - alias: OFF nobody home
-    trigger:
-      platform: state
+- alias: Space Heater OFF Evening and Morning
+  trigger:
+    - platform: time
+      at: '23:00:00'
+    - platform: time
+      at: '08:10:00'
+  action:
+    service: homeassistant.turn_off
+    entity_id: switch.switch1
+
+- alias: Humidifier On
+  trigger:
+    - platform: time
+      at: '23:00:00'
+  condition:
+    - condition: state
       entity_id: group.all_devices
-      from: 'home'
-      to: 'not_home'
-    action:
-      - service: homeassistant.turn_off
-        entity_id:
-          - group.all_lights
-          - switch.switch1
+      state: 'home'
+  action:
+    service: homeassistant.turn_on
+    entity_id: switch.switch3
 
-  - alias: Lights ON when arrival past sunset
-    trigger:
-       platform: state
-       entity_id: group.all_devices
-       from: 'not_home'
-       to: 'home'
-    condition:
-       condition: sun
-       after: sunset
-       after_offset: "-1:00:00"
-    action:
-       service: homeassistant.turn_on
-       entity_id:
-         - group.all_lights
-
-  - alias: Presence Notifications
-    trigger:
-       platform: state
-       entity_id: device_tracker.tiffs_phone
-    action:
-       service: notify.pushbullet
-       data_template:
-         title: "HASS Presence Notification"
-         message: >
-           {{ trigger.to_state.attributes.friendly_name }} is {% if trigger.to_state.state == 'home' %}back{% else %}away{% endif %}.
-
-  - alias: HASS Update notification
-    trigger:
-      - platform: state
-        entity_id: updater.updater
-    action:
-       service: notify.pushbullet
-       data_template:
-        title: 'New Home Assistant Release'
-        message: "Home Assistant  {{ states.updater.updater.state }}  is now available."
-
-  - alias: Space Heater On Evening and Morning Work Days
-    trigger:
-      - platform: time
-        at: '22:00:00'
-      - platform: time
-        at: '07:00:00'
-    condition:
-      condition: and
-      conditions:
-        - condition: state
-          entity_id: group.all_devices
-          state: 'home'
-        - condition: numeric_state
-          entity_id: sensor.dark_sky_temperature
-          below: 4
-        - condition: time
-          weekday:
-            - sun
-            - mon
-            - tue
-            - wed
-            - thu
-            - fri
-    action:
-      service: homeassistant.turn_on
-      entity_id: switch.switch1
-
-  - alias: Space Heater OFF Evening and Morning
-    trigger:
-      - platform: time
-        at: '23:00:00'
-      - platform: time
-        at: '08:10:00'
-    action:
-      service: homeassistant.turn_off
-      entity_id: switch.switch1
-
-  - alias: Humidifier On
-    trigger:
-      - platform: time
-        at: '23:00:00'
-    condition:
-      - condition: state
-        entity_id: group.all_devices
-        state: 'home'
-    action:
-      service: homeassistant.turn_on
-      entity_id: switch.switch3
-
-  - alias: Humidifier Off
-    trigger:
-      - platform: time
-        at: '08:00:00'
-    action:
-      service: homeassistant.turn_off
-      entity_id: switch.switch3
+- alias: Humidifier Off
+  trigger:
+    - platform: time
+      at: '08:00:00'
+  action:
+    service: homeassistant.turn_off
+    entity_id: switch.switch3
