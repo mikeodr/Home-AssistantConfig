@@ -1,0 +1,5 @@
+switch.switch1:
+  friendly_name: Space Heater
+
+switch.switch3:
+  friendly_name: Humidifier
