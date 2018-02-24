@@ -38,17 +38,22 @@
       entity_id:
         - group.all_lights
         - switch.switch1
+        - switch.switch3
 
 - alias: Lights ON when arrival past sunset
   trigger:
-     platform: state
-     entity_id: group.all_devices
-     from: 'not_home'
-     to: 'home'
+    platform: state
+    entity_id: group.all_devices
+    from: 'not_home'
+    to: 'home'
   condition:
-     condition: sun
-     after: sunset
-     after_offset: "-1:00:00"
+    condition: or
+    conditions:
+      - condition: sun
+        after: sunset
+        after_offset: "-1:00:00"
+      - condition: sun
+        before: sunrise
   action:
      service: homeassistant.turn_on
      entity_id:
@@ -75,6 +80,21 @@
       title: 'New Home Assistant Release'
       message: "Home Assistant  {{ states.updater.updater.state }}  is now available."
 
+- alias: Bedroom Comfort when arrival past bedtime
+  trigger:
+    platform: state
+    entity_id: group.all_devices
+    from: 'not_home'
+    to: 'home'
+  condition:
+    - condition: time
+      after: '23:00:00'
+      before: '05:00:00'
+  action:
+     service: homeassistant.turn_on
+     entity_id:
+       - switch.switch3
+
 - alias: Space Heater On Evening and Morning Work Days
   trigger:
     - platform: time
@@ -89,7 +109,7 @@
         state: 'home'
       - condition: numeric_state
         entity_id: sensor.dark_sky_temperature
-        below: 4
+        below: 0
       - condition: time
         weekday:
           - sun
