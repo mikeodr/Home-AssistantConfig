@@ -172,3 +172,19 @@
   action:
     service: homeassistant.turn_off
     entity_id: switch.switch3
+
+- alias: Dehumidifier On Off Peak
+  trigger:
+    - platform: time
+      at: '19:00:00'
+  action:
+    service: homeassistant.turn_on
+    entity_id: switch.switch4
+
+- alias: Dehumidifier Off On Peak
+  trigger:
+    - platform: time
+      at: '07:00:00'
+  action:
+    service: homeassistant.turn_off
+    entity_id: switch.switch4

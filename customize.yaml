@@ -3,3 +3,6 @@ switch.switch1:
 
 switch.switch3:
   friendly_name: Humidifier
+
+switch.switch4:
+  friendly_name: Dehumidifier
