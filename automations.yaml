@@ -109,7 +109,7 @@
         state: 'home'
       - condition: numeric_state
         entity_id: sensor.dark_sky_temperature
-        below: 0
+        below: 8
       - condition: time
         weekday:
           - sun
