@@ -1,8 +1,11 @@
 switch.switch1:
-  friendly_name: Space Heater
+  friendly_name: Nothing1
+
+switch.switch2:
+  friendly_name: Nothing2
 
 switch.switch3:
-  friendly_name: Humidifier
+  friendly_name: Bedroom Fan
 
 switch.switch4:
   friendly_name: Dehumidifier

@@ -59,10 +59,25 @@
      entity_id:
        - group.all_lights
 
-- alias: Presence Notifications
+- alias: Presence Notifications Home
   trigger:
      platform: state
      entity_id: device_tracker.tiffs_phone
+     from: 'not_home'
+     to: 'home'
+  action:
+     service: notify.pushbullet
+     data_template:
+       title: "HASS Presence Notification"
+       message: >
+         {{ trigger.to_state.attributes.friendly_name }} is {% if trigger.to_state.state == 'home' %}back{% else %}away{% endif %}.
+
+- alias: Presence Notifications Away
+  trigger:
+     platform: state
+     entity_id: device_tracker.tiffs_phone
+     from: 'home'
+     to: 'not_home'
   action:
      service: notify.pushbullet
      data_template:
@@ -132,7 +147,7 @@
     service: homeassistant.turn_off
     entity_id: switch.switch1
 
-- alias: Humidifier On
+- alias: Fan On
   trigger:
     - platform: time
       at: '23:00:00'
@@ -144,10 +159,10 @@
     service: homeassistant.turn_on
     entity_id: switch.switch3
 
-- alias: Humidifier Off Weekday Morning
+- alias: Fan Off Weekday Morning
   trigger:
     - platform: time
-      at: '08:00:00'
+      at: '07:00:00'
   condition:
     - condition: time
       weekday:
@@ -160,7 +175,7 @@
     service: homeassistant.turn_off
     entity_id: switch.switch3
 
-- alias: Humidifier Off Weekend Morning
+- alias: Fan Off Weekend Morning
   trigger:
     - platform: time
       at: '09:30:00'
@@ -176,7 +191,7 @@
 - alias: Dehumidifier On Off Peak
   trigger:
     - platform: time
-      at: '19:00:00'
+      at: '23:00:00'
   action:
     service: homeassistant.turn_on
     entity_id: switch.switch4
