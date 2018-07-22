@@ -2,7 +2,7 @@ switch.switch1:
   friendly_name: Nothing1
 
 switch.switch2:
-  friendly_name: Nothing2
+  friendly_name: Kitchen Fan
 
 switch.switch3:
   friendly_name: Bedroom Fan

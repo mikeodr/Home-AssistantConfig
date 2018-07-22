@@ -34,12 +34,6 @@ homeassistant:
 # Enables the frontend
 frontend:
 
-panel_iframe:
-  terminal:
-    title: Terminal
-    icon: mdi:console
-    url: http://hass:7681
-
 # Enables configuration UI
 config:
 
