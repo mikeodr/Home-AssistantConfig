@@ -104,10 +104,10 @@ sensor:
       - nearest_storm_distance
     units: ca
   - platform: nut
-    name: BackUPSXS1300G
+    name: Back UPS
     host: 172.16.0.1
     port: 3493
-    alias: Back UPS
+    alias: BackUPSXS1300G
     username: !secret nut_slave_name
     password: !secret nut_slave_pass
     resources:
