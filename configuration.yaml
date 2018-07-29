@@ -103,6 +103,17 @@ sensor:
       - humidity
       - nearest_storm_distance
     units: ca
+  - platform: nut
+    name: BackUPSXS1300G
+    host: 172.16.0.1
+    port: 3493
+    alias: Back UPS
+    username: !secret nut_slave_name
+    password: !secret nut_slave_pass
+    resources:
+      - ups.load
+      - battery.runtime
+      - battery.charge
 
 media_player:
     - platform: cast
@@ -117,9 +128,6 @@ notify:
 nest:
   client_id: !secret nest_id
   client_secret: !secret nest_secret
-
-apcupsd:
-  host: 172.16.0.1
 
 group: !include groups.yaml
 # Automations
