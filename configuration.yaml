@@ -37,6 +37,23 @@ frontend:
 # Enables configuration UI
 config:
 
+cloud:
+  google_actions:
+    filter:
+        include_domains:
+            - light
+            - switch
+    entity_config:
+        switch.switch2:
+            name: Kitchen Fan
+            room: Kitchen
+        switch.switch3:
+            name: Bedroom Fan
+            room: Bedroom
+        switch.switch4:
+            name: Dehumidifier
+            room: Basement
+
 http:
   # Uncomment this to add a password (recommended!)
   # api_password: PASSWORD
@@ -128,6 +145,10 @@ notify:
 nest:
   client_id: !secret nest_id
   client_secret: !secret nest_secret
+
+zwave:
+    usb_path: /dev/ttyUSB0
+    network_key: !secret zwave_network_key
 
 group: !include groups.yaml
 # Automations

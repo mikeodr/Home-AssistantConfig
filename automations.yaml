@@ -16,8 +16,10 @@
      platform: time
      at: '23:15:00'
   action:
-     - service: light.turn_off
-       entity_id: group.all_lights
+     - service: homeassistant.turn_off
+       entity_id:
+           - group.all_lights
+           - switch.front_hall
   condition:
     - condition: time
       weekday:
@@ -40,6 +42,7 @@
         - switch.switch1
         - switch.switch2
         - switch.switch3
+        - switch.front_hall
 
 - alias: Lights ON when arrival past sunset
   trigger:
@@ -59,6 +62,7 @@
      service: homeassistant.turn_on
      entity_id:
        - group.all_lights
+       - switch.front_hall
 
 - alias: Presence Notifications Home
   trigger:
@@ -120,12 +124,14 @@
     entity_id:
       - switch.switch2
 
-- alias: Kitchen Fan on when cooling and arriving home
+- alias: Kitchen Fan Cooling
   trigger:
-    platform: state
-    entity_id: group.all_devices
-    from: 'not_home'
-    to: 'home'
+      - platform: state
+        entity_id: group.all_devices
+        from: 'not_home'
+        to: 'home'
+      - platform: time
+        at: '09:01:00'
   condition:
     condition: and
     conditions:
@@ -135,6 +141,9 @@
       - condition: state
         entity_id: climate.kitchen_home
         state: 'cool'
+      - condition: state
+        entity_id: group.all_devices
+        state: 'home'
   action:
      service: homeassistant.turn_on
      entity_id:
@@ -177,7 +186,7 @@
     # service: homeassistant.turn_off
     # entity_id: switch.switch1
 
-- alias: Fan On
+- alias: Bedroom Fan On Evenings
   trigger:
     - platform: time
       at: '23:00:00'
