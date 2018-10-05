@@ -20,6 +20,7 @@
        entity_id:
            - group.all_lights
            - switch.front_hall
+           - switch.kitchen_light
   condition:
     - condition: time
       weekday:
@@ -43,6 +44,7 @@
         - switch.switch2
         - switch.switch3
         - switch.front_hall
+        - switch.kitchen_light
 
 - alias: Lights ON when arrival past sunset
   trigger:
@@ -59,10 +61,11 @@
       - condition: sun
         before: sunrise
   action:
-     service: homeassistant.turn_on
-     entity_id:
-       - group.all_lights
-       - switch.front_hall
+      service: homeassistant.turn_on
+      entity_id:
+        - group.all_lights
+        - switch.front_hall
+        - switch.kitchen_light
 
 - alias: Presence Notifications Home
   trigger:
@@ -149,42 +152,42 @@
      entity_id:
        - switch.switch2
 
-# - alias: Space Heater On Evening and Morning Work Days
-  # trigger:
-    # - platform: time
-      # at: '22:00:00'
-    # - platform: time
-      # at: '07:00:00'
-  # condition:
-    # condition: and
-    # conditions:
-      # - condition: state
-        # entity_id: group.all_devices
-        # state: 'home'
-      # - condition: numeric_state
-        # entity_id: sensor.dark_sky_temperature
-        # below: 8
-      # - condition: time
-        # weekday:
-          # - sun
-          # - mon
-          # - tue
-          # - wed
-          # - thu
-          # - fri
-  # action:
-    # service: homeassistant.turn_on
-    # entity_id: switch.switch1
+- alias: Space Heater On Evening and Morning Work Days
+  trigger:
+    - platform: time
+      at: '22:00:00'
+    - platform: time
+      at: '07:00:00'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: group.all_devices
+        state: 'home'
+      - condition: numeric_state
+        entity_id: sensor.dark_sky_temperature
+        below: 8
+      - condition: time
+        weekday:
+          - sun
+          - mon
+          - tue
+          - wed
+          - thu
+          - fri
+  action:
+    service: homeassistant.turn_on
+    entity_id: switch.switch1
 
-# - alias: Space Heater OFF Evening and Morning
-  # trigger:
-    # - platform: time
-      # at: '23:00:00'
-    # - platform: time
-      # at: '08:10:00'
-  # action:
-    # service: homeassistant.turn_off
-    # entity_id: switch.switch1
+- alias: Space Heater OFF Evening and Morning
+  trigger:
+    - platform: time
+      at: '23:00:00'
+    - platform: time
+      at: '08:10:00'
+  action:
+    service: homeassistant.turn_off
+    entity_id: switch.switch1
 
 - alias: Bedroom Fan On Evenings
   trigger:

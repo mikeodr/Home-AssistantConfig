@@ -44,12 +44,15 @@ cloud:
             - light
             - switch
     entity_config:
+        switch.switch1:
+            name: Space Heater
+            room: Master Bedroom
         switch.switch2:
             name: Kitchen Fan
             room: Kitchen
         switch.switch3:
             name: Bedroom Fan
-            room: Bedroom
+            room: Master Bedroom
         switch.switch4:
             name: Dehumidifier
             room: Basement
@@ -133,9 +136,10 @@ sensor:
       - battery.charge
 
 media_player:
-    - platform: cast
     - platform: kodi
       host: 172.16.0.6
+
+cast:
 
 notify:
   - name: pushbullet
