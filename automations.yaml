@@ -235,3 +235,36 @@
   action:
     service: homeassistant.turn_off
     entity_id: switch.switch4
+
+- alias: Pupper DST lights on
+  trigger:
+     platform: sun
+     event: sunset
+     offset: "-01:00:00"
+  condition:
+    - condition: time
+      weekday:
+        - mon
+        - tue
+        - wed
+        - thu
+        - fri
+  action:
+    service: homeassistant.turn_on
+    entity_id:
+      - light.left_top
+      - light.right_top
+
+- alias: Pupper DST lights off, not home
+  trigger:
+    - platform: time
+      at: '19:00:00'
+  condition:
+     condition: state
+     entity_id: group.all_devices
+     state: 'not_home'
+  action:
+    service: homeassistant.turn_off
+    entity_id:
+      - light.left_top
+      - light.right_top
