@@ -93,16 +93,6 @@
        message: >
          {{ trigger.to_state.attributes.friendly_name }} is {% if trigger.to_state.state == 'home' %}back{% else %}away{% endif %}.
 
-- alias: HASS Update notification
-  trigger:
-    - platform: state
-      entity_id: updater.updater
-  action:
-     service: notify.pushbullet
-     data_template:
-      title: 'New Home Assistant Release'
-      message: "Home Assistant  {{ states.updater.updater.state }}  is now available."
-
 - alias: Bedroom Comfort when arrival past bedtime
   trigger:
     platform: state
