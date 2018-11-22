@@ -31,6 +31,27 @@
         - wed
         - thu
 
+- alias: Lights OFF weekend bedtime
+  trigger:
+    platform: state
+    entity_id: media_player.family_room_tv
+    to: 'unavailable'
+  condition:
+    - condition: time
+      after: '23:00:00'
+      before: '03:00:00'
+      weekday:
+        - fri
+        - sat
+        - sun
+  action:
+    - service: homeassistant.turn_off
+      entity_id:
+        - group.all_lights
+        - switch.front_hall
+        - switch.kitchen_light
+        - switch.switch2
+
 - alias: OFF nobody home
   trigger:
     platform: state
