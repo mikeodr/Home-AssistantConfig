@@ -142,6 +142,9 @@ media_player:
 cast:
 
 notify:
+  - platform: html5
+    gcm_api_key: !secret gcm_server
+    gcm_sender_id: !secret gcm_sender
   - name: pushbullet
     platform: pushbullet
     api_key: !secret pushbullet_api

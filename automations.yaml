@@ -75,7 +75,7 @@
      from: 'not_home'
      to: 'home'
   action:
-     service: notify.pushbullet
+     service: notify.notify
      data_template:
        title: "HASS Presence Notification"
        message: >
@@ -88,7 +88,7 @@
      from: 'home'
      to: 'not_home'
   action:
-     service: notify.pushbullet
+     service: notify.notify
      data_template:
        title: "HASS Presence Notification"
        message: >
