@@ -2,7 +2,8 @@ switch.switch1:
   friendly_name: Space Heater
 
 switch.switch2:
-  friendly_name: Kitchen Fan
+  #friendly_name: Kitchen Fan
+  friendly_name: Christmas Tree
 
 switch.switch3:
   friendly_name: Bedroom Fan

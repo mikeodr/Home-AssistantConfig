@@ -21,6 +21,7 @@
            - group.all_lights
            - switch.front_hall
            - switch.kitchen_light
+           - switch.switch2
   condition:
     - condition: time
       weekday:
@@ -108,39 +109,39 @@
      entity_id:
        - switch.switch3
 
-- alias: Kitchen Fan off overnight
-  trigger:
-    platform: time
-    at: '00:00:00'
-  action:
-    service: homeassistant.turn_off
-    entity_id:
-      - switch.switch2
+#- alias: Kitchen Fan off overnight
+  #trigger:
+    #platform: time
+    #at: '00:00:00'
+  #action:
+    #service: homeassistant.turn_off
+    #entity_id:
+      #- switch.switch2
 
-- alias: Kitchen Fan Cooling
-  trigger:
-      - platform: state
-        entity_id: group.all_devices
-        from: 'not_home'
-        to: 'home'
-      - platform: time
-        at: '09:01:00'
-  condition:
-    condition: and
-    conditions:
-      - condition: time
-        after: '09:00:00'
-        before: '23:00:00'
-      - condition: state
-        entity_id: climate.kitchen_home
-        state: 'cool'
-      - condition: state
-        entity_id: group.all_devices
-        state: 'home'
-  action:
-     service: homeassistant.turn_on
-     entity_id:
-       - switch.switch2
+#- alias: Kitchen Fan Cooling
+  #trigger:
+      #- platform: state
+        #entity_id: group.all_devices
+        #from: 'not_home'
+        #to: 'home'
+      #- platform: time
+        #at: '09:01:00'
+  #condition:
+    #condition: and
+    #conditions:
+      #- condition: time
+        #after: '09:00:00'
+        #before: '23:00:00'
+      #- condition: state
+        #entity_id: climate.kitchen_home
+        #state: 'cool'
+      #- condition: state
+        #entity_id: group.all_devices
+        #state: 'home'
+  #action:
+     #service: homeassistant.turn_on
+     #entity_id:
+       #- switch.switch2
 
 - alias: Space Heater On Evening and Morning Work Days
   trigger:
@@ -267,3 +268,16 @@
     entity_id:
       - light.left_top
       - light.right_top
+
+- alias: Christmas Tree on evenings
+  trigger:
+    - platform: time
+      at: '18:00:00'
+  condition:
+    condition: state
+    entity_id: group.all_devices
+    state: 'home'
+  action:
+      service: homeassistant.turn_on
+      entity_id:
+        - switch.switch2

@@ -48,7 +48,7 @@ cloud:
             name: Space Heater
             room: Master Bedroom
         switch.switch2:
-            name: Kitchen Fan
+            name: Christmas Tree
             room: Kitchen
         switch.switch3:
             name: Bedroom Fan
