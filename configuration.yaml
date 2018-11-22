@@ -117,11 +117,8 @@ sensor:
   - platform: darksky
     api_key: !secret darksky_api
     monitored_conditions:
-      - summary
-      - precip_probability
       - temperature
-      - humidity
-      - nearest_storm_distance
+      - cloud_cover
     units: ca
   - platform: nut
     name: Back UPS
