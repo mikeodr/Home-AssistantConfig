@@ -9,4 +9,5 @@ switch.switch3:
   friendly_name: Bedroom Fan
 
 switch.switch4:
-  friendly_name: Dehumidifier
+  #friendly_name: Dehumidifier
+  friendly_name: Outdoor Lights

@@ -241,21 +241,21 @@
     service: homeassistant.turn_off
     entity_id: switch.switch3
 
-- alias: Dehumidifier On Off Peak
-  trigger:
-    - platform: time
-      at: '23:00:00'
-  action:
-    service: homeassistant.turn_on
-    entity_id: switch.switch4
+#- alias: Dehumidifier On Off Peak
+  #trigger:
+    #- platform: time
+      #at: '23:00:00'
+  #action:
+    #service: homeassistant.turn_on
+    #entity_id: switch.switch4
 
-- alias: Dehumidifier Off On Peak
-  trigger:
-    - platform: time
-      at: '07:00:00'
-  action:
-    service: homeassistant.turn_off
-    entity_id: switch.switch4
+#- alias: Dehumidifier Off On Peak
+  #trigger:
+    #- platform: time
+      #at: '07:00:00'
+  #action:
+    #service: homeassistant.turn_off
+    #entity_id: switch.switch4
 
 - alias: Pupper DST lights on
   trigger:
@@ -291,13 +291,31 @@
 
 - alias: Christmas Tree on evenings
   trigger:
-    - platform: time
-      at: '18:00:00'
+    platform: time
+    at: '18:00:00'
   condition:
     condition: state
     entity_id: group.all_devices
     state: 'home'
   action:
+    service: homeassistant.turn_on
+    entity_id:
+      - switch.switch2
+
+- alias: Outdoor Christmas Lights on
+  trigger:
+     platform: sun
+     event: sunset
+  action:
       service: homeassistant.turn_on
       entity_id:
-        - switch.switch2
+        - switch.switch4
+
+- alias: Outdoor Christmas Lights off
+  trigger:
+      platform: time
+      at: '22:45:00'
+  action:
+      service: homeassistant.turn_off
+      entity_id:
+        - switch.switch4
