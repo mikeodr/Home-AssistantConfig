@@ -181,7 +181,6 @@
         below: 8
       - condition: time
         weekday:
-          - sun
           - mon
           - tue
           - wed
