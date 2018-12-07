@@ -158,6 +158,12 @@ zwave:
     usb_path: /dev/ttyUSB0
     network_key: !secret zwave_network_key
 
+input_boolean:
+    est_pupper:
+        name: Puppy Home During EST
+        initial: off
+        icon: mdi:dog
+
 group: !include groups.yaml
 # Automations
 automation: !include automations.yaml

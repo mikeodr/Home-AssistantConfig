@@ -257,37 +257,62 @@
     #service: homeassistant.turn_off
     #entity_id: switch.switch4
 
-- alias: Pupper DST lights on
+- alias: Ask if Pupper Home EST
   trigger:
-     platform: sun
-     event: sunset
+    platform: sun
+    event: sunset
+    offset: "-01:00:00"
   condition:
-    - condition: time
-      weekday:
-        - mon
-        - tue
-        - wed
-        - thu
-        - fri
+    - condition: state
+      entity_id: group.all_devices
+      state: 'not_home'
   action:
-    service: homeassistant.turn_on
-    entity_id:
-      - light.left_top
-      - light.right_top
+    service: notify.notify
+    data:
+      message: "Is the puppy home alone?"
+      data:
+        actions:
+          - action: "pupper_est_yes"
+            title: "Yes"
+          - action: "pupper_est_no"
+            title: "No"
 
-- alias: Pupper DST lights off, not home
+- alias: Pupper Question Event yes
   trigger:
-    - platform: time
-      at: '19:00:00'
-  condition:
-     condition: state
-     entity_id: group.all_devices
-     state: 'not_home'
+    platform: event
+    event_type: html5_notification.clicked
+    event_data:
+      action: pupper_est_yes
   action:
-    service: homeassistant.turn_off
-    entity_id:
-      - light.left_top
-      - light.right_top
+    service: input_boolean.turn_on
+    entity_id: input_boolean.est_pupper
+
+- alias: Pupper Question Event No
+  trigger:
+    platform: event
+    event_type: html5_notification.clicked
+    event_data:
+      action: pupper_est_no
+  action:
+    service: input_boolean.turn_off
+    entity_id: input_boolean.est_pupper
+
+- alias: Pupper EST lights on
+  trigger:
+    platform: sun
+    event: sunset
+  condition:
+    - condition: state
+      entity_id: input_boolean.pupper_est
+      state: 'on'
+  action:
+    - service: homeassistant.turn_on
+      entity_id:
+        - light.left_top
+        - light.right_top
+    - service: input_boolean.turn_off
+      entity_id:
+        - input_boolean.est_pupper
 
 - alias: Christmas Tree on evenings
   trigger:
