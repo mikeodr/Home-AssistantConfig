@@ -9,7 +9,9 @@
      state: 'home'
   action:
      service: light.turn_on
-     entity_id: light.living
+     entity_id:
+         - light.living
+         - switch.switch2
 
 - alias: Lights OFF when bedtime work day
   trigger:
@@ -88,6 +90,7 @@
         - group.all_lights
         - switch.front_hall
         - switch.kitchen_light
+        - switch.switch2
 
 - alias: Presence Notifications Home
   trigger:
