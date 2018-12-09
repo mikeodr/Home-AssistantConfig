@@ -27,6 +27,8 @@ homeassistant:
       hidden: true
     "*hvac*":
       hidden: true
+    "sensor.home_eta":
+      hidden: true
 
 # Show links to resources in log and frontend
 #introduction:
