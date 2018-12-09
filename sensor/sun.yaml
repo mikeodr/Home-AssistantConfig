@@ -1,0 +1,16 @@
+- platform: template
+  sensors:
+    lux_measurement:
+      friendly_name: "Faux Lux Measurement"
+      value_template:
+        "{{states.sun.sun.state == 'above_horizon' and
+        states.sun.sun.attributes.elevation |float < 10.0 and
+        states.sensor.dark_sky_cloud_coverage | float > 70.0}}"
+      icon_template: >-
+        {% if is_state("sensor.lux_measurement", "true") %}
+        mdi:weather-cloudy
+        {% else %}
+        mdi:brightness-5
+        {% endif %}
+
+

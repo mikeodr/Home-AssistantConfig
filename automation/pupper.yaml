@@ -1,0 +1,54 @@
+- alias: Ask if Pupper Home after Dark
+  trigger:
+    platform: sun
+    event: sunset
+    offset: "-01:00:00"
+  condition:
+    - condition: state
+      entity_id: group.all_devices
+      state: 'not_home'
+  action:
+    service: notify.notify
+    data:
+      message: "Is the puppy home alone?"
+      data:
+        actions:
+          - action: "pupper_dark_yes"
+            title: "Yes"
+          - action: "pupper_dark_no"
+            title: "No"
+
+- alias: Pupper Question Event yes
+  trigger:
+    platform: event
+    event_type: html5_notification.clicked
+    event_data:
+      action: pupper_dark_yes
+  action:
+    service: input_boolean.turn_on
+    entity_id: input_boolean.pupper_home
+
+- alias: Pupper Question Event No
+  trigger:
+    platform: event
+    event_type: html5_notification.clicked
+    event_data:
+      action: pupper_dark_no
+  action:
+    service: input_boolean.turn_off
+    entity_id: input_boolean.pupper_home
+
+- alias: Pupper Lights On
+  trigger:
+    platform: sun
+    event: sunset
+  condition:
+    - condition: state
+      entity_id: input_boolean.pupper_home
+      state: 'on'
+  action:
+    - service: homeassistant.turn_on
+      entity_id:
+        - light.left_top
+        - light.right_top
+

@@ -124,26 +124,6 @@ wemo:
     - 172.16.1.6
     - 172.16.1.7
 
-# Weather prediction
-sensor:
-  - platform: darksky
-    api_key: !secret darksky_api
-    monitored_conditions:
-      - temperature
-      - cloud_cover
-    units: ca
-  - platform: nut
-    name: Back UPS
-    host: 172.16.0.1
-    port: 3493
-    alias: BackUPSXS1300G
-    username: !secret nut_slave_name
-    password: !secret nut_slave_pass
-    resources:
-      - ups.load
-      - battery.runtime
-      - battery.charge
-
 media_player:
     - platform: kodi
       host: 172.16.0.6
@@ -169,9 +149,9 @@ zwave:
 input_boolean:
     pupper_home:
         name: Puppy Home
-        initial: off
+        initial: on
         icon: mdi:dog
 
+automation: !include_dir_merge_list automation
+sensor: !include_dir_merge_list sensor
 group: !include groups.yaml
-# Automations
-automation: !include automations.yaml

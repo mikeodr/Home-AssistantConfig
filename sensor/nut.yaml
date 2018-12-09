@@ -1,0 +1,11 @@
+- platform: nut
+  name: Back UPS
+  host: 172.16.0.1
+  port: 3493
+  alias: BackUPSXS1300G
+  username: !secret nut_slave_name
+  password: !secret nut_slave_pass
+  resources:
+    - ups.load
+    - battery.runtime
+    - battery.charge
