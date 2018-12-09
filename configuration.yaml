@@ -108,6 +108,12 @@ device_tracker:
 light:
   - platform: hue
     host: 172.16.0.192
+  - platform: switch
+    name: Front Hall
+    entity_id: switch.front_hall
+  - platform: switch
+    name: Kitchen
+    entity_id: switch.kitchen_light
 
 wemo:
   static:
@@ -159,8 +165,8 @@ zwave:
     network_key: !secret zwave_network_key
 
 input_boolean:
-    est_pupper:
-        name: Puppy Home During EST
+    pupper_home:
+        name: Puppy Home
         initial: off
         icon: mdi:dog
 

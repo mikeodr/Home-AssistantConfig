@@ -21,8 +21,6 @@
      - service: homeassistant.turn_off
        entity_id:
            - group.all_lights
-           - switch.front_hall
-           - switch.kitchen_light
            - switch.switch2
   condition:
     - condition: time
@@ -54,12 +52,16 @@
         - switch.kitchen_light
         - switch.switch2
 
-- alias: OFF nobody home
+- alias: OFF nobody home, no pupper
   trigger:
     platform: state
     entity_id: group.all_devices
     from: 'home'
     to: 'not_home'
+  condition:
+    - condition: state
+      entity_id: input_boolean.pupper_home
+      state: 'off'
   action:
     - service: homeassistant.turn_off
       entity_id:
@@ -67,8 +69,31 @@
         - switch.switch1
         - switch.switch2
         - switch.switch3
-        - switch.front_hall
-        - switch.kitchen_light
+
+- alias: OFF nobody home, pupper home
+  trigger:
+    platform: state
+    entity_id: group.all_devices
+    from: 'home'
+    to: 'not_home'
+  condition:
+    - condition: state
+      entity_id: input_boolean.pupper_home
+      state: 'on'
+  action:
+    - service: homeassistant.turn_off
+      entity_id:
+        - light.front_hall
+        - light.kitchen
+        - light.right_bottom
+        - light.tv_light
+        - switch.switch1
+        - switch.switch2
+        - switch.switch3
+    - service: homeassistant.turn_on
+      entity_id:
+        - light.right_top
+        - light.left_top
 
 - alias: Lights ON when arrival past sunset
   trigger:
@@ -260,7 +285,7 @@
     #service: homeassistant.turn_off
     #entity_id: switch.switch4
 
-- alias: Ask if Pupper Home EST
+- alias: Ask if Pupper Home after Dark
   trigger:
     platform: sun
     event: sunset
@@ -275,9 +300,9 @@
       message: "Is the puppy home alone?"
       data:
         actions:
-          - action: "pupper_est_yes"
+          - action: "pupper_dark_yes"
             title: "Yes"
-          - action: "pupper_est_no"
+          - action: "pupper_dark_no"
             title: "No"
 
 - alias: Pupper Question Event yes
@@ -285,37 +310,34 @@
     platform: event
     event_type: html5_notification.clicked
     event_data:
-      action: pupper_est_yes
+      action: pupper_dark_yes
   action:
     service: input_boolean.turn_on
-    entity_id: input_boolean.est_pupper
+    entity_id: input_boolean.pupper_home
 
 - alias: Pupper Question Event No
   trigger:
     platform: event
     event_type: html5_notification.clicked
     event_data:
-      action: pupper_est_no
+      action: pupper_dark_no
   action:
     service: input_boolean.turn_off
-    entity_id: input_boolean.est_pupper
+    entity_id: input_boolean.pupper_home
 
-- alias: Pupper EST lights on
+- alias: Pupper Lights On
   trigger:
     platform: sun
     event: sunset
   condition:
     - condition: state
-      entity_id: input_boolean.pupper_est
+      entity_id: input_boolean.pupper_home
       state: 'on'
   action:
     - service: homeassistant.turn_on
       entity_id:
         - light.left_top
         - light.right_top
-    - service: input_boolean.turn_off
-      entity_id:
-        - input_boolean.est_pupper
 
 - alias: Christmas Tree on evenings
   trigger:
