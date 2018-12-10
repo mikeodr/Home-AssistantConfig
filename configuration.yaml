@@ -153,5 +153,6 @@ input_boolean:
         icon: mdi:dog
 
 automation: !include_dir_merge_list automation
+binary_sensor: !include_dir_merge_list binary_sensor
 sensor: !include_dir_merge_list sensor
 group: !include groups.yaml
