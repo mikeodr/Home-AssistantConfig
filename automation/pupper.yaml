@@ -17,6 +17,8 @@
             title: "Yes"
           - action: "pupper_dark_no"
             title: "No"
+      target:
+        - Mike's Phone
 
 - alias: Pupper Question Event yes
   trigger:

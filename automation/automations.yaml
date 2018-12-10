@@ -1,28 +1,32 @@
 - alias: Presence Notifications Home
   trigger:
-     platform: state
-     entity_id: device_tracker.tiffs_phone
-     from: 'not_home'
-     to: 'home'
+    platform: state
+    entity_id: device_tracker.tiffs_phone
+    from: 'not_home'
+    to: 'home'
   action:
-     service: notify.notify
-     data_template:
-       title: "HASS Presence Notification"
-       message: >
-         {{ trigger.to_state.attributes.friendly_name }} is {% if trigger.to_state.state == 'home' %}back{% else %}away{% endif %}.
+    service: notify.notify
+    data_template:
+      title: "HASS Presence Notification"
+      message: >
+        {{ trigger.to_state.attributes.friendly_name }} is {% if trigger.to_state.state == 'home' %}back{% else %}away{% endif %}.
+      target:
+        - Mike's Phone
 
 - alias: Presence Notifications Away
   trigger:
-     platform: state
-     entity_id: device_tracker.tiffs_phone
-     from: 'home'
-     to: 'not_home'
+    platform: state
+    entity_id: device_tracker.tiffs_phone
+    from: 'home'
+    to: 'not_home'
   action:
-     service: notify.notify
-     data_template:
-       title: "HASS Presence Notification"
-       message: >
-         {{ trigger.to_state.attributes.friendly_name }} is {% if trigger.to_state.state == 'home' %}back{% else %}away{% endif %}.
+    service: notify.notify
+    data_template:
+      title: "HASS Presence Notification"
+      message: >
+        {{ trigger.to_state.attributes.friendly_name }} is {% if trigger.to_state.state == 'home' %}back{% else %}away{% endif %}.
+      target:
+      - Mike's Phone
 
 - alias: Bedroom Comfort when arrival past bedtime
   trigger:
@@ -35,9 +39,9 @@
       after: '23:00:00'
       before: '05:00:00'
   action:
-     service: homeassistant.turn_on
-     entity_id:
-       - switch.switch3
+    service: homeassistant.turn_on
+    entity_id:
+      - switch.switch3
 
 #- alias: Kitchen Fan off overnight
   #trigger:

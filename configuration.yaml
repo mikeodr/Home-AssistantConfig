@@ -1,14 +1,9 @@
 homeassistant:
-  # Name of the location where Home Assistant is running
   name: Home
-  # Location required to calculate the time the sun rises and sets
   latitude: !secret latitude
   longitude: !secret longitude
-  # Impacts weather/sunrise data (altitude above sea level in meters)
   elevation: !secret elevation
-  # metric for Metric, imperial for Imperial
   unit_system: metric
-  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
   time_zone: !secret time_zone
 
   customize: !include customize.yaml
@@ -30,9 +25,6 @@ homeassistant:
     "sensor.home_eta":
       hidden: true
 
-# Show links to resources in log and frontend
-#introduction:
-
 # Enables the frontend
 frontend:
 
@@ -42,22 +34,22 @@ config:
 cloud:
   google_actions:
     filter:
-        include_domains:
-            - light
-            - switch
+      include_domains:
+        - light
+        - switch
     entity_config:
-        switch.switch1:
-            name: Space Heater
-            room: Master Bedroom
-        switch.switch2:
-            name: Christmas Tree
-            room: Kitchen
-        switch.switch3:
-            name: Bedroom Fan
-            room: Master Bedroom
-        switch.switch4:
-            name: Dehumidifier
-            room: Basement
+      switch.switch1:
+        name: Space Heater
+        room: Master Bedroom
+      switch.switch2:
+        name: Christmas Tree
+        room: Kitchen
+      switch.switch3:
+        name: Bedroom Fan
+        room: Master Bedroom
+      switch.switch4:
+        name: Dehumidifier
+        room: Basement
 
 http:
   # Uncomment this to add a password (recommended!)
@@ -74,9 +66,9 @@ http:
 # the developers to assist with development of Home Assistant.
 # For more information, please see:
 # https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
-updater:
-  # Optional, allows Home Assistant developers to focus on popular components.
-  # include_used_components: true
+# updater:
+# Optional, allows Home Assistant developers to focus on popular components.
+# include_used_components: true
 
 # Discover some devices automatically
 discovery:
@@ -125,8 +117,8 @@ wemo:
     - 172.16.1.7
 
 media_player:
-    - platform: kodi
-      host: 172.16.0.6
+  - platform: kodi
+    host: 172.16.0.6
 
 cast:
 
@@ -143,14 +135,14 @@ nest:
   client_secret: !secret nest_secret
 
 zwave:
-    usb_path: /dev/ttyUSB0
-    network_key: !secret zwave_network_key
+  usb_path: /dev/ttyUSB0
+  network_key: !secret zwave_network_key
 
 input_boolean:
-    pupper_home:
-        name: Puppy Home
-        initial: on
-        icon: mdi:dog
+  pupper_home:
+    name: Puppy Home
+    initial: on
+    icon: mdi:dog
 
 automation: !include_dir_merge_list automation
 binary_sensor: !include_dir_merge_list binary_sensor
