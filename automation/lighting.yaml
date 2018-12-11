@@ -80,6 +80,9 @@
     - condition: state
       entity_id: input_boolean.pupper_home
       state: 'on'
+    - condition: sun
+      after: sunset
+      after_offset: '-00:30:00'
   action:
     - service: homeassistant.turn_off
       entity_id:
