@@ -41,15 +41,9 @@ cloud:
       switch.switch1:
         name: Space Heater
         room: Master Bedroom
-      switch.switch2:
-        name: Christmas Tree
-        room: Kitchen
       switch.switch3:
         name: Bedroom Fan
         room: Master Bedroom
-      switch.switch4:
-        name: Dehumidifier
-        room: Basement
 
 http:
   # Uncomment this to add a password (recommended!)
