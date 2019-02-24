@@ -25,6 +25,8 @@ homeassistant:
     "sensor.home_eta":
       hidden: true
 
+system_health:
+
 # Enables the frontend
 frontend:
 
@@ -137,6 +139,9 @@ input_boolean:
     name: Puppy Home
     initial: on
     icon: mdi:dog
+
+shell_command:
+  healthchecks_io: !secret healthchecks_io_cmd
 
 automation: !include_dir_merge_list automation
 binary_sensor: !include_dir_merge_list binary_sensor

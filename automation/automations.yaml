@@ -154,6 +154,13 @@
     service: homeassistant.turn_off
     entity_id: switch.switch3
 
+- alias: Healthchecks Cron Job
+  trigger:
+    platform: time_pattern
+    minutes: '/15'
+  action:
+    service: shell_command.healthchecks_io
+
 #- alias: Dehumidifier On Off Peak
   #trigger:
     #- platform: time
