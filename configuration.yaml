@@ -7,23 +7,6 @@ homeassistant:
   time_zone: !secret time_zone
 
   customize: !include customize.yaml
-  customize_glob:
-    "*nest*health":
-      hidden: true
-    "*nest*status":
-      hidden: true
-    "*nest*online":
-      hidden: true
-    "*thermostat*leaf":
-      hidden: true
-    "*thermostat*locked":
-      hidden: true
-    "*thermostat*emergency*":
-      hidden: true
-    "*hvac*":
-      hidden: true
-    "sensor.home_eta":
-      hidden: true
 
 system_health:
 
@@ -115,20 +98,15 @@ wemo:
 media_player:
   - platform: kodi
     host: 172.16.0.6
+  - platform: plex
 
 cast:
 
 notify:
   - platform: html5
-    gcm_api_key: !secret gcm_server
-    gcm_sender_id: !secret gcm_sender
-  - name: pushbullet
-    platform: pushbullet
-    api_key: !secret pushbullet_api
-
-nest:
-  client_id: !secret nest_id
-  client_secret: !secret nest_secret
+    vapid_pub_key: !secret vapid_pub_key
+    vapid_prv_key: !secret vapid_prv_key
+    vapid_email: !secret vapid_email
 
 zwave:
   usb_path: /dev/ttyUSB0
