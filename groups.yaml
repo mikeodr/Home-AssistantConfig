@@ -1,0 +1,5 @@
+adults:
+  name: Adults
+  entities:
+    - device_tracker.mikes_phone
+    - device_tracker.tiffs_phone

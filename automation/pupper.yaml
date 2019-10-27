@@ -5,7 +5,7 @@
     offset: "-01:00:00"
   condition:
     - condition: state
-      entity_id: group.all_devices
+      entity_id: group.adults
       state: 'not_home'
   action:
     service: notify.notify
@@ -18,7 +18,7 @@
           - action: "pupper_dark_no"
             title: "No"
       target:
-        - Mike's Phone
+        - Mike's Pixel
 
 - alias: Pupper Question Event yes
   trigger:
@@ -40,17 +40,16 @@
     service: input_boolean.turn_off
     entity_id: input_boolean.pupper_home
 
-- alias: Pupper Lights On
-  trigger:
-    platform: sun
-    event: sunset
-  condition:
-    - condition: state
-      entity_id: input_boolean.pupper_home
-      state: 'on'
-  action:
-    - service: homeassistant.turn_on
-      entity_id:
-        - light.left_top
-        - light.right_top
-
+#- alias: Pupper Lights On
+#  trigger:
+#    platform: sun
+#    event: sunset
+#  condition:
+#    - condition: state
+#      entity_id: input_boolean.pupper_home
+#      state: 'on'
+#  action:
+#    - service: homeassistant.turn_on
+#      entity_id:
+#        - light.left_top
+#        - light.right_top

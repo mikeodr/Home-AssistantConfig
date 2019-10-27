@@ -1,13 +1,3 @@
-homeassistant:
-  name: Home
-  latitude: !secret latitude
-  longitude: !secret longitude
-  elevation: !secret elevation
-  unit_system: metric
-  time_zone: !secret time_zone
-
-  customize: !include customize.yaml
-
 system_health:
 
 # Enables the frontend
@@ -17,43 +7,16 @@ frontend:
 config:
 
 cloud:
-  google_actions:
-    filter:
-      include_domains:
-        - light
-        - switch
-    entity_config:
-      switch.switch1:
-        name: Space Heater
-        room: Master Bedroom
-      switch.switch3:
-        name: Bedroom Fan
-        room: Master Bedroom
 
 http:
-  # Uncomment this to add a password (recommended!)
-  # api_password: PASSWORD
-  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
   base_url: !secret base_url
   use_x_forwarded_for: true
   trusted_proxies: "127.0.0.1"
   ip_ban_enabled: true
   login_attempts_threshold: 5
 
-# Checks for available updates
-# Note: This component will send some information about your system to
-# the developers to assist with development of Home Assistant.
-# For more information, please see:
-# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
-# updater:
-# Optional, allows Home Assistant developers to focus on popular components.
-# include_used_components: true
-
 # Discover some devices automatically
 discovery:
-
-# Allows you to issue voice commands from the frontend in enabled browsers
-conversation:
 
 # Enables support for tracking state changes over time
 history:
@@ -64,29 +27,7 @@ logbook:
 # Track the sun
 sun:
 
-# Wifi Tracking
 device_tracker:
-  - platform: unifi
-    host: !secret unifi_host
-    username: !secret unifi_user
-    password: !secret unifi_pass
-    verify_ssl: False
-    site_id: default
-    port: 8443
-    new_device_defaults:
-      track_new_devices: False
-      hide_if_away: False
-
-# Lights
-light:
-  - platform: hue
-    host: 172.16.0.192
-  - platform: switch
-    name: Front Hall
-    entity_id: switch.front_hall
-  - platform: switch
-    name: Kitchen
-    entity_id: switch.kitchen_light
 
 wemo:
   static:
@@ -95,22 +36,25 @@ wemo:
     - 172.16.1.6
     - 172.16.1.7
 
-media_player:
-  - platform: kodi
-    host: 172.16.0.6
-  - platform: plex
+cover:
+  - platform: myq
+    username: !secret myq_username
+    password: !secret myq_password
+    type: liftmaster
 
-cast:
+# Wifi Tracking
+unifi:
+  controllers:
+    - host: !secret unifi_host
+      site: default
+      ssid_filter:
+        - 'Core'
 
 notify:
   - platform: html5
     vapid_pub_key: !secret vapid_pub_key
     vapid_prv_key: !secret vapid_prv_key
     vapid_email: !secret vapid_email
-
-zwave:
-  usb_path: /dev/ttyUSB0
-  network_key: !secret zwave_network_key
 
 input_boolean:
   pupper_home:

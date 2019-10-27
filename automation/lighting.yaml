@@ -1,146 +1,146 @@
-- alias: Lights ON when sunsets -1 hr earlier and anyone home
-  trigger:
-     platform: sun
-     event: sunset
-     offset: "-01:00:00"
-  condition:
-     condition: state
-     entity_id: group.all_devices
-     state: 'home'
-  action:
-     service: light.turn_on
-     entity_id:
-         - light.living
-
-- alias: Lights OFF when bedtime work day
-  trigger:
-     platform: time
-     at: '23:15:00'
-  action:
-     - service: homeassistant.turn_off
-       entity_id:
-           - group.all_lights
-  condition:
-    - condition: time
-      weekday:
-        - sun
-        - mon
-        - tue
-        - wed
-        - thu
-
-- alias: Lights OFF weekend bedtime
-  trigger:
-    platform: state
-    entity_id: media_player.family_room_tv
-    to: 'unavailable'
-  condition:
-    - condition: time
-      after: '23:00:00'
-      before: '03:00:00'
-      weekday:
-        - fri
-        - sat
-        - sun
-  action:
-    - service: homeassistant.turn_off
-      entity_id:
-        - group.all_lights
-        - switch.front_hall
-        - switch.kitchen_light
-
-- alias: OFF nobody home, no pupper
-  trigger:
-    platform: state
-    entity_id: group.all_devices
-    from: 'home'
-    to: 'not_home'
-  condition:
-    - condition: state
-      entity_id: input_boolean.pupper_home
-      state: 'off'
-  action:
-    - service: homeassistant.turn_off
-      entity_id:
-        - group.all_lights
-        - switch.switch1
-        - switch.switch3
-
-- alias: OFF nobody home, pupper home, After Dark
-  trigger:
-    platform: state
-    entity_id: group.all_devices
-    from: 'home'
-    to: 'not_home'
-  condition:
-    condition: and
-    conditions:
-      - condition: state
-        entity_id: input_boolean.pupper_home
-        state: 'on'
-      - condition: or
-        conditions:
-          - condition: sun
-            after: sunset
-            after_offset: '-00:30:00'
-          - condition: sun
-            before: sunrise
-  action:
-    - service: homeassistant.turn_off
-      entity_id:
-        - light.front_hall
-        - light.kitchen
-        - light.right_bottom
-        - light.tv_light
-        - switch.switch1
-        - switch.switch3
-    - service: homeassistant.turn_on
-      entity_id:
-        - light.right_top
-        - light.left_top
-
-- alias: OFF nobody home, pupper home, Light
-  trigger:
-    platform: state
-    entity_id: group.all_devices
-    from: 'home'
-    to: 'not_home'
-  condition:
-    condition: and
-    conditions:
-      - condition: state
-        entity_id: input_boolean.pupper_home
-        state: 'on'
-      - condition: or
-        conditions:
-          - condition: sun
-            before: sunset
-          - condition: sun
-            after: sunrise
-  action:
-    - service: homeassistant.turn_off
-      entity_id:
-        - group.all_lights
-        - switch.switch1
-        - switch.switch3
-
-- alias: Lights ON when arrival past sunset
-  trigger:
-    platform: state
-    entity_id: group.all_devices
-    from: 'not_home'
-    to: 'home'
-  condition:
-    condition: or
-    conditions:
-      - condition: sun
-        after: sunset
-        after_offset: "-1:00:00"
-      - condition: sun
-        before: sunrise
-  action:
-      service: homeassistant.turn_on
-      entity_id:
-        - group.all_lights
-        - switch.front_hall
-        - switch.kitchen_light
+#- alias: Lights ON when sunsets -1 hr earlier and anyone home
+#  trigger:
+#     platform: sun
+#     event: sunset
+#     offset: "-01:00:00"
+#  condition:
+#     condition: state
+#     entity_id: group.adults
+#     state: 'home'
+#  action:
+#     service: light.turn_on
+#     entity_id:
+#         - light.living
+#
+#- alias: Lights OFF when bedtime work day
+#  trigger:
+#     platform: time
+#     at: '23:15:00'
+#  action:
+#     - service: homeassistant.turn_off
+#       entity_id:
+#           - group.all_lights
+#  condition:
+#    - condition: time
+#      weekday:
+#        - sun
+#        - mon
+#        - tue
+#        - wed
+#        - thu
+#
+#- alias: Lights OFF weekend bedtime
+#  trigger:
+#    platform: state
+#    entity_id: media_player.family_room_tv
+#    to: 'unavailable'
+#  condition:
+#    - condition: time
+#      after: '23:00:00'
+#      before: '03:00:00'
+#      weekday:
+#        - fri
+#        - sat
+#        - sun
+#  action:
+#    - service: homeassistant.turn_off
+#      entity_id:
+#        - group.all_lights
+#        - switch.front_hall
+#        - switch.kitchen_light
+#
+#- alias: OFF nobody home, no pupper
+#  trigger:
+#    platform: state
+#    entity_id: group.adults
+#    from: 'home'
+#    to: 'not_home'
+#  condition:
+#    - condition: state
+#      entity_id: input_boolean.pupper_home
+#      state: 'off'
+#  action:
+#    - service: homeassistant.turn_off
+#      entity_id:
+#        - group.all_lights
+#        - switch.switch1
+#        - switch.switch3
+#
+#- alias: OFF nobody home, pupper home, After Dark
+#  trigger:
+#    platform: state
+#    entity_id: group.adults
+#    from: 'home'
+#    to: 'not_home'
+#  condition:
+#    condition: and
+#    conditions:
+#      - condition: state
+#        entity_id: input_boolean.pupper_home
+#        state: 'on'
+#      - condition: or
+#        conditions:
+#          - condition: sun
+#            after: sunset
+#            after_offset: '-00:30:00'
+#          - condition: sun
+#            before: sunrise
+#  action:
+#    - service: homeassistant.turn_off
+#      entity_id:
+#        - light.front_hall
+#        - light.kitchen
+#        - light.right_bottom
+#        - light.tv_light
+#        - switch.switch1
+#        - switch.switch3
+#    - service: homeassistant.turn_on
+#      entity_id:
+#        - light.right_top
+#        - light.left_top
+#
+#- alias: OFF nobody home, pupper home, Light
+#  trigger:
+#    platform: state
+#    entity_id: group.adults
+#    from: 'home'
+#    to: 'not_home'
+#  condition:
+#    condition: and
+#    conditions:
+#      - condition: state
+#        entity_id: input_boolean.pupper_home
+#        state: 'on'
+#      - condition: or
+#        conditions:
+#          - condition: sun
+#            before: sunset
+#          - condition: sun
+#            after: sunrise
+#  action:
+#    - service: homeassistant.turn_off
+#      entity_id:
+#        - group.all_lights
+#        - switch.switch1
+#        - switch.switch3
+#
+#- alias: Lights ON when arrival past sunset
+#  trigger:
+#    platform: state
+#    entity_id: group.adults
+#    from: 'not_home'
+#    to: 'home'
+#  condition:
+#    condition: or
+#    conditions:
+#      - condition: sun
+#        after: sunset
+#        after_offset: "-1:00:00"
+#      - condition: sun
+#        before: sunrise
+#  action:
+#      service: homeassistant.turn_on
+#      entity_id:
+#        - group.all_lights
+#        - switch.front_hall
+#        - switch.kitchen_light
