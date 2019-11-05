@@ -8,12 +8,17 @@ config:
 
 cloud:
 
+homeassistant:
+  auth_providers:
+    - type: homeassistant
+    - type: trusted_networks
+      trusted_networks:
+        - 172.16.0.0/24
+        - 172.16.1.0/24
+
 http:
   base_url: !secret base_url
-  use_x_forwarded_for: true
-  trusted_proxies: "127.0.0.1"
-  ip_ban_enabled: true
-  login_attempts_threshold: 5
+  server_port: 80
 
 # Discover some devices automatically
 discovery:
