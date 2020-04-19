@@ -1,0 +1,6 @@
+- name: baby_night_full
+  entities:
+    light.baby_led_strip:
+      state: on
+      brightness_pct: 40
+      rgb_color: [255, 127, 0]
