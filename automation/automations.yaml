@@ -56,13 +56,12 @@
   action:
     service: homeassistant.turn_on
     entity_id:
-      - switch.switch3
-      - switch.switch4
+      - switch.switch1
 
-- alias: Bedroom Humidifer On Evenings
+- alias: Bedroom White Noise On Evenings
   trigger:
     - platform: time
-      at: '19:45:00'
+      at: '21:00:00'
   condition:
     - condition: state
       entity_id: group.adults
@@ -70,41 +69,25 @@
   action:
     service: homeassistant.turn_on
     entity_id:
-      - switch.switch3
-      - switch.switch4
+      - switch.switch1
 
-- alias: Humidifier Off Weekday Morning
+- alias: Bedroom White Noise Off Morning
   trigger:
     - platform: time
-      at: '08:00:00'
-  condition:
-    - condition: time
-      weekday:
-        - mon
-        - tue
-        - wed
-        - thu
-        - fri
+      at: '08:30:00'
   action:
     service: homeassistant.turn_off
     entity_id:
       - switch.switch3
-      - switch.switch4
 
-- alias: Humidifier Off Weekend Morning
+- alias: Nursery White Noise Off Morning
   trigger:
     - platform: time
-      at: '08:00:00'
-  condition:
-    - condition: time
-      weekday:
-        - sat
-        - sun
+      at: '07:30:00'
   action:
     service: homeassistant.turn_off
     entity_id:
-      - switch.switch3
-      - switch.switch4
+      - switch.switch1
 
 - alias: Healthchecks Cron Job
   trigger:
@@ -112,12 +95,3 @@
     minutes: '/15'
   action:
     service: shell_command.healthchecks_io
-
-- alias: Turn of space heater after working
-  trigger:
-    - platform: time
-      at: '17:00:00'
-  action:
-    service: homeassistant.turn_off
-    entity_id:
-      - switch.switch1

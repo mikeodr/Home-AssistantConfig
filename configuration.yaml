@@ -6,6 +6,13 @@ frontend:
 # Enables configuration UI
 config:
 
+homekit:
+  filter:
+    include_domains:
+      - light
+      - switch
+      - cover
+
 cloud:
 
 mobile_app:
@@ -49,14 +56,6 @@ cover:
     username: !secret myq_username
     password: !secret myq_password
     type: liftmaster
-
-# Wifi Tracking
-unifi:
-  controllers:
-    - host: !secret unifi_host
-      site: default
-      ssid_filter:
-        - 'Core'
 
 notify:
   - platform: html5
