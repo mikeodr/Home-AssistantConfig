@@ -29,7 +29,6 @@ homeassistant:
         - 172.16.1.0/24
 
 http:
-  base_url: !secret base_url
   server_port: 80
 
 # Discover some devices automatically

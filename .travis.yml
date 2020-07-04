@@ -3,7 +3,9 @@ python:
   - "3.5"
 before_install:
   - mv travis_secrets.yaml secrets.yaml
+services:
+  - docker
 install:
-  - pip3 install homeassistant
+  - docker pull homeassistant/home-assistant:latest
 script:
-  - hass -c . --script check_config
+  - docker run -it -v $(pwd):/config homeassistant/home-assistant hass -c . --script check_config
