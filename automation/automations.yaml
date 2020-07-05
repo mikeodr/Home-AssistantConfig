@@ -78,7 +78,7 @@
   action:
     service: homeassistant.turn_off
     entity_id:
-      - switch.switch3
+      - switch.switch1
 
 - alias: Nursery White Noise Off Morning
   trigger:
@@ -87,7 +87,7 @@
   action:
     service: homeassistant.turn_off
     entity_id:
-      - switch.switch1
+      - switch.switch3
 
 - alias: Healthchecks Cron Job
   trigger:
