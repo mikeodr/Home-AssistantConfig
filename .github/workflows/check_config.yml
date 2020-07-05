@@ -19,4 +19,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
-          hass -c . check_config
+          hass -c . --script check_config
