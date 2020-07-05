@@ -19,5 +19,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
-          mv travis_secrets.yaml secrets.yaml
+          mv test_secrets.yaml secrets.yaml
           hass -c . --script check_config

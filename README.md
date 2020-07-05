@@ -1,8 +1,7 @@
 Home Assistant Configuration
 ----------------------------
 
-[![Build
-Status](https://travis-ci.org/mikeodr/Home-AssistantConfig.svg?branch=master)](https://travis-ci.org/mikeodr/Home-AssistantConfig)
+![Config Check](https://github.com/mikeodr/Home-AssistantConfig/workflows/Config%20Check/badge.svg?branch=master)
 
 This is my home assistant configuration backup.
 
