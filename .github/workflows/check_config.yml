@@ -18,6 +18,5 @@ jobs:
       image: homeassistant/home-assistant:latest
     steps:
       - uses: actions/checkout@v2
-      - run: |
-          mv test_secrets.yaml secrets.yaml
-          hass -c . --script check_config
+      - run: mv test_secrets.yaml secrets.yaml
+      - run: hass -c . --script check_config
