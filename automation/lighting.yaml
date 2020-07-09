@@ -33,20 +33,25 @@
     entity_id:
       - light.baby_led_strip
 
-#- alias: Lights ON when sunsets -1 hr earlier and anyone home
-#  trigger:
-#     platform: sun
-#     event: sunset
-#     offset: "-01:00:00"
-#  condition:
-#     condition: state
-#     entity_id: group.adults
-#     state: 'home'
-#  action:
-#     service: light.turn_on
-#     entity_id:
-#         - light.living
-#
+- alias: Front Porch On Evenings
+  trigger:
+     platform: sun
+     event: sunset
+     offset: "-00:30:00"
+  action:
+     service: homeassistant.turn_on
+     entity_id:
+       - switch.front_porch
+
+- alias: Front Porch Off Evenings
+  trigger:
+     platform: time
+     at: '23:30:00'
+  action:
+     - service: homeassistant.turn_off
+       entity_id:
+         - switch.front_porch
+
 #- alias: Lights OFF when bedtime work day
 #  trigger:
 #     platform: time
