@@ -34,6 +34,10 @@
         entity_id: lock.front_door
         from: 'locked'
         to: 'unlocked'
+  condition:
+    - condition: state
+      entity_id: person.mike
+      state: 'not_home'
   action:
     service: notify.mobile_app_michaels_iphone
     data_template:
@@ -51,7 +55,7 @@
         {% elif user_slot == "5" %}
         {% set user = "Lisa" %}
         {% endif %}
-        {{ trigger.to_state.attributes.friendly_name }} is {{ trigger.to_state.state }} {% if user is not none %}by {{user}}{% endif %}
+        {{ trigger.to_state.attributes.friendly_name }} is {{ trigger.to_state.state }}{% if user is defined %} by {{user}}{% endif %}
 
 - alias: Secure House Evenings
   trigger:
