@@ -1,52 +1,17 @@
-- alias: Night light Tradfri Trigger On
-  trigger:
-    platform: event
-    event_type: zha_event
-    event_data:
-        device_ieee: "00:0d:6f:ff:fe:a6:af:1d"
-        command: "on"
-  action:
-    - wait_template: '{{ not is_state("light.quotra_led_strip_1", "unavailable") }}'
-    - service: scene.turn_on
-      entity_id: scene.baby_night_full
-
-- alias: Night light Tradfri Trigger Off
-  trigger:
-    platform: event
-    event_type: zha_event
-    event_data:
-        device_ieee: "00:0d:6f:ff:fe:a6:af:1d"
-        command: "off"
-  action:
-    - wait_template: '{{ not is_state("light.quotra_led_strip_1", "unavailable") }}'
-    - service: light.turn_off
-      data:
-        entity_id:
-        - light.baby_led_strip
-
-- alias: Baby light off at sunrise
-  trigger:
-    platform: sun
-    event: sunrise
-  action:
-    service: light.turn_off
-    entity_id:
-      - light.baby_led_strip
-
-- alias: Front Porch On Evenings
+- alias: External Lights on Evenings
   trigger:
      platform: sun
      event: sunset
   action:
-     service: homeassistant.turn_on
+     service: scene.turn_on
      entity_id:
-       - switch.front_porch
+       - scene.exterior_lights_on
 
-- alias: Front Porch Off Evenings
+- alias: Front Porch Off Night
   trigger:
-     platform: time
-     at: '23:30:00'
+    platform: time
+    at: '23:30:00'
   action:
-     - service: homeassistant.turn_off
-       entity_id:
-         - switch.front_porch
+    - service: scene.turn_on
+      entity_id:
+        - scene.exterior_lights_off

@@ -1,6 +1,24 @@
+- name: exterior_lights_on
+  entities:
+    switch.front_porch: on
+    switch.side_door: on
+
+- name: exterior_lights_off
+  entities:
+    switch.front_porch: off
+    switch.side_door: off
+
 - name: baby_night_full
   entities:
     light.baby_led_strip:
       state: on
       brightness_pct: 40
       rgb_color: [255, 127, 0]
+
+- name: baby_nap_on
+  entities:
+   switch.nursery_white_noise: on
+
+- name: baby_nap_off
+  entities:
+    switch.nursery_white_noise: off

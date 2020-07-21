@@ -79,6 +79,10 @@ input_boolean:
     name: Puppy Home
     initial: on
     icon: mdi:dog
+  nap_mode:
+    name: Nap Mode
+    initial: on
+    icon: mdi:sleep
 
 shell_command:
   healthchecks_io: !secret healthchecks_io_cmd

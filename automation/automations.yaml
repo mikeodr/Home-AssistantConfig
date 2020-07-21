@@ -99,7 +99,7 @@
   action:
     service: homeassistant.turn_on
     entity_id:
-      - switch.switch1
+      - switch.master_white_noise
 
 - alias: Bedroom White Noise On Evenings
   trigger:
@@ -112,7 +112,7 @@
   action:
     service: homeassistant.turn_on
     entity_id:
-      - switch.switch1
+      - switch.master_white_noise
 
 - alias: Bedroom White Noise Off Morning
   trigger:
@@ -121,7 +121,7 @@
   action:
     service: homeassistant.turn_off
     entity_id:
-      - switch.switch1
+      - switch.master_white_noise
 
 - alias: Nursery White Noise Off Morning
   trigger:
@@ -130,7 +130,7 @@
   action:
     service: homeassistant.turn_off
     entity_id:
-      - switch.switch3
+      - switch.nursery_white_noise
 
 - alias: Healthchecks Cron Job
   trigger:
