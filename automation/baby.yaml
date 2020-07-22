@@ -1,0 +1,60 @@
+- alias: Night light Tradfri Trigger On
+  trigger:
+    platform: event
+    event_type: zha_event
+    event_data:
+        device_ieee: "00:0d:6f:ff:fe:a6:af:1d"
+        command: "on"
+  action:
+    - wait_template: '{{ not is_state("light.quotra_led_strip_1", "unavailable") }}'
+    - service: scene.turn_on
+      entity_id: scene.baby_night_full
+
+- alias: Night light Tradfri Trigger Off
+  trigger:
+    platform: event
+    event_type: zha_event
+    event_data:
+        device_ieee: "00:0d:6f:ff:fe:a6:af:1d"
+        command: "off"
+  action:
+    - wait_template: '{{ not is_state("light.quotra_led_strip_1", "unavailable") }}'
+    - service: light.turn_off
+      data:
+        entity_id:
+        - light.baby_led_strip
+
+- alias: Baby light off at sunrise
+  trigger:
+    platform: sun
+    event: sunrise
+  action:
+    service: light.turn_off
+    entity_id:
+      - light.baby_led_strip
+
+- alias: Nap Mode Button Toggle
+  trigger:
+    platform: event
+    event_type: zha_event
+    event_data:
+        device_ieee: "00:15:8d:00:03:50:26:b5"
+        command: "attribute_updated"
+        args:
+          value: 1
+  action:
+    - choose:
+      - conditions:
+          - condition: state
+            entity_id: switch.nursery_white_noise
+            state: "on"
+        sequence:
+          - service: scene.turn_on
+            entity_id: scene.baby_nap_off
+      - conditions:
+          - condition: state
+            entity_id: switch.nursery_white_noise
+            state: "off"
+        sequence:
+          - service: scene.turn_on
+            entity_id: scene.baby_nap_on
