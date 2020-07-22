@@ -18,12 +18,6 @@ mqtt:
   discovery: true
   discovery_prefix: 'zwave2mqtt'
   broker:  172.16.0.101
-  birth_message:
-    topic: 'hass/status'
-    payload: 'online'
-  will_message:
-    topic: 'hass/status'
-    payload: 'offline'
 
 cloud:
 
