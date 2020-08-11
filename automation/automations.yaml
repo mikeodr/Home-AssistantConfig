@@ -14,7 +14,7 @@
 - alias: Presence Notifications Away
   trigger:
     platform: state
-    entity_id: device_tracker.tiffs_phone
+    entity_id: person.tiff
     from: 'home'
     to: 'not_home'
   action:
