@@ -1,9 +1,13 @@
 - alias: Presence Notifications Home
   trigger:
     platform: state
-    entity_id: device_tracker.tiffs_phone
+    entity_id: person.tiff
     from: 'not_home'
     to: 'home'
+  condition:
+    - condition: state
+      entity_id: person.mike
+      state: 'not_home'
   action:
     service: notify.mobile_app_michaels_iphone
     data_template:
