@@ -142,3 +142,19 @@
     minutes: '/15'
   action:
     service: shell_command.healthchecks_io
+
+- alias: Spare Bedroom Fan Toggle
+  trigger:
+    platform: event
+    event_type: zha_event
+    event_data:
+        device_ieee: "00:15:8d:00:03:ce:96:86"
+        command: "click"
+        args:
+          click_type: "single"
+          #attribute_name: "on_off",
+          #value: true
+  action:
+    service: homeassistant.toggle
+    entity_id:
+      - switch.bedroom_fan
