@@ -1,0 +1,19 @@
+- platform: myq
+  username: !secret myq_username
+  password: !secret myq_password
+  type: liftmaster
+
+- platform: template
+  covers:
+    esp_garage_door_template:
+      device_class: garage
+      friendly_name: "ESP Garage Door"
+      open_cover:
+        service: switch.turn_on
+        data:
+          entity_id: switch.esp_garage_door
+      close_cover:
+        service: switch.turn_on
+        data:
+          entity_id: switch.esp_garage_door
+      value_template: "{{ is_state('binary_sensor.esp_garage_door_state', 'on') }}"

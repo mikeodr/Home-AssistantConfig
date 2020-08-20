@@ -51,11 +51,7 @@ wemo:
     - 172.16.0.53
     - 172.16.0.54
 
-cover:
-  - platform: myq
-    username: !secret myq_username
-    password: !secret myq_password
-    type: liftmaster
+cover: !include covers.yaml
 
 notify:
   - platform: html5
