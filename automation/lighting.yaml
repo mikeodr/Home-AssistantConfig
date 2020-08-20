@@ -7,7 +7,7 @@
      entity_id:
        - scene.exterior_lights_on
 
-- alias: Front Porch Off Night
+- alias: External Lights off Night
   trigger:
     platform: time
     at: '23:30:00'
