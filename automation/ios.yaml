@@ -5,7 +5,6 @@
     event_data:
       actionID: A006F7CC-AA85-4CFC-982D-8456FFB7F042
       sourceDeviceID: michaels_iphone
-      sourceDevicePermanentID: AB537A18-6952-4925-9CAE-F239E966E272
   action:
     service: cover.toggle
     entity_id:
@@ -18,7 +17,6 @@
     event_data:
       actionID: F11CF38C-60A6-42FD-B506-42DB188E040D
       sourceDeviceID: michaels_iphone
-      sourceDevicePermanentID: AB537A18-6952-4925-9CAE-F239E966E272
   action:
     service: lock.lock
     entity_id:
@@ -31,7 +29,6 @@
     event_data:
       actionID: A3D3D16D-A66B-40E2-B9CD-E993AD1503C0
       sourceDeviceID: michaels_iphone
-      sourceDevicePermanentID: AB537A18-6952-4925-9CAE-F239E966E272
   action:
     service: lock.unlock
     entity_id:
@@ -44,11 +41,11 @@
     event_data:
       actionID: C7D2D4A2-59E8-4634-90DB-FE30191BD0C4
       sourceDeviceID: michaels_iphone
-      sourceDevicePermanentID: AB537A18-6952-4925-9CAE-F239E966E272
   action:
     service: homeassistant.turn_on
     entity_id:
       - switch.nursery_white_noise
+      - switch.nursery_fan
 
 - alias: iOS Nap Mode Off
   trigger:
@@ -57,8 +54,8 @@
     event_data:
       actionID: 6196C20C-6D5E-4A52-8061-EA9CCCAAF71E
       sourceDeviceID: michaels_iphone
-      sourceDevicePermanentID: AB537A18-6952-4925-9CAE-F239E966E272
   action:
     service: homeassistant.turn_off
     entity_id:
       - switch.nursery_white_noise
+      - switch.nursery_fan
