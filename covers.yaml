@@ -7,6 +7,7 @@
   covers:
     esp_garage_door_template:
       device_class: garage
+      unique_id: esp_garage_door
       friendly_name: "ESP Garage Door"
       open_cover:
         service: switch.turn_on
