@@ -16,7 +16,7 @@
     event_type: ios.action_fired
     event_data:
       actionID: F11CF38C-60A6-42FD-B506-42DB188E040D
-      sourceDeviceID: michaels_iphone
+      sourceDevicePermanentID: F9567FD2-507A-4878-93C2-319D48F3BE0C
   action:
     service: lock.lock
     entity_id:
@@ -28,7 +28,7 @@
     event_type: ios.action_fired
     event_data:
       actionID: A3D3D16D-A66B-40E2-B9CD-E993AD1503C0
-      sourceDeviceID: michaels_iphone
+      sourceDevicePermanentID: F9567FD2-507A-4878-93C2-319D48F3BE0C
   action:
     service: lock.unlock
     entity_id:
