@@ -140,13 +140,6 @@
     entity_id:
       - switch.nursery_white_noise
 
-- alias: Healthchecks Cron Job
-  trigger:
-    platform: time_pattern
-    minutes: '/15'
-  action:
-    service: shell_command.healthchecks_io
-
 - alias: Spare Bedroom Fan Toggle
   trigger:
     platform: event

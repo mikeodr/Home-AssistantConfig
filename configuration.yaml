@@ -69,9 +69,6 @@ input_boolean:
     initial: on
     icon: mdi:sleep
 
-shell_command:
-  healthchecks_io: !secret healthchecks_io_cmd
-
 automation: !include_dir_merge_list automation
 binary_sensor: !include_dir_merge_list binary_sensor
 sensor: !include_dir_merge_list sensor
