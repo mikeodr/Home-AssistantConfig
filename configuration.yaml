@@ -64,6 +64,10 @@ input_boolean:
     name: Puppy Home
     initial: on
     icon: mdi:dog
+  nap_mode:
+    name: Nap Mode
+    initial: on
+    icon: mdi:sleep
 
 automation: !include_dir_merge_list automation
 binary_sensor: !include_dir_merge_list binary_sensor
