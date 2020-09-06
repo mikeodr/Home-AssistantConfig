@@ -103,7 +103,7 @@
   condition:
     - condition: time
       after: '22:00:00'
-      before: '05:00:00'
+      before: '07:00:00'
   action:
     service: homeassistant.turn_on
     entity_id:
@@ -112,7 +112,7 @@
 - alias: Bedroom White Noise On Evenings
   trigger:
     - platform: time
-      at: '21:00:00'
+      at: '22:00:00'
   condition:
     - condition: state
       entity_id: group.adults
@@ -149,8 +149,6 @@
         command: "click"
         args:
           click_type: "single"
-          #attribute_name: "on_off",
-          #value: true
   action:
     service: homeassistant.toggle
     entity_id:
