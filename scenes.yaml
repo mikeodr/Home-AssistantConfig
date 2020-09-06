@@ -18,7 +18,6 @@
 - name: baby_nap_on
   entities:
    switch.nursery_white_noise: on
-   switch.nursery_fan: on
 
 - name: baby_nap_off
   entities:
