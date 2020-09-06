@@ -15,3 +15,22 @@
     - service: scene.turn_on
       entity_id:
         - scene.exterior_lights_off
+
+- alias: Keep External Lights of During Daty
+  trigger:
+    platform: state
+    entity_id:
+      - switch.front_porch
+      - switch.side_door
+    to: 'on'
+    for:
+      minutes: 30
+  condition:
+    condition: state
+    entity_id: sun.sun
+    state: 'above_horizon'
+  action:
+    - service: homeassistant.turn_off
+      entity_id:
+        - switch.front_porch
+        - switch.side_door
