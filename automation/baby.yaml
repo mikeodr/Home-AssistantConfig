@@ -43,33 +43,47 @@
         args:
           value: 1
   action:
-    - choose:
-      - conditions:
-        - condition: state
-          entity_id: switch.nursery_white_noise
-          state: "on"
-        sequence:
-          - service: scene.turn_on
-            entity_id: scene.baby_nap_off
-      - conditions:
-        - condition: state
-          entity_id: switch.nursery_white_noise
-          state: "off"
-        sequence:
-          - service: scene.turn_on
-            entity_id: scene.baby_nap_on
-      - conditions:
-        - condition: state
-          entity_id: switch.nursery_white_noise
-          state: "off"
-        - condition: or
-          conditions:
-            - condition: numeric_state
-              entity_id: sensor.temperature # Outside forecast
-              above: 20
-            - condition: numeric_state
-              entity_id: sensor.kid_s_room_temperature #Acutal Room Temp
-              above: 25
-        sequence:
-          - service: homeassistant.turn_on
-            entity_id: switch.nursery_fan
+    service: homeassistant.toggle
+    entity_id:
+      - input_boolean.nap_mode
+
+- alias: Nap Accessories On
+  trigger:
+    platform: state
+    entity_id: input_boolean.nap_mode
+    from:  'off'
+    to:  'on'
+  action:
+    - service: scene.turn_on
+      entity_id: scene.baby_nap_on
+
+- alias: Nap Accessories Off
+  trigger:
+    platform: state
+    entity_id: input_boolean.nap_mode
+    from:  'on'
+    to:  'off'
+  action:
+    - service: scene.turn_on
+      entity_id: scene.baby_nap_off
+    - service: homeassistant.turn_off
+      entity_id: switch.nursery_fan
+
+- alias: Nursey Fan On if needed
+  trigger:
+    platform: state
+    entity_id: input_boolean.nap_mode
+    from:  'off'
+    to:  'on'
+  action:
+    service: homeassistant.turn_on
+    entity_id: switch.nursery_fan
+  condition:
+    - condition: or
+      conditions:
+        - condition: numeric_state
+          entity_id: sensor.temperature # Outside forecast
+          above: 20
+        - condition: numeric_state
+          entity_id: sensor.kid_s_room_temperature #Acutal Room Temp
+          above: 25

@@ -16,7 +16,7 @@
       entity_id:
         - scene.exterior_lights_off
 
-- alias: Keep External Lights of During Daty
+- alias: Keep External Lights off during daylight
   trigger:
     platform: state
     entity_id:
