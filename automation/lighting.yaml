@@ -1,27 +1,23 @@
-- alias: External Lights on Evenings
+- alias: Exterior Lights on Evenings
   trigger:
      platform: sun
      event: sunset
   action:
-     service: scene.turn_on
-     entity_id:
-       - scene.exterior_lights_on
+     service: homeassistant.turn_on
+     entity_id: group.exterior_lights
 
-- alias: External Lights off Night
+- alias: Exterior Lights off Night
   trigger:
     platform: time
     at: '23:30:00'
   action:
-    - service: scene.turn_on
-      entity_id:
-        - scene.exterior_lights_off
+    - service: homeassistant.turn_off
+      entity_id: group.exterior_lights
 
-- alias: Keep External Lights off during daylight
+- alias: Keep Exterior Lights off during daylight
   trigger:
     platform: state
-    entity_id:
-      - switch.front_porch
-      - switch.side_door
+    entity_id: group.exterior_lights
     to: 'on'
     for:
       minutes: 30
@@ -31,6 +27,17 @@
     state: 'above_horizon'
   action:
     - service: homeassistant.turn_off
-      entity_id:
-        - switch.front_porch
-        - switch.side_door
+      entity_id: group.exterior_lights
+
+- alias: Sync Exterior Lights
+  trigger:
+    platform: state
+    entity_id:
+      # Can't trigger on group, one switch turing off
+      # Leaves the group on, so has to be multiple entities
+      - switch.front_porch
+      - switch.side_door
+  action:
+    service_template: >
+      homeassistant.turn_{{ trigger.to_state.state }}
+    entity_id: group.exterior_lights

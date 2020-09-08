@@ -3,3 +3,9 @@ adults:
   entities:
     - device_tracker.tiffs_phone
     - device_tracker.michaels_iphone
+
+exterior_lights:
+  name: Exterior Lights
+  entities:
+    - switch.front_porch
+    - switch.side_door
