@@ -51,8 +51,6 @@ wemo:
     - 172.16.0.53
     - 172.16.0.54
 
-cover: !include covers.yaml
-
 input_boolean:
   pupper_home:
     name: Puppy Home
@@ -65,9 +63,10 @@ input_boolean:
 
 automation: !include_dir_merge_list automation
 binary_sensor: !include_dir_merge_list binary_sensor
-sensor: !include_dir_merge_list sensor
+cover: !include covers.yaml
 group: !include groups.yaml
 scene: !include scenes.yaml
+sensor: !include_dir_merge_list sensor
 
 stream:
 
