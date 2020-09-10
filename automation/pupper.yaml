@@ -8,24 +8,19 @@
       entity_id: group.adults
       state: 'not_home'
   action:
-    service: notify.notify
+    service: notify.mobile_app_michaels_iphone
     data:
       message: "Is the puppy home alone?"
       data:
-        actions:
-          - action: "pupper_dark_yes"
-            title: "Yes"
-          - action: "pupper_dark_no"
-            title: "No"
-      target:
-        - Mike's Pixel
-
+        push:
+          category: 'pupper_home'
+          
 - alias: Pupper Question Event yes
   trigger:
     platform: event
-    event_type: html5_notification.clicked
+    event_type: ios.notification_action_fired
     event_data:
-      action: pupper_dark_yes
+      actionName: 'PUPPER_HOME'
   action:
     service: input_boolean.turn_on
     entity_id: input_boolean.pupper_home
@@ -33,23 +28,9 @@
 - alias: Pupper Question Event No
   trigger:
     platform: event
-    event_type: html5_notification.clicked
+    event_type: ios.notification_action_fired
     event_data:
-      action: pupper_dark_no
+      actionName: 'PUPPER_NOT_HOME'
   action:
     service: input_boolean.turn_off
     entity_id: input_boolean.pupper_home
-
-#- alias: Pupper Lights On
-#  trigger:
-#    platform: sun
-#    event: sunset
-#  condition:
-#    - condition: state
-#      entity_id: input_boolean.pupper_home
-#      state: 'on'
-#  action:
-#    - service: homeassistant.turn_on
-#      entity_id:
-#        - light.left_top
-#        - light.right_top

@@ -1,0 +1,17 @@
+push:
+  categories:
+    - name: Pupper Home
+      identifier: 'pupper_home'
+      actions:
+        - identifier: 'PUPPER_HOME'
+          title: 'Pupper Home'
+          activationMode: 'background'
+          authenticationRequired: true
+          destructive: false
+          behavior: 'default'
+        - identifier: 'PUPPER_NOT_HOME'
+          title: 'Not Home'
+          activationMode: 'background'
+          authenticationRequired: true
+          destructive: false
+          behavior: 'default'
