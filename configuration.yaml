@@ -72,6 +72,8 @@ sensor: !include_dir_merge_list sensor
 
 stream:
 
+wake_on_lan:
+
 camera:
   - platform: generic
     name: Streaming
