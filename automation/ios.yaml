@@ -34,28 +34,13 @@
     entity_id:
       - lock.front_door
 
-- alias: iOS Nap Mode On
+- alias: iOS Toggle Nap Mode
   trigger:
     platform: event
     event_type: ios.action_fired
     event_data:
-      actionID: C7D2D4A2-59E8-4634-90DB-FE30191BD0C4
+      actionID: C233029C-B43E-4ECF-A5FB-FCEE2D362B03
       sourceDeviceID: michaels_iphone
   action:
-    service: homeassistant.turn_on
-    entity_id:
-      - switch.nursery_white_noise
-      - switch.nursery_fan
-
-- alias: iOS Nap Mode Off
-  trigger:
-    platform: event
-    event_type: ios.action_fired
-    event_data:
-      actionID: 6196C20C-6D5E-4A52-8061-EA9CCCAAF71E
-      sourceDeviceID: michaels_iphone
-  action:
-    service: homeassistant.turn_off
-    entity_id:
-      - switch.nursery_white_noise
-      - switch.nursery_fan
+    service: homeassistant.toggle
+    entity_id: input_boolean.nap_mode

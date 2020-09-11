@@ -119,5 +119,6 @@
       data:
         title: "Nursery Low Temperature Warning"
         message: "Temperature droped to {{ states('sensor.kid_s_room_temperature') }}"
+        clickAction: '/lovelace/nursery'
     - delay:
         hours: 12
