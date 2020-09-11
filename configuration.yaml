@@ -63,11 +63,11 @@ input_boolean:
 
 automation: !include_dir_merge_list automation
 binary_sensor: !include_dir_merge_list binary_sensor
-cover: !include covers.yaml
-group: !include groups.yaml
-ios: !include ios.yaml
+cover: !include config/covers.yaml
+group: !include config/groups.yaml
+ios: !include config/ios.yaml
 notify: !include config/notify.yaml
-scene: !include scenes.yaml
+scene: !include config/scenes.yaml
 sensor: !include_dir_merge_list sensor
 
 stream:
