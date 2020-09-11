@@ -1,0 +1,5 @@
+- name: adults
+  platform: group
+  services:
+    - service: mobile_app_michaels_iphone
+    - service: mobile_app_tiffanys_iphone

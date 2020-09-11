@@ -66,6 +66,7 @@ binary_sensor: !include_dir_merge_list binary_sensor
 cover: !include covers.yaml
 group: !include groups.yaml
 ios: !include ios.yaml
+notify: !include config/notify.yaml
 scene: !include scenes.yaml
 sensor: !include_dir_merge_list sensor
 
