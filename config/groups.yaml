@@ -1,8 +1,8 @@
 adults:
   name: Adults
   entities:
-    - device_tracker.tiffs_phone
-    - device_tracker.michaels_iphone
+    - person.mike
+    - person.tiff
 
 exterior_lights:
   name: Exterior Lights
