@@ -15,7 +15,7 @@
     platform: event
     event_type: ios.action_fired
     event_data:
-      actionID:  99853176-4FEB-4DFD-9C77-99082C072A01
+      actionID: 99853176-4FEB-4DFD-9C77-99082C072A01
       sourceDeviceID: michaels_iphone
   action:
     service: lock.lock
@@ -27,7 +27,7 @@
     platform: event
     event_type: ios.action_fired
     event_data:
-      actionID: A8B96F36B-4865-48BA-A9F9-45B5D76AE84A
+      actionID: 8B96F36B-4865-48BA-A9F9-45B5D76AE84A
       sourceDeviceID: michaels_iphone
   action:
     service: lock.unlock
@@ -39,7 +39,7 @@
     platform: event
     event_type: ios.action_fired
     event_data:
-      actionID: F9567FD2-507A-4878-93C2-319D48F3BE0C
+      actionID: D7D0F219-81A1-4B00-8C7F-2730C1261675
       sourceDeviceID: michaels_iphone
   action:
     service: homeassistant.toggle
