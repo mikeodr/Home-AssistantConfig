@@ -33,10 +33,9 @@
   trigger:
     platform: state
     entity_id:
-      # Can't trigger on group, one switch turing off
-      # Leaves the group on, so has to be multiple entities
+      # If the front porch goes on/off update the rest
+      # of the group
       - switch.front_porch
-      - switch.side_door
   action:
     service_template: >
       homeassistant.turn_{{ trigger.to_state.state }}
