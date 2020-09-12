@@ -6,14 +6,6 @@ frontend:
 # Enables configuration UI
 config:
 
-homekit:
-  filter:
-    include_domains:
-      - light
-      - switch
-      - cover
-      - lock
-
 cloud:
 
 mobile_app:
@@ -47,20 +39,13 @@ wemo:
     - 172.16.0.53
     - 172.16.0.54
 
-input_boolean:
-  pupper_home:
-    name: Puppy Home
-    initial: on
-    icon: mdi:dog
-  nap_mode:
-    name: Nap Mode
-    initial: on
-    icon: mdi:sleep
-
 automation: !include_dir_merge_list automation
 binary_sensor: !include_dir_merge_list binary_sensor
+camera: !include config/camera.yaml
 cover: !include config/covers.yaml
 group: !include config/groups.yaml
+homekit: !include config/homekit.yaml
+input_boolean: !include config/input_boolean.yaml
 ios: !include config/ios.yaml
 notify: !include config/notify.yaml
 scene: !include config/scenes.yaml
@@ -69,9 +54,3 @@ sensor: !include_dir_merge_list sensor
 stream:
 
 wake_on_lan:
-
-camera:
-  - platform: generic
-    name: Streaming
-    still_image_url: !secret baby_cam_snap
-    stream_source: !secret baby_cam_stream

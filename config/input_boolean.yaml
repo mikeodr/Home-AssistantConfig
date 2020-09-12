@@ -1,0 +1,8 @@
+pupper_home:
+  name: Puppy Home
+  initial: on
+  icon: mdi:dog
+nap_mode:
+  name: Nap Mode
+  initial: on
+  icon: mdi:sleep

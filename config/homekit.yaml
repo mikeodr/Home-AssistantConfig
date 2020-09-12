@@ -1,0 +1,6 @@
+filter:
+  include_domains:
+    - light
+    - switch
+    - cover
+    - lock
