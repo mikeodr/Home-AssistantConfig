@@ -122,3 +122,12 @@
         clickAction: '/lovelace/nursery'
     - delay:
         hours: 12
+
+- alias: Nursery White Noise Off Morning
+  trigger:
+    - platform: time
+      at: '07:30:00'
+  action:
+    service: homeassistant.turn_off
+    entity_id:
+      - switch.nursery_white_noise
