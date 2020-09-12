@@ -2,25 +2,6 @@
   trigger:
     platform: state
     entity_id: person.tiff
-    from: 'not_home'
-    to: 'home'
-  condition:
-    - condition: state
-      entity_id: person.mike
-      state: 'not_home'
-  action:
-    service: notify.mobile_app_michaels_iphone
-    data_template:
-      title: "HASS Presence Notification"
-      message: >
-        {{ trigger.to_state.attributes.friendly_name }} is {% if trigger.to_state.state == 'home' %}back{% else %}away{% endif %}.
-
-- alias: Presence Notifications Away
-  trigger:
-    platform: state
-    entity_id: person.tiff
-    from: 'home'
-    to: 'not_home'
   condition:
     - condition: state
       entity_id: person.mike
