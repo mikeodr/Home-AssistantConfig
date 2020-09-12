@@ -43,9 +43,11 @@
         args:
           value: 1
   action:
-    service: homeassistant.toggle
-    entity_id:
-      - input_boolean.nap_mode
+    - service: homeassistant.toggle
+      entity_id:
+        - input_boolean.nap_mode
+    - delay:
+        seconds: 1
 
 - alias: Nap Accessories On
   trigger:
