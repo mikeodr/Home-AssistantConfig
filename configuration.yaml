@@ -24,10 +24,6 @@ weather:
 homeassistant:
   auth_providers:
     - type: homeassistant
-    - type: trusted_networks
-      trusted_networks:
-        - 172.16.0.0/24
-        - 172.16.1.0/24
 
 http:
   server_port: 80
