@@ -65,9 +65,10 @@
       - sensor.advisories
       - sensor.statements
       - sensor.endings
+    from: ""
   condition:
     - condition: template
-      value_template: "{{ trigger.to_state.state != '' }}"
+      value_template: '{{ trigger.to_state.state != "" }}'
   action:
     service: notify.mobile_app_michaels_iphone
     data_template:
