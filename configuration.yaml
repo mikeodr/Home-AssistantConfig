@@ -1,18 +1,3 @@
-system_health:
-
-# Enables the frontend
-frontend:
-
-# Enables configuration UI
-config:
-
-cloud:
-
-mobile_app:
-
-weather:
-  - platform: environment_canada
-
 homeassistant:
   auth_providers:
     - type: homeassistant
@@ -20,24 +5,25 @@ homeassistant:
 http:
   server_port: 80
 
-# Discover some devices automatically
-discovery:
-
-# Enables support for tracking state changes over time
-history:
-
-# View all events in a logbook
-logbook:
-
-# Track the sun
-sun:
-
-device_tracker:
-
 wemo:
   static:
     - 172.16.0.53
     - 172.16.0.54
+
+
+device_tracker:
+discovery:
+history:
+logbook:
+stream:
+sun:
+wake_on_lan:
+
+system_health:
+frontend:
+config:
+cloud:
+mobile_app:
 
 automation: !include_dir_merge_list automation
 binary_sensor: !include_dir_merge_list binary_sensor
@@ -50,7 +36,4 @@ ios: !include config/ios.yaml
 notify: !include config/notify.yaml
 scene: !include config/scenes.yaml
 sensor: !include_dir_merge_list sensor
-
-stream:
-
-wake_on_lan:
+weather: !include config/weather.yaml
