@@ -99,6 +99,9 @@
     - condition: state
       entity_id: input_boolean.nap_mode
       state: 'on'
+    - condition: state
+      entity_id: switch.nursery_fan
+      state: 'off'
   action:
     - service: homeassistant.turn_on
       entity_id: switch.nursery_fan
@@ -122,8 +125,8 @@
         title: "Nursery Low Temperature Warning"
         message: "Temperature droped to {{ states('sensor.kid_s_room_temperature') }}"
         clickAction: '/lovelace/nursery'
-    - delay:
-        hours: 12
+    - service: homeassistant.turn_off
+      entity_id: switch.nursery_fan
 
 - alias: Nursery White Noise Off Morning
   trigger:
