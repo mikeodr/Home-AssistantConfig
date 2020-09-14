@@ -67,8 +67,12 @@
       - sensor.endings
     from: ""
   condition:
-    - condition: template
-      value_template: '{{ trigger.to_state.state != "" }}'
+    condition: and
+    conditions:
+      - condition: template
+        value_template: "{{ trigger.to_state.state != '' }}"
+      - condition: template
+        value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
   action:
     service: notify.mobile_app_michaels_iphone
     data_template:
