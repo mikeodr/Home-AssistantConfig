@@ -10,20 +10,12 @@ wemo:
     - 172.16.0.53
     - 172.16.0.54
 
-
+default_config:
+cloud:
 device_tracker:
 discovery:
-history:
-logbook:
 stream:
-sun:
 wake_on_lan:
-
-system_health:
-frontend:
-config:
-cloud:
-mobile_app:
 
 automation: !include_dir_merge_list automation
 binary_sensor: !include_dir_merge_list binary_sensor

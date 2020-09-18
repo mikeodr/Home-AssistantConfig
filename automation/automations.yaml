@@ -8,7 +8,7 @@
       state: 'not_home'
   action:
     service: notify.mobile_app_michaels_iphone
-    data_template:
+    data:
       title: "HASS Presence Notification"
       message: >
         {{ trigger.to_state.attributes.friendly_name }} is {% if trigger.to_state.state == 'home' %}back{% else %}away{% endif %}.
@@ -75,7 +75,7 @@
         value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
   action:
     service: notify.mobile_app_michaels_iphone
-    data_template:
+    data:
       title: "Weather Alert: {{ trigger.to_state.state }}"
       message: >
           {{ trigger.to_state.attributes['alert detail'] }}

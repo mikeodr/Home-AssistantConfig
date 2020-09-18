@@ -37,6 +37,6 @@
       # of the group
       - switch.front_porch
   action:
-    service_template: >
+    service: >
       homeassistant.turn_{{ trigger.to_state.state }}
     entity_id: group.exterior_lights
