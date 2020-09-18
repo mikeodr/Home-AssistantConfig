@@ -135,4 +135,4 @@
   action:
     service: homeassistant.turn_off
     entity_id:
-      - switch.nursery_white_noise
+      - input_boolean.nap_mode
