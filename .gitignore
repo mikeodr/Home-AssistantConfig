@@ -1,9 +1,10 @@
-*
-!*.yaml
-!.travis.yml
-!scenes
-!.gitignore
+.cloud/
+*.conf
+*.db
+.HA_VERSION
+*.log
 !README.md
 secrets.yaml
-known_devices.yaml
-entity_registry.yaml
+.storage/
+.vscode/
+*.xml
