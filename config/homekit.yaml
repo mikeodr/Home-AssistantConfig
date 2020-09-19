@@ -4,3 +4,6 @@ filter:
     - switch
     - cover
     - lock
+    - camera
+    - climate
+    - person
