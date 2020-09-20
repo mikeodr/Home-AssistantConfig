@@ -1,0 +1,12 @@
+- alias: Turn on external lights if garage opens after sunset
+  trigger:
+    - platform: state
+      entity_id: cover.garage
+      to: open
+  condition:
+    - condition: state
+      entity_id: sun.sun
+      state: 'below_horizon'
+  action:
+    - service: homeassistant.turn_on
+      entity_id: group.exterior_lights
