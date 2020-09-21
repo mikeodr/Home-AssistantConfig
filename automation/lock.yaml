@@ -1,0 +1,42 @@
+- alias: Lock Status Change
+  trigger:
+      - platform: state
+        entity_id: lock.front_door
+        from: 'unlocked'
+        to: 'locked'
+      - platform: state
+        entity_id: lock.front_door
+        from: 'locked'
+        to: 'unlocked'
+  condition:
+    - condition: state
+      entity_id: person.mike
+      state: 'not_home'
+  action:
+    service: notify.mobile_app_michaels_iphone
+    data_template:
+      title: "Front Lock"
+      message: >
+        {% set user_slot = states("sensor.front_door_lock_last_user_code") %}
+        {% if user_slot == "1" %}
+        {% set user = "Mike" %}
+        {% elif user_slot == "2" %}
+        {% set user = "Dad" %}
+        {% elif user_slot == "3" %}
+        {% set user = "Brendan" %}
+        {% elif user_slot == "4" %}
+        {% set user = "Tiff" %}
+        {% elif user_slot == "5" %}
+        {% set user = "Lisa" %}
+        {% endif %}
+        {{ trigger.to_state.attributes.friendly_name }} is {{ trigger.to_state.state }}{% if user is defined %} by {{user}}{% endif %}
+
+- alias: Secure House Evenings
+  trigger:
+    - platform: time
+      at: '22:00:00'
+  action:
+    - service: cover.close_cover
+      entity_id: cover.garage
+    - service: lock.lock
+      entity_id: lock.front_door
