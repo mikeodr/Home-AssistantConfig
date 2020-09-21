@@ -1,9 +1,10 @@
 .cloud/
 *.conf
 *.db
+*.db-shm
+*.db-wal
 .HA_VERSION
 *.log
-!README.md
 secrets.yaml
 .storage/
 .vscode/
