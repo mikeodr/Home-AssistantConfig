@@ -28,6 +28,8 @@
         {% set user = "Tiff" %}
         {% elif user_slot == "5" %}
         {% set user = "Lisa" %}
+        {% elif user_slot == "15" %}
+        {% set user = "Cleaners" %}
         {% endif %}
         {{ trigger.to_state.attributes.friendly_name }} is {{ trigger.to_state.state }}{% if user is defined %} by {{user}}{% endif %}
 
