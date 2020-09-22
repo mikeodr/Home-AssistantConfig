@@ -26,6 +26,22 @@
     entity_id:
       - switch.master_white_noise
 
+- alias: Bedroom Comfort if in bed early
+  trigger:
+    - platform: state
+      entity_id: sensor.tiffanys_iphone_battery_state
+      to: 'charging'
+  condition:
+    - "{{ trigger.to_state.state != 'charging' }}"
+    - condition: time
+      after: '21:00:00'
+    - condition: state
+      entity_id: binary_sensor.bedroom
+      state: 'on'
+  action:
+    service: homeassistant.turn_on
+    entity_id: switch.master_white_noise
+
 - alias: Bedroom White Noise Off Morning
   trigger:
     - platform: time
