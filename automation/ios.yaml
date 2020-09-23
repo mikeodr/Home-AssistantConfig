@@ -44,3 +44,13 @@
   action:
     service: homeassistant.toggle
     entity_id: input_boolean.nap_mode
+
+- alias: Trigger sensor updates for Tiff's phone during bedtime period
+  trigger:
+    platform: time_pattern
+    hours: "9"
+    minutes: "/5"
+  action:
+    service: notify.mobile_app_tiffanys_iphone
+    data:
+      message: "request_location_update"
