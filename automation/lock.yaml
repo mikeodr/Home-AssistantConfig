@@ -14,7 +14,7 @@
       state: 'not_home'
   action:
     service: notify.mobile_app_michaels_iphone
-    data_template:
+    data:
       title: "Front Lock"
       message: >
         {% set user_slot = states("sensor.front_door_lock_last_user_code") %}
