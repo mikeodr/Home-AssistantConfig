@@ -50,6 +50,10 @@
     platform: time_pattern
     hours: "9"
     minutes: "/5"
+  condition:
+    - condition: state
+      entity_id: person.tiff
+      state: 'home'
   action:
     service: notify.mobile_app_tiffanys_iphone
     data:
