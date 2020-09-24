@@ -48,7 +48,7 @@
 - alias: Trigger sensor updates for Tiff's phone during bedtime period
   trigger:
     platform: time_pattern
-    hours: "9"
+    hours: "21"
     minutes: "/5"
   condition:
     - condition: state
