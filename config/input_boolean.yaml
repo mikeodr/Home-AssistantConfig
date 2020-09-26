@@ -2,7 +2,13 @@ pupper_home:
   name: Puppy Home
   initial: on
   icon: mdi:dog
+
 nap_mode:
   name: Nap Mode
   initial: on
   icon: mdi:sleep
+
+vacation_mode:
+  name: Vacation Mode
+  initial: off
+  icon: mdi:palm-tree

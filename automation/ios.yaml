@@ -50,3 +50,27 @@
     - service: notify.mobile_app_tiffanys_iphone
       data:
         message: "request_location_update"
+
+- alias: Update Mike's Phone For Driving
+  trigger:
+    - platform: time_pattern
+      minutes: "/1"
+  condition:
+    - condition: state
+      entity_id: sensor.michaels_iphone_activity
+      state:  'Automotive'
+    - condition: state
+      entity_id: input_boolean.vacation_mode
+      state:  'off'
+    - condition: or
+      conditions:
+        - condition: state
+          entity_id: sensor.michaels_iphone_battery_state
+          state: 'Charging'
+        - condition: state
+          entity_id: sensor.michaels_iphone_battery_state
+          state: 'Full'
+  action:
+    - service: notify.mobile_app_michaels_iphone
+      data:
+        message: "request_location_update"

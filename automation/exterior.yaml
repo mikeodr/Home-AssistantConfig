@@ -6,26 +6,28 @@
       service: homeassistant.turn_on
       entity_id: group.exterior_lights
 
-- alias: Exterior Lights off Night
+- alias: Exterior Lights off Night, or sunrise
   trigger:
-    platform: time
-    at: '23:30:00'
+    - platform: time
+      at: '23:30:00'
+    - platform: sun
+      event: sunrise
   action:
     - service: homeassistant.turn_off
       entity_id: group.exterior_lights
 
-- alias: Keep Exterior Lights of overnight if turned on
+- alias: Keep Exterior Lights off overnight if turned on outside normal hours
   trigger:
-    platform: state
-    entity_id: group.exterior_lights
-    to: 'on'
-    for:
-      hours: 1
+    - platform: state
+      entity_id: group.exterior_lights
+      to: 'on'
+      for:
+        hours: 1
   condition:
     - condition: and
       conditions:
         - condition: time
-          after: "00:00:00"
+          after: "23:30:00"
           before: "10:00:00" # Time condition to span midnight reset
         - condition: sun
           before: sunrise
