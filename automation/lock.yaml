@@ -42,3 +42,33 @@
       entity_id: cover.garage
     - service: lock.lock
       entity_id: lock.front_door
+
+- alias: Enable Cleaners Lock Code
+  trigger:
+    - platform: state
+      entity_id: calendar.house_planning
+      to: 'on'
+    - platform: template
+      value_template: "{{ state_attr('calendar.house_planning', 'offset_reached') }}"
+  action:
+    - service: mqtt.publish
+      data:
+        topic: zwave2mqtt/4/99/1/16/set
+        payload: !secret cleaners_door_code_json
+    - service: notify.mobile_app_michaels_iphone
+      data:
+        message: "Setting cleaners lock code"
+
+- alias: Cleaners Clear Code
+  trigger:
+    - platform: state
+      entity_id: calendar.house_planning
+      to: 'off'
+  action:
+    - service: mqtt.publish
+      data:
+        topic: zwave2mqtt/4/99/1/256/set
+        payload: "{\"value\": 16}"
+    - service: notify.mobile_app_michaels_iphone
+      data:
+        message: "Clearing cleaners lock code"
