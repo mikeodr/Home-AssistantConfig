@@ -54,7 +54,10 @@
     - condition: state
       entity_id: person.tiff
       state: 'home'
+    - condition: time
+      after: '21:30'
+      before: '22:00'
   action:
-    service: notify.mobile_app_tiffanys_iphone
-    data:
-      message: "request_location_update"
+    - service: notify.mobile_app_tiffanys_iphone
+      data:
+        message: "request_location_update"
