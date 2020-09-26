@@ -30,8 +30,12 @@
   trigger:
     - platform: state
       entity_id: sensor.tiffanys_iphone_battery_state
-      from: 'not_charging'
-      to: 'charging'
+      from: 'Not Charging'
+      to: 'Charging'
+    - platform: state
+      entity_id: sensor.tiffanys_iphone_battery_state
+      from: 'Not Charging'
+      to: 'Full'
   condition:
     - condition: time
       after: '21:00:00'
