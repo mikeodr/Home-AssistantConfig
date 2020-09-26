@@ -34,17 +34,6 @@
     entity_id:
       - lock.front_door
 
-- alias: iOS Toggle Nap Mode
-  trigger:
-    platform: event
-    event_type: ios.action_fired
-    event_data:
-      actionID: D7D0F219-81A1-4B00-8C7F-2730C1261675
-      sourceDeviceID: michaels_iphone
-  action:
-    service: homeassistant.toggle
-    entity_id: input_boolean.nap_mode
-
 - alias: Trigger sensor updates for Tiff's phone during bedtime period
   trigger:
     platform: time_pattern
