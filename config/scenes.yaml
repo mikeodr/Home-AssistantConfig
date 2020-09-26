@@ -1,8 +1,8 @@
-- name: baby_night_full
+- name: nursery_led_on
   entities:
-    light.baby_led_strip:
+    light.nursery_led_strip:
       state: on
-      brightness_pct: 40
+      brightness_pct: 80
       rgb_color: [255, 127, 0]
 
 - name: baby_nap_on
