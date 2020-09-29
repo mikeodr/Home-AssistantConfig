@@ -15,3 +15,40 @@ push:
           authenticationRequired: true
           destructive: false
           behavior: 'default'
+
+actions:
+  - name: toggle_garage
+    background_color: "#000000"
+    icon:
+      icon: garage
+      color: "#ffffff"
+    label:
+      text: "Toggle Garage"
+      color: "#ffffff"
+
+  - name: lock_door
+    background_color: "#000000"
+    icon:
+      icon: lock
+      color: "#ffffff"
+    label:
+      text: "Lock Door"
+      color: "#ffffff"
+
+  - name: unlock_door
+    background_color: "#000000"
+    icon:
+      icon: lock-open
+      color: "#ffffff"
+    label:
+      text: "Unlock Door"
+      color: "#ffffff"
+
+  - name: nap_time
+    background_color: "#000000"
+    icon:
+      icon: sleep
+      color: "#ffffff"
+    label:
+      text: "Nap Time"
+      color: "#ffffff"

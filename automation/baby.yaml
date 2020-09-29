@@ -45,7 +45,7 @@
     - platform: event
       event_type: ios.action_fired
       event_data:
-        actionID: D7D0F219-81A1-4B00-8C7F-2730C1261675
+        actionID: nap_time
         sourceDeviceID: michaels_iphone
   action:
     - service: homeassistant.toggle

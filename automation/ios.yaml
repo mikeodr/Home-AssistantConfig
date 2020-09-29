@@ -3,7 +3,7 @@
     platform: event
     event_type: ios.action_fired
     event_data:
-      actionID: 8426A6D1-BB9D-4778-8190-93C29E7B3263
+      actionID: toggle_garage
       sourceDeviceID: michaels_iphone
   action:
     service: cover.toggle
@@ -15,7 +15,7 @@
     platform: event
     event_type: ios.action_fired
     event_data:
-      actionID: 99853176-4FEB-4DFD-9C77-99082C072A01
+      actionID: lock_door
       sourceDeviceID: michaels_iphone
   action:
     service: lock.lock
@@ -27,7 +27,7 @@
     platform: event
     event_type: ios.action_fired
     event_data:
-      actionID: 8B96F36B-4865-48BA-A9F9-45B5D76AE84A
+      actionID: unlock_door
       sourceDeviceID: michaels_iphone
   action:
     service: lock.unlock
