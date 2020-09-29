@@ -61,7 +61,7 @@
       homeassistant.turn_{{ trigger.to_state.state }}
     entity_id: group.exterior_lights
 
-- alias: Turn on external lights if garage  opens or front lock unlocks after sunset
+- alias: Turn on external lights if garage opens or front lock unlocks when dark
   trigger:
     - platform: state
       entity_id: cover.garage
@@ -70,8 +70,12 @@
       entity_id: lock.front_door
       to:  'unlocked'
   condition:
-    - condition: sun
-      after: sunset
+    - condition: or
+      conditions:
+        - condition: sun
+          after: sunset
+        - condition: sun
+          before: sunrise
   action:
     - service: homeassistant.turn_on
       entity_id: group.exterior_lights
