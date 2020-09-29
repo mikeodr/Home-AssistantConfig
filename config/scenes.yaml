@@ -2,6 +2,14 @@
   entities:
     light.nursery_led_strip:
       state: on
+      brightness_pct: 100
+      rgb_color: [255, 191, 0]
+      color_temp: 311
+
+- name: nursery_led_on_low
+  entities:
+    light.nursery_led_strip:
+      state: on
       brightness_pct: 80
       rgb_color: [255, 127, 0]
 
@@ -13,3 +21,4 @@
   entities:
     switch.nursery_white_noise: off
     switch.nursery_fan: off
+    light.nursery_led_strip: off

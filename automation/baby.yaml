@@ -7,8 +7,21 @@
         command: "on"
   action:
     - wait_template: '{{ not is_state("light.nursery_led_strip", "unavailable") }}'
-    - service: scene.turn_on
-      entity_id: scene.nursery_led_on
+    - choose:
+      - conditions:
+          - condition: state
+            entity_id: input_boolean.nap_mode
+            state: "off"
+        sequence:
+          - service: scene.turn_on
+            entity_id: scene.nursery_led_on
+      - conditions:
+          - condition: state
+            entity_id: input_boolean.nap_mode
+            state: 'on'
+        sequence:
+          - service: scene.turn_on
+            entity_id: scene.nursery_led_on_low
 
 - alias: Night light Tradfri Trigger Off
   trigger:
