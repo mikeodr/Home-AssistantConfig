@@ -8,7 +8,7 @@ on:
   push:
     branches: [ master ]
   pull_request:
-    branches: [ master ]
+    types: [ opened ]
   schedule:
     # Run on the 15th of the month at 9am
     - cron: '0 9 15 * *'
