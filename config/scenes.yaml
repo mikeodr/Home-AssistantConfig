@@ -16,9 +16,9 @@
 - name: baby_nap_on
   entities:
    switch.nursery_white_noise: on
+   light.nursery_led_strip: off
 
 - name: baby_nap_off
   entities:
     switch.nursery_white_noise: off
     switch.nursery_fan: off
-    light.nursery_led_strip: off
