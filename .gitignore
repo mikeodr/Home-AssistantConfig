@@ -9,3 +9,5 @@ secrets.yaml
 .storage/
 .vscode/
 *.xml
+google_calendars.yaml
+.google.token
