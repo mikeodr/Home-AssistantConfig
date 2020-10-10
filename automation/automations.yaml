@@ -51,6 +51,24 @@
       data:
         title: "Ding Dong"
         message: "Someone is at the front door"
+    - choose:
+      - conditions:
+        - condition: state
+          entity_id: input_boolean.nap_mode
+          state: 'on'
+        sequence:
+          - service: script.sonos_say
+            data:
+              sonos_entity: media_player.sonos_living_room
+              volume: 0.20
+              message: "Someone is at the door"
+              delay: 4
+          - service: script.sonos_say
+            data:
+              sonos_entity: media_player.sonos_basement
+              volume: 0.20
+              message: "Someone is at the door"
+              delay: 4
     - delay:
         # Debounce this from happening
         # again quickly.

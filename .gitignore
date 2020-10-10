@@ -3,11 +3,12 @@
 *.db
 *.db-shm
 *.db-wal
+google_calendars.yaml
+.google.token
 .HA_VERSION
 *.log
 secrets.yaml
 .storage/
+tts/
 .vscode/
 *.xml
-google_calendars.yaml
-.google.token
