@@ -35,3 +35,23 @@
       title: "Weather Alert: {{ trigger.to_state.state }}"
       message: >
           {{ trigger.to_state.attributes['alert detail'] }}
+
+- alias: Doorbell activated
+  trigger:
+    platform: state
+    entity_id: binary_sensor.doorbell_button
+    from: 'off'
+    to: 'on'
+  condition:
+    - condition: state
+      entity_id: group.adults
+      state: 'home'
+  action:
+    - service: notify.adults
+      data:
+        title: "Ding Dong"
+        message: "Someone is at the front door"
+    - delay:
+        # Debounce this from happening
+        # again quickly.
+        minutes: 3
