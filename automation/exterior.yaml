@@ -61,7 +61,7 @@
       homeassistant.turn_{{ trigger.to_state.state }}
     entity_id: group.exterior_lights
 
-- alias: Turn on external lights if garage opens or front lock unlocks when dark
+- alias: Turn on external lights, multiple triggers
   trigger:
     - platform: state
       entity_id: cover.garage
@@ -69,6 +69,12 @@
     - platform: state
       entity_id: lock.front_door
       to:  'unlocked'
+    - platform: zone
+      entity_id:
+        - person.mike
+        - person.tiff
+      zone: zone.arriving_home
+      event: enter
   condition:
     - condition: or
       conditions:
