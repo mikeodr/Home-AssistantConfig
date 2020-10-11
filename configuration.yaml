@@ -36,5 +36,5 @@ weather: !include config/weather.yaml
 tts:
   - platform: google_translate
     cache: true
-    time_memory: 300
+    time_memory: 3000
     service_name: google_say

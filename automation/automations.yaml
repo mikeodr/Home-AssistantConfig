@@ -54,6 +54,22 @@
     - service: media_player.media_pause
       entity_id: media_player.living_room_tv
     - choose:
+      # Halloween Condition
+      - conditions:
+        - condition: template
+          value_template: '{{ now().month == 10 and now().day == 31 }}'
+        - condition: state
+          entity_id: group.adults
+          state: 'home'
+        sequence:
+          - service: script.sonos_say
+            data:
+              sonos_entity: media_player.sonos_living_rook
+              volume: 0.25
+              message: "Trick or treat!"
+              delay:
+                seconds: 3
+      # General Condition
       - conditions:
         - condition: state
           entity_id: input_boolean.nap_mode
@@ -65,8 +81,32 @@
               sonos_entities: media_player.sonos_basement
               volume: 0.25
               message: "Someone is at the door"
-              delay: 4
+              delay:
+                seconds: 4
     - delay:
         # Debounce this from happening
         # again quickly.
         minutes: 3
+
+- alias: Return Home Annoucement
+  trigger:
+    platform: zone
+    entity_id: person.mike
+    zone: zone.arriving_home
+    event: enter
+  condition:
+    - condition: state
+      entity_id: person.tiff
+      state: 'home'
+    - condition: state
+      entity_id: sensor.michaels_iphone_activity
+      state: 'Automotive'
+    - condition: state
+      entity_id: input_boolean.nap_mode
+      state: 'on'
+  action:
+    - service: script.sonos_group_say
+      data:
+        sonos_master: media_player.sonos_living_room
+        sonos_entities: media_player.sonos_basement
+        volume: 0.25
