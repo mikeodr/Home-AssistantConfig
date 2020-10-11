@@ -19,3 +19,26 @@ sonos_say:
     - service: sonos.restore
       data:
         entity_id: "{{ sonos_entity }}"
+
+sonos_group_say:
+  alias: "Sonos Group TTS Scripts"
+  sequence:
+    - service: sonos.snapshot
+      data:
+        entity_id: all
+    - service: sonos.join
+      data:
+        master: "{{ sonos_master }}"
+        entity_id: "{{ sonos_entities }}"
+    - service: media_player.volume_set
+      data:
+        entity_id: "{{ sonos_master }}"
+        volume_level: "{{ volume }}"
+    - service: tts.google_say
+      data:
+        entity_id: "{{ sonos_master }}"
+        message: "{{ message }}"
+    - delay: "{{ delay }}"
+    - service: sonos.restore
+      data:
+        entity_id: all
