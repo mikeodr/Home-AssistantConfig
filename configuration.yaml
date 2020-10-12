@@ -12,7 +12,6 @@ wemo:
 
 default_config:
 cloud:
-device_tracker:
 discovery:
 stream:
 wake_on_lan:
