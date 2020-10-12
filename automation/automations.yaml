@@ -1,12 +1,17 @@
 - alias: Presence Notifications Home
   trigger:
-    platform: state
-    entity_id: person.tiff
+    - platform: state
+      entity_id: person.tiff
+      from: 'not_home'
+      to: 'home'
+    - platform: state
+      entity_id: person.tiff
+      from: 'home'
+      to:  'not_home'
   condition:
     - condition: state
       entity_id: person.mike
       state: 'not_home'
-    - "{{ trigger.to_state.state != trigger.from_state.state }}"
   action:
     service: notify.mobile_app_michaels_iphone
     data:
