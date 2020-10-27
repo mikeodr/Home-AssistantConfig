@@ -11,7 +11,7 @@
       - conditions:
           - condition: state
             entity_id: input_boolean.nap_mode
-            state: "off"
+            state: 'off'
         sequence:
           - service: scene.turn_on
             entity_id: scene.nursery_led_on
