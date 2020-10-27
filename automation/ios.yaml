@@ -54,7 +54,7 @@
 - alias: Update Mike's Phone For Driving
   trigger:
     - platform: time_pattern
-      minutes: "/1"
+      minutes: "/5"
   condition:
     - condition: state
       entity_id: sensor.michaels_iphone_activity

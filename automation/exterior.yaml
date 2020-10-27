@@ -74,7 +74,7 @@
       entity_id:
         - person.mike
         - person.tiff
-      zone: zone.arriving_home
+      zone: zone.home
       event: enter
   condition:
     - condition: state
