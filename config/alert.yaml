@@ -1,6 +1,6 @@
 water_leak:
   name: Water Leak Detected
-  done_message: No more Leak
+  done_message: All Dry!
   entity_id: group.leak_sensors
   state: 'on'
   repeat: 30
