@@ -108,10 +108,28 @@
       state: 'Automotive'
     - condition: state
       entity_id: input_boolean.nap_mode
-      state: 'on'
+      state: 'off'
   action:
     - service: script.sonos_group_say
       data:
         sonos_master: media_player.sonos_living_room
         sonos_entities: media_player.sonos_basement
         volume: 0.25
+
+- alias: Tiff Returning Home Notification
+  trigger:
+    platform: zone
+    entity_id: person.tiff
+    zone: zone.home
+    event: enter
+  condition:
+    - condition: state
+      entity_id: person.mike
+      state: 'home'
+      for:
+        minutes: 5
+  action:
+    - service: notify.mobile_app_michaels_iphone
+      data:
+        title: "Tiff is returning home"
+        message: "Tiff has entered the home zone"
