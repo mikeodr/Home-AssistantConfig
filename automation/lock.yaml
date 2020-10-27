@@ -45,9 +45,6 @@
 
 - alias: Enable Cleaners Lock Code
   trigger:
-    - platform: state
-      entity_id: calendar.house_planning
-      to: 'on'
     - platform: template
       value_template: "{{ state_attr('calendar.house_planning', 'offset_reached') }}"
   action:
