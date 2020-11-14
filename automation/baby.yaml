@@ -157,15 +157,26 @@
     - service: homeassistant.turn_off
       entity_id: switch.nursery_fan
 
-- alias: Turn off nap mode if forgotten
+- alias: Turn nursery off if forgotten
   trigger:
-    - platform: time
-      at: "07:30:00"
+    - platform: state
+      entity_id: binary_sensor.kid_s_room
+      from: "on"
+      to: "off"
+  condition:
+    - condition: time
+      after: "07:30:00"
+    - condition: state
+      entity_id: input_boolean.nap_mode
+      state: "off"
   action:
     - service: homeassistant.turn_off
       entity_id: input_boolean.nap_mode
     - service: homeassistant.turn_off
       entity_id: light.nursery_led_strip
+    - delay: 10
+    - service: homeassistant.turn_off
+      entity_id: light.nursery_light
 
 - alias: Turn off nap mode via light switch
   trigger:
