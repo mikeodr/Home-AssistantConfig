@@ -12,8 +12,9 @@
     service: homeassistant.turn_on
     entity_id:
       - switch.master_white_noise
+      - switch.master_humidifier
 
-- alias: Bedroom White Noise On Evenings
+- alias: Bedroom Comfort On Evenings
   trigger:
     - platform: time
       at: '22:00:00'
@@ -25,6 +26,7 @@
     service: homeassistant.turn_on
     entity_id:
       - switch.master_white_noise
+      - switch.master_humidifier
 
 - alias: Bedroom Comfort if in bed early
   trigger:
@@ -44,9 +46,11 @@
       state: 'on'
   action:
     service: homeassistant.turn_on
-    entity_id: switch.master_white_noise
+    entity_id:
+      - switch.master_white_noise
+      - switch.master_humidifier
 
-- alias: Bedroom White Noise Off Morning
+- alias: Bedroom Comfort Off Morning
   trigger:
     - platform: time
       at: '08:30:00'
@@ -54,6 +58,7 @@
     service: homeassistant.turn_off
     entity_id:
       - switch.master_white_noise
+      - switch.master_humidifier
 
 - alias: Spare Bedroom Fan Toggle
   trigger:

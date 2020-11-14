@@ -5,4 +5,4 @@
   action:
     service: homeassistant.turn_off
     entity_id:
-      - light.basement_room_light
+      - switch.basement_room

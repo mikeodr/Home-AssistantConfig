@@ -73,7 +73,7 @@
               volume: 0.25
               message: "Trick or treat!"
               delay:
-                seconds: 3
+                seconds: 4
       # General Condition
       - conditions:
         - condition: state
@@ -91,7 +91,7 @@
     - delay:
         # Debounce this from happening
         # again quickly.
-        minutes: 3
+        seconds: 30
 
 - alias: Return Home Annoucement
   trigger:
