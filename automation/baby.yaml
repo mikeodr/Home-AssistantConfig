@@ -100,6 +100,24 @@
         - service: homeassistant.turn_on
           entity_id: light.nursery_light
 
+- alias: Nursery Humidifer on evenings
+  trigger:
+    platform: state
+    entity_id: input_boolean.nap_mode
+    from: "off"
+    to: "on"
+  condition:
+    - condition: and
+      conditions:
+        - condition: time
+          after: " 17:00:00"
+        - condition: template
+          # Only care about November - March
+          value_template: "{{ now().month >= 11 or now().month <= 3 }}"
+  action:
+    - service: homeassistant.turn_on
+      entity_id: switch.nursery_humidifier
+
 - alias: Nursey Fan On if needed
   trigger:
     platform: state
@@ -165,7 +183,7 @@
       to: "off"
   condition:
     - condition: time
-      after: "07:30:00"
+      after: "08:30:00"
     - condition: state
       entity_id: input_boolean.nap_mode
       state: "off"

@@ -23,3 +23,4 @@
   entities:
     switch.nursery_white_noise: off
     switch.nursery_fan: off
+    switch.nursery_humidifier: off
