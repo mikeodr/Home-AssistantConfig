@@ -3,11 +3,9 @@
     platform: sun
     event: sunset
   condition:
-    - condition: and
-      conditions:
-        - condition: template
-          # Only care about November - January
-          value_template: "{{ now().month >= 11 or now().month <= 1 }}"
+    condition: template
+    # Only care about November - January
+    value_template: "{{ now().month >= 11 or now().month <= 1 }}"
   action:
     service: homeassistant.turn_on
     entity_id: switch.exterior_xmas_lights
@@ -29,7 +27,15 @@
   condition:
     condition: time
     after: "06:30:00"
-    before: "23:30:00"
+    before: "23:00:00"
   action:
     service: homeassistant.turn_{{ trigger.to_state.state }}
+    entity_id: switch.christmas_tree
+
+- alias: Turn off tree lights bedtime
+  trigger:
+    platform: time
+    at: "11:30:00"
+  action:
+    service: homeassistant.turn_off
     entity_id: switch.christmas_tree
