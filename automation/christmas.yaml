@@ -35,7 +35,7 @@
 - alias: Turn off tree lights bedtime
   trigger:
     platform: time
-    at: "11:30:00"
+    at: "23:30:00"
   action:
     service: homeassistant.turn_off
     entity_id: switch.christmas_tree
