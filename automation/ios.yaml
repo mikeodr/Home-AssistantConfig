@@ -10,6 +10,16 @@
     entity_id:
       - cover.garage
 
+- alias: iOS Acknowledge Leak
+  trigger:
+    platform: event
+    event_type: ios.notification_action_fired
+    event_data:
+      actionName: 'ACK_LEAK'
+  action:
+    service: homeassistant.turn_off
+    entity_id: alert.water_leak
+
 - alias: iOS Lock Front Door
   trigger:
     platform: event
