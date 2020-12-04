@@ -15,6 +15,21 @@ push:
           authenticationRequired: true
           destructive: true
           behavior: 'default'
+    - name: Garage Alert
+      identifier: 'garage_alert'
+      actions:
+        - identifier: 'CLOSE_GARAGE'
+          title: 'Close Garage'
+          activationMode: 'background'
+          authenticationRequired: true
+          destructive: false
+          behavior: 'default'
+        - identifier: 'ACK_GARAGE'
+          title: 'Acknowledge Garage'
+          activationMode: 'background'
+          authenticationRequired: true
+          destructive: true
+          behavior: 'default'
     - name: Acknowledge Leak
       identifier: 'acknowledge_leak'
       actions:

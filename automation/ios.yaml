@@ -10,6 +10,26 @@
     entity_id:
       - cover.garage
 
+- alias: iOS Close Garage Door Alert
+  trigger:
+    platform: event
+    event_type: ios.notification_action_fired
+    event_data:
+      actionName: 'CLOSE_GARAGE'
+  action:
+    service: cover.close_cover
+    entity_id: cover.garage
+
+- alias: iOS Acknowledge Garage Door Alert
+  trigger:
+    platform: event
+    event_type: ios.notification_action_fired
+    event_data:
+      actionName: 'ACK_GARAGE'
+  action:
+    service: homeassistant.turn_off
+    entity_id: alert.garage_open
+
 - alias: iOS Acknowledge Leak
   trigger:
     platform: event

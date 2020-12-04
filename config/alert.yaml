@@ -3,8 +3,8 @@ water_leak:
   done_message: All Dry!
   entity_id: group.leak_sensors
   state: "on"
-  repeat: 30
   can_acknowledge: true
+  repeat: 30
   data:
     url: /lovelace/leak-sensors
     push:
@@ -16,3 +16,16 @@ water_leak:
   notifiers:
     - mobile_app_michaels_iphone
 
+garage_open:
+  name: Garage Door left open
+  done_message: Door closed!
+  entity_id: cover.garage
+  state: "open"
+  can_acknowledge: true
+  repeat: 30
+  skip_first: true
+  data:
+    push:
+      category: "garage_alert"
+  notifiers:
+    - mobile_app_michaels_iphone
