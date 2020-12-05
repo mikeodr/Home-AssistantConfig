@@ -1,44 +1,44 @@
 push:
   categories:
     - name: Pupper Home
-      identifier: 'pupper_home'
+      identifier: "pupper_home"
       actions:
-        - identifier: 'PUPPER_HOME'
-          title: 'Pupper Home'
-          activationMode: 'background'
+        - identifier: "PUPPER_HOME"
+          title: "Pupper Home"
+          activationMode: "background"
           authenticationRequired: true
           destructive: false
-          behavior: 'default'
-        - identifier: 'PUPPER_NOT_HOME'
-          title: 'Not Home'
-          activationMode: 'background'
+          behavior: "default"
+        - identifier: "PUPPER_NOT_HOME"
+          title: "Not Home"
+          activationMode: "background"
           authenticationRequired: true
           destructive: true
-          behavior: 'default'
+          behavior: "default"
     - name: Garage Alert
-      identifier: 'garage_alert'
+      identifier: "garage_alert"
       actions:
-        - identifier: 'CLOSE_GARAGE'
-          title: 'Close Garage'
-          activationMode: 'background'
+        - identifier: "CLOSE_GARAGE"
+          title: "Close Garage"
+          activationMode: "background"
           authenticationRequired: true
           destructive: false
-          behavior: 'default'
-        - identifier: 'ACK_GARAGE'
-          title: 'Acknowledge Garage'
-          activationMode: 'background'
+          behavior: "default"
+        - identifier: "ACK_GARAGE"
+          title: "Acknowledge Garage"
+          activationMode: "background"
           authenticationRequired: true
           destructive: true
-          behavior: 'default'
+          behavior: "default"
     - name: Acknowledge Leak
-      identifier: 'acknowledge_leak'
+      identifier: "acknowledge_leak"
       actions:
-        - identifier: 'ACK_LEAK'
-          title: 'Acknowledge Leak'
-          activationMode: 'background'
+        - identifier: "ACK_LEAK"
+          title: "Acknowledge Leak"
+          activationMode: "background"
           authenticationRequired: true
           destructive: true
-          behavior: 'default'
+          behavior: "default"
 
 actions:
   - name: toggle_garage
