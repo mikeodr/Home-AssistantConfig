@@ -2,12 +2,12 @@
   trigger:
     platform: state
     entity_id: group.adults
-    from: 'not_home'
-    to: 'home'
+    from: "not_home"
+    to: "home"
   condition:
     - condition: time
-      after: '22:00:00'
-      before: '07:00:00'
+      after: "22:00:00"
+      before: "07:00:00"
   action:
     service: homeassistant.turn_on
     entity_id:
@@ -17,11 +17,11 @@
 - alias: Bedroom Comfort On Evenings
   trigger:
     - platform: time
-      at: '22:00:00'
+      at: "22:00:00"
   condition:
     - condition: state
       entity_id: group.adults
-      state: 'home'
+      state: "home"
   action:
     service: homeassistant.turn_on
     entity_id:
@@ -32,18 +32,18 @@
   trigger:
     - platform: state
       entity_id: sensor.tiffanys_iphone_battery_state
-      from: 'Not Charging'
-      to: 'Charging'
+      from: "Not Charging"
+      to: "Charging"
     - platform: state
       entity_id: sensor.tiffanys_iphone_battery_state
-      from: 'Not Charging'
-      to: 'Full'
+      from: "Not Charging"
+      to: "Full"
   condition:
     - condition: time
-      after: '21:00:00'
+      after: "21:00:00"
     - condition: state
       entity_id: binary_sensor.bedroom
-      state: 'on'
+      state: "on"
   action:
     service: homeassistant.turn_on
     entity_id:
@@ -53,7 +53,23 @@
 - alias: Bedroom Comfort Off Morning
   trigger:
     - platform: time
-      at: '08:30:00'
+      at: "08:30:00"
+  action:
+    service: homeassistant.turn_off
+    entity_id:
+      - switch.master_white_noise
+      - switch.master_humidifier
+
+- alias: Bedroom off morning nursery active.
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.bedroom
+      from: "off"
+      to: "on"
+  condition:
+    - condition: state
+      entity_id: input_boolean.nap_mode
+      state: "off"
   action:
     service: homeassistant.turn_off
     entity_id:
@@ -65,10 +81,10 @@
     platform: event
     event_type: zha_event
     event_data:
-        device_ieee: "00:15:8d:00:03:ce:96:86"
-        command: "click"
-        args:
-          click_type: "single"
+      device_ieee: "00:15:8d:00:03:ce:96:86"
+      command: "click"
+      args:
+        click_type: "single"
   action:
     service: homeassistant.toggle
     entity_id:
