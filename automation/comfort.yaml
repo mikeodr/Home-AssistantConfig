@@ -17,7 +17,7 @@
 - alias: Bedroom Comfort On Evenings
   trigger:
     - platform: time
-      at: "22:00:00"
+      at: "22:30:00"
   condition:
     - condition: state
       entity_id: group.adults
@@ -40,7 +40,7 @@
       to: "Full"
   condition:
     - condition: time
-      after: "21:00:00"
+      after: "22:00:00"
     - condition: state
       entity_id: binary_sensor.bedroom
       state: "on"
@@ -60,16 +60,21 @@
       - switch.master_white_noise
       - switch.master_humidifier
 
-- alias: Bedroom off morning nursery active.
+- alias: Bedroom off mornings if nursery active.
   trigger:
     - platform: state
       entity_id: binary_sensor.bedroom
-      from: "off"
+    - platform: state
+      entity_id: binary_sensor.bedroom
       to: "on"
+      for:
+        minutes: 15
   condition:
     - condition: state
       entity_id: input_boolean.nap_mode
       state: "off"
+    - condition: time
+      after: "06:30:00"
   action:
     service: homeassistant.turn_off
     entity_id:
