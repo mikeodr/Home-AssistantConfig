@@ -39,6 +39,15 @@ push:
           authenticationRequired: true
           destructive: true
           behavior: "default"
+    - name: Lock Jammed
+      identifier: "lock_jammed"
+      actions:
+        - identifier: "ACK_LOCK_JAMMED"
+          title: "Acknowledge Lock Jammed"
+          activationMode: "background"
+          authenticationRequired: true
+          destructive: true
+          behavior: "default"
 
 actions:
   - name: toggle_garage

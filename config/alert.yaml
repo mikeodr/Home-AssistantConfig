@@ -29,3 +29,16 @@ garage_open:
       category: "garage_alert"
   notifiers:
     - mobile_app_michaels_iphone
+
+lock_jammed:
+  name: Front lock jammed
+  done_message: Lock OK!
+  entity_id: sensor.front_door_lock_alarm_access_control
+  state: "Lock Jammed"
+  can_acknowledge: true
+  repeat: 15
+  data:
+    push:
+      category: "lock_jammed"
+  notifiers:
+    - mobile_app_michaels_iphone

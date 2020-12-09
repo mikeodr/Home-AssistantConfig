@@ -35,10 +35,20 @@
     platform: event
     event_type: ios.notification_action_fired
     event_data:
-      actionName: 'ACK_LEAK'
+      actionName: "ACK_LEAK"
   action:
     service: homeassistant.turn_off
     entity_id: alert.water_leak
+
+- alias: iOS Acknowledge Lock Jammed
+  trigger:
+    platform: event
+    event_type: ios.notification_action_fired
+    event_data:
+      actionName: "ACK_LOCK_JAMMED"
+  action:
+    service: homeassistant.turn_off
+    entity_id: alert.lock_jammed
 
 - alias: iOS Lock Front Door
   trigger:
