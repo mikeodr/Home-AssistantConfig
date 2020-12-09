@@ -15,7 +15,7 @@
     platform: event
     event_type: ios.notification_action_fired
     event_data:
-      actionName: 'CLOSE_GARAGE'
+      actionName: "CLOSE_GARAGE"
   action:
     service: cover.close_cover
     entity_id: cover.garage
@@ -25,7 +25,7 @@
     platform: event
     event_type: ios.notification_action_fired
     event_data:
-      actionName: 'ACK_GARAGE'
+      actionName: "ACK_GARAGE"
   action:
     service: homeassistant.turn_off
     entity_id: alert.garage_open
@@ -82,10 +82,10 @@
   condition:
     - condition: state
       entity_id: person.tiff
-      state: 'home'
+      state: "home"
     - condition: time
-      after: '21:30'
-      before: '22:00'
+      after: "21:30"
+      before: "22:00"
   action:
     - service: notify.mobile_app_tiffanys_iphone
       data:
@@ -98,18 +98,18 @@
   condition:
     - condition: state
       entity_id: sensor.michaels_iphone_activity
-      state:  'Automotive'
+      state: "Automotive"
     - condition: state
       entity_id: input_boolean.vacation_mode
-      state:  'off'
+      state: "off"
     - condition: or
       conditions:
         - condition: state
           entity_id: sensor.michaels_iphone_battery_state
-          state: 'Charging'
+          state: "Charging"
         - condition: state
           entity_id: sensor.michaels_iphone_battery_state
-          state: 'Full'
+          state: "Full"
   action:
     - service: notify.mobile_app_michaels_iphone
       data:
