@@ -22,7 +22,7 @@ garage_open:
   entity_id: cover.garage
   state: "open"
   can_acknowledge: true
-  repeat: 30
+  repeat: 15
   skip_first: true
   data:
     push:
