@@ -110,13 +110,6 @@
       entity_id: input_boolean.nap_mode
       state: "off"
   action:
-    - service: script.sonos_say
-      data:
-        sonos_entity: media_player.sonos_living_room
-        volume: 0.25
-        message: "Trick or treat!"
-        delay:
-          seconds: 4
     - service: script.sonos_group_say
       data:
         sonos_master: media_player.sonos_living_room
