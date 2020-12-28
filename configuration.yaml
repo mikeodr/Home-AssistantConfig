@@ -21,6 +21,7 @@ automation: !include_dir_merge_list automation
 binary_sensor: !include_dir_merge_list binary_sensor
 camera: !include config/camera.yaml
 cover: !include config/covers.yaml
+input_datetime: !include config/datetime.yaml
 group: !include config/groups.yaml
 google: !include config/google.yaml
 homekit: !include config/homekit.yaml

@@ -1,0 +1,4 @@
+laundry_complete:
+  has_time: true
+  has_date: true
+  icon: mdi:washing-machine

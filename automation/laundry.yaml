@@ -1,0 +1,13 @@
+- alias: Laundry Completed
+  trigger:
+    - platform: time
+      at: input_datetime.laundry_complete
+  action:
+    - service: script.sonos_group_say
+      data:
+        sonos_master: media_player.sonos_living_room
+        sonos_entities: media_player.sonos_basement
+        volume: 0.25
+        message: "Laundry is done!"
+        delay:
+          seconds: 6
