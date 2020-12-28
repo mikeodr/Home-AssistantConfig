@@ -161,7 +161,7 @@
   trigger:
     platform: numeric_state
     entity_id: sensor.kid_s_room_temperature
-    below: 21
+    below: 18
   condition:
     - condition: state
       entity_id: input_boolean.nap_mode
@@ -171,7 +171,6 @@
       data:
         title: "Nursery Low Temperature Warning"
         message: "Temperature droped to {{ states('sensor.kid_s_room_temperature') }}"
-        clickAction: "/lovelace/nursery"
     - service: homeassistant.turn_off
       entity_id: switch.nursery_fan
 

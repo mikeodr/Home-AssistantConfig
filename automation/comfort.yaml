@@ -75,6 +75,9 @@
       state: "off"
     - condition: time
       after: "06:30:00"
+    - condition: state
+      entity_id: sensor.michaels_iphone_battery_state
+      state: "Not Charging"
   action:
     service: homeassistant.turn_off
     entity_id:
