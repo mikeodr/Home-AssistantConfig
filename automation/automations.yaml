@@ -136,3 +136,14 @@
       data:
         title: "Tiff is returning home"
         message: "Tiff has entered the home zone"
+
+- alias: Update notification
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.updater
+      from: "off"
+      to: "on"
+  action:
+    - service: notify.mobile_app_michaels_iphone
+      data:
+        message: "There is a new Home Assistant release available."

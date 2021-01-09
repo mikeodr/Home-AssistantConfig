@@ -1,15 +1,15 @@
 - alias: Exterior Lights on Evenings
   trigger:
-      platform: sun
-      event: sunset
+    platform: sun
+    event: sunset
   action:
-      service: homeassistant.turn_on
-      entity_id: group.exterior_lights
+    service: homeassistant.turn_on
+    entity_id: group.exterior_lights
 
 - alias: Exterior Lights off Night, or sunrise
   trigger:
     - platform: time
-      at: '23:30:00'
+      at: "23:30:00"
     - platform: sun
       event: sunrise
   action:
@@ -20,7 +20,7 @@
   trigger:
     - platform: state
       entity_id: group.exterior_lights
-      to: 'on'
+      to: "on"
       for:
         hours: 1
   condition:
@@ -39,13 +39,13 @@
   trigger:
     platform: state
     entity_id: group.exterior_lights
-    to: 'on'
+    to: "on"
     for:
       minutes: 30
   condition:
     - condition: state
       entity_id: sun.sun
-      state: 'above_horizon'
+      state: "above_horizon"
   action:
     - service: homeassistant.turn_off
       entity_id: group.exterior_lights
@@ -66,10 +66,10 @@
   trigger:
     - platform: state
       entity_id: cover.garage
-      to: 'open'
+      to: "open"
     - platform: state
       entity_id: lock.front_door
-      to:  'unlocked'
+      to: "unlocked"
     - platform: zone
       entity_id:
         - person.mike
@@ -79,8 +79,7 @@
   condition:
     - condition: state
       entity_id: sun.sun
-      state:  'below_horizon'
+      state: "below_horizon"
   action:
     - service: homeassistant.turn_on
       entity_id: group.exterior_lights
-  

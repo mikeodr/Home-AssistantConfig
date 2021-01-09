@@ -6,3 +6,50 @@
     service: homeassistant.turn_off
     entity_id:
       - switch.basement_room
+
+- alias: Dim basement lights near sunset
+  trigger:
+    - platform: sun
+      event: sunset
+      offset: "-00:30:00"
+  condition:
+    - condition: state
+      entity_id: light.basement_room_light_dimmer
+      state: "on"
+  action:
+    - service: light.turn_on
+      entity_id: light.basement_room_light_dimmer
+      data:
+        brightness_pct: 65
+
+- alias: Set basement brightness during daytime
+  trigger:
+    - platform: state
+      entity_id: light.basement_room_light_dimmer
+      from: "off"
+      to: "on"
+  condition:
+    - condition: state
+      entity_id: sun.sun
+      state: "above_horizon"
+  action:
+    - service: light.turn_on
+      entity_id: light.basement_room_light_dimmer
+      data:
+        brightness_pct: 90
+
+- alias: Set basement brightness during daytime
+  trigger:
+    - platform: state
+      entity_id: light.basement_room_light_dimmer
+      from: "off"
+      to: "on"
+  condition:
+    - condition: state
+      entity_id: sun.sun
+      state: "below_horizon"
+  action:
+    - service: light.turn_on
+      entity_id: light.basement_room_light_dimmer
+      data:
+        brightness_pct: 65
