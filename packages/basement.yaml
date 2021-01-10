@@ -1,0 +1,56 @@
+automation:
+  - alias: Basement Dimmer Control
+    trigger:
+      - platform: sun
+        event: sunset
+        offset: "-00:30:00"
+      - platform: state
+        entity_id: light.basement_room_light_dimmer
+        from: "off"
+        to: "on"
+    action:
+      choose:
+        conditions:
+          - condition: sun
+            after: sunset
+            before_offset: "-00:30:00"
+        sequence:
+          - service: light.turn_on
+            entity_id: light.basement_room_light_dimmer
+            data:
+              brightness_pct: 60
+      default:
+        - service: light.turn_on
+          entity_id: light.basement_room_light_dimmer
+          data:
+            brightness_pct: 90
+
+  - alias: Sync Basement Hall Light to Basement Room Light
+    trigger:
+      - platform: state
+        entity_id: switch.basement_hall
+    action:
+      choose:
+        - conditions:
+            - condition: state
+              entity_id: switch.basement_hall
+              state: "on"
+          sequence:
+            - service: light.turn_on
+              entity_id: light.basement_room_light_dimmer
+        - conditions:
+            - condition: state
+              entity_id: switch.basement_hall
+              state: "off"
+          sequence:
+            - service: light.turn_off
+              entity_id: light.basement_room_light_dimmer
+
+  - alias: Basement Lights off Night
+    trigger:
+      - platform: time
+        at: "23:00:00"
+    action:
+      service: homeassistant.turn_off
+      entity_id:
+        - switch.basement_room
