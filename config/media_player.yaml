@@ -1,0 +1,4 @@
+- platform: androidtv
+  name: Living Room Mi Box S
+  device_class: androidtv
+  host: !secret android_living_room_ip

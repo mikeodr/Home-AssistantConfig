@@ -3,11 +3,6 @@ pupper_home:
   initial: on
   icon: mdi:dog
 
-nap_mode:
-  name: Nap Mode
-  initial: on
-  icon: mdi:sleep
-
 quite_mode:
   name: Quite Mode
   initial: off
