@@ -141,6 +141,9 @@ automation:
     trigger:
       platform: state
       entity_id: input_boolean.nap_mode
+    condition:
+      - condition: time
+        after: "08:00:00"
     action:
       - wait_template: "{{ not is_state('media_player.living_room_mi_box_s', 'unavailable') }}"
         continue_on_timeout: false
