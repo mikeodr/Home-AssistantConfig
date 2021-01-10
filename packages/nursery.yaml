@@ -143,6 +143,8 @@ automation:
       entity_id: input_boolean.nap_mode
     action:
       - wait_template: "{{ not is_state('media_player.living_room_mi_box_s', 'unavailable') }}"
+        continue_on_timeout: false
+        timeout: "00:20:00"
       - choose:
           # Turning nap on
           - conditions:
@@ -164,6 +166,10 @@ automation:
                         data:
                           entity_id: media_player.living_room_mi_box_s
                           command: !secret baby_cam_adb_command
+                      - service: androidtv.adb_command
+                        data:
+                          entity_id: media_player.living_room_mi_box_s
+                          command: "adb shell media volume --set 0"
                 default:
                   - service: androidtv.adb_command
                     data:
@@ -175,14 +181,22 @@ automation:
                 entity_id: input_boolean.nap_mode
                 state: "off"
             sequence:
-              - service: androidtv.adb_command
-                data:
-                  entity_id: media_player.living_room_mi_box_s
-                  command: "HOME"
-              - service: androidtv.adb_command
-                data:
-                  entity_id: media_player.living_room_mi_box_s
-                  command: "POWER"
+              - wait_template: "{{ not is_state('media_player.living_room_mi_box_s', 'unavailable') }}"
+                continue_on_timeout: false
+                timeout: "00:20:00"
+              - choose:
+                  - conditions:
+                      - condition: template
+                        value_template: "{{ not is_state('media_player.living_room_mi_box_s', 'off') }}"
+                    sequence:
+                      - service: androidtv.adb_command
+                        data:
+                          entity_id: media_player.living_room_mi_box_s
+                          command: "HOME"
+                      - service: androidtv.adb_command
+                        data:
+                          entity_id: media_player.living_room_mi_box_s
+                          command: "POWER"
 
   - alias: Nursery Humidifer on evenings
     trigger:
