@@ -26,7 +26,6 @@ group: !include config/groups.yaml
 google: !include config/google.yaml
 homekit: !include config/homekit.yaml
 input_boolean: !include config/input_boolean.yaml
-ios: !include config/ios.yaml
 media_player: !include config/media_player.yaml
 notify: !include config/notify.yaml
 scene: !include config/scenes.yaml
