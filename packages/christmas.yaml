@@ -1,0 +1,128 @@
+input_boolean:
+  xmas_tree_enabled:
+    name: Christmas Tree Enabled
+    initial: off
+    icon: mdi:pine-tree
+  exterior_xmas_lights_enabled:
+    name: Exterior Christmas Lights Enabled
+    initial: off
+    icon: mdi:string-lights
+
+automation:
+  # Automatic boolean control settings
+  - alias: Auto Christmas Tree Enabled Input Boolean
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: template
+        value_template: "{{ now().day == 1 }}"
+    condition:
+      - condition: template
+        # Only care about November - January
+        value_template: "{{ now().month >= 11 or now().month <= 1 }}"
+      - condition: template
+        value_template: "{{ states('switch.christmas_tree') != 'unknown' }}"
+    action:
+      service: homeassistant.turn_on
+      entity_id: input_boolean.xmas_tree_enabled
+
+  - alias: Auto Exterior Lights Enabled Input Boolean
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: template
+        value_template: "{{ now().day == 1 }}"
+    condition:
+      - condition: template
+        # Only care about November - January
+        value_template: "{{ now().month >= 11 or now().month <= 1 }}"
+      - condition: template
+        value_template: "{{ states('switch.exterior_xmas_lights') != 'unknown' }}"
+    action:
+      service: homeassistant.turn_on
+      entity_id: input_boolean.exterior_xmas_lights_enabled
+
+  # Exterior xmas light control
+  # - alias: Exterior Christmas Light Control
+  #   trigger:
+  #     - platform: homeassistant
+  #       event: start
+  #     - platform: sun
+  #       event: sunset
+  #     - platform: sun
+  #       event: sunrise
+  #     - platform: time
+  #       at: "23:30:30"
+  #   condition:
+  #     - condition: state
+  #       entity_id: intput_boolean.exterior_xmas_lights_enabled
+  #       state: "on"
+  #   action:
+  #     - choose:
+  #         - conditions:
+  #             - condition: sun
+  #               after: sunset
+  #               after_offset: "-00:30:00"
+  #             - condition: time
+  #               before: "23:30:00"
+  #           sequence:
+  #             - service: homeassistant.turn_on
+  #               entity_id: switch.exterior_xmas_lights
+  #       default:
+  #         - service: homeassistant.turn_off
+  #           entity_id: switch.exterior_xmas_lights
+
+  - alias: Exterior Christmas Lights On
+    trigger:
+      platform: sun
+      event: sunset
+    condition:
+      - condition: state
+        entity_id: input_boolean.exterior_xmas_lights_enabled
+        state: "on"
+    action:
+      service: homeassistant.turn_on
+      entity_id: switch.exterior_xmas_lights
+
+  - alias: Exterior Christmas Lights Off
+    trigger:
+      - platform: time
+        at: "23:30:00"
+      - platform: sun
+        event: sunrise
+    condition:
+      - condition: state
+        entity_id: input_boolean.exterior_xmas_lights_enabled
+        state: "on"
+    action:
+      service: homeassistant.turn_off
+      entity_id: switch.exterior_xmas_lights
+
+  - alias: Tree lights on when living room occupied
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.living_room
+      - platform: homeassistant
+        event: start
+    condition:
+      - condition: time
+        after: "06:30:00"
+        before: "23:00:00"
+      - condition: state
+        entity_id: input_boolean.exterior_xmas_lights_enabled
+        state: "on"
+    action:
+      service: homeassistant.turn_{{ trigger.to_state.state }}
+      entity_id: switch.christmas_tree
+
+  - alias: Turn off tree lights bedtime
+    trigger:
+      platform: time
+      at: "23:30:00"
+    condition:
+      - condition: state
+        entity_id: input_boolean.exterior_xmas_lights_enabled
+        state: "on"
+    action:
+      service: homeassistant.turn_off
+      entity_id: switch.christmas_tree
