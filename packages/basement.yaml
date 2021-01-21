@@ -10,15 +10,18 @@ automation:
         to: "on"
     action:
       choose:
-        conditions:
-          - condition: sun
-            after: sunset
-            before_offset: "-00:30:00"
-        sequence:
-          - service: light.turn_on
-            entity_id: light.basement_room_light_dimmer
-            data:
-              brightness_pct: 60
+        - conditions:
+            - condition: sun
+              after: sunset
+              after_offset: "-00:35:00"
+            - condition: state
+              entity_id: light.basement_room_light_dimmer
+              state: "on"
+          sequence:
+            - service: light.turn_on
+              entity_id: light.basement_room_light_dimmer
+              data:
+                brightness_pct: 60
       default:
         - service: light.turn_on
           entity_id: light.basement_room_light_dimmer
@@ -30,21 +33,8 @@ automation:
       - platform: state
         entity_id: switch.basement_hall
     action:
-      choose:
-        - conditions:
-            - condition: state
-              entity_id: switch.basement_hall
-              state: "on"
-          sequence:
-            - service: light.turn_on
-              entity_id: light.basement_room_light_dimmer
-        - conditions:
-            - condition: state
-              entity_id: switch.basement_hall
-              state: "off"
-          sequence:
-            - service: light.turn_off
-              entity_id: light.basement_room_light_dimmer
+      - service: homeassistant.turn_{{ trigger.to_state.state }}
+        entity_id: light.basement_room_light_dimmer
 
   - alias: Basement Lights off Night
     trigger:
@@ -54,3 +44,4 @@ automation:
       service: homeassistant.turn_off
       entity_id:
         - switch.basement_room
+        - switch.basement_hall
