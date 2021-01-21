@@ -117,7 +117,7 @@
         volume: 0.25
         message: "Daddy is almost home!"
         delay:
-          seconds: 6
+          seconds: 4
 
 - alias: Tiff Returning Home Notification
   trigger:
