@@ -110,14 +110,9 @@
       entity_id: input_boolean.nap_mode
       state: "off"
   action:
-    - service: script.sonos_group_say
+    - service: notify.mobile_app_tiffanys_iphone
       data:
-        sonos_master: media_player.sonos_living_room
-        sonos_entities: media_player.sonos_basement
-        volume: 0.25
-        message: "Daddy is almost home!"
-        delay:
-          seconds: 4
+        title: "Mike is almost home"
 
 - alias: Tiff Returning Home Notification
   trigger:
