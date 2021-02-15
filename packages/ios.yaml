@@ -1,0 +1,206 @@
+ios:
+  push:
+    categories:
+      - name: Pupper Home
+        identifier: "pupper_home"
+        actions:
+          - identifier: "PUPPER_HOME"
+            title: "Pupper Home"
+            activationMode: "background"
+            authenticationRequired: true
+            destructive: false
+            behavior: "default"
+          - identifier: "PUPPER_NOT_HOME"
+            title: "Not Home"
+            activationMode: "background"
+            authenticationRequired: true
+            destructive: true
+            behavior: "default"
+      - name: Garage Alert
+        identifier: "garage_alert"
+        actions:
+          - identifier: "CLOSE_GARAGE"
+            title: "Close Garage"
+            activationMode: "background"
+            authenticationRequired: true
+            destructive: false
+            behavior: "default"
+          - identifier: "ACK_GARAGE"
+            title: "Acknowledge Garage"
+            activationMode: "background"
+            authenticationRequired: true
+            destructive: true
+            behavior: "default"
+      - name: Acknowledge Leak
+        identifier: "acknowledge_leak"
+        actions:
+          - identifier: "ACK_LEAK"
+            title: "Acknowledge Leak"
+            activationMode: "background"
+            authenticationRequired: true
+            destructive: true
+            behavior: "default"
+      - name: Lock Jammed
+        identifier: "lock_jammed"
+        actions:
+          - identifier: "ACK_LOCK_JAMMED"
+            title: "Acknowledge Lock Jammed"
+            activationMode: "background"
+            authenticationRequired: true
+            destructive: true
+            behavior: "default"
+
+  actions:
+    - name: toggle_garage
+      background_color: "#000000"
+      icon:
+        icon: garage
+        color: "#ffffff"
+      label:
+        text: "Toggle Garage"
+        color: "#ffffff"
+
+    - name: lock_door
+      background_color: "#000000"
+      icon:
+        icon: lock
+        color: "#ffffff"
+      label:
+        text: "Lock Door"
+        color: "#ffffff"
+
+    - name: unlock_door
+      background_color: "#000000"
+      icon:
+        icon: lock-open
+        color: "#ffffff"
+      label:
+        text: "Unlock Door"
+        color: "#ffffff"
+
+    - name: nap_time
+      background_color: "#000000"
+      icon:
+        icon: sleep
+        color: "#ffffff"
+      label:
+        text: "Nap Time"
+        color: "#ffffff"
+
+automation:
+  - alias: iOS Toggle Garage
+    trigger:
+      platform: event
+      event_type: ios.action_fired
+      event_data:
+        actionID: toggle_garage
+        sourceDeviceID: michaels_iphone
+    action:
+      service: cover.toggle
+      entity_id:
+        - cover.garage
+
+  - alias: iOS Close Garage Door Alert
+    trigger:
+      platform: event
+      event_type: ios.notification_action_fired
+      event_data:
+        actionName: "CLOSE_GARAGE"
+    action:
+      service: cover.close_cover
+      entity_id: cover.garage
+
+  - alias: iOS Acknowledge Garage Door Alert
+    trigger:
+      platform: event
+      event_type: ios.notification_action_fired
+      event_data:
+        actionName: "ACK_GARAGE"
+    action:
+      service: homeassistant.turn_off
+      entity_id: alert.garage_open
+
+  - alias: iOS Acknowledge Leak
+    trigger:
+      platform: event
+      event_type: ios.notification_action_fired
+      event_data:
+        actionName: "ACK_LEAK"
+    action:
+      service: homeassistant.turn_off
+      entity_id: alert.water_leak
+
+  - alias: iOS Acknowledge Lock Jammed
+    trigger:
+      platform: event
+      event_type: ios.notification_action_fired
+      event_data:
+        actionName: "ACK_LOCK_JAMMED"
+    action:
+      service: homeassistant.turn_off
+      entity_id: alert.lock_jammed
+
+  - alias: iOS Lock Front Door
+    trigger:
+      platform: event
+      event_type: ios.action_fired
+      event_data:
+        actionID: lock_door
+        sourceDeviceID: michaels_iphone
+    action:
+      service: lock.lock
+      entity_id:
+        - lock.front_door
+
+  - alias: iOS Unlock Front Door
+    trigger:
+      platform: event
+      event_type: ios.action_fired
+      event_data:
+        actionID: unlock_door
+        sourceDeviceID: michaels_iphone
+    action:
+      service: lock.unlock
+      entity_id:
+        - lock.front_door
+
+  - alias: Trigger sensor updates for Tiff's phone during bedtime period
+    trigger:
+      platform: time_pattern
+      hours: "21"
+      minutes: "/5"
+    condition:
+      - condition: state
+        entity_id: person.tiff
+        state: "home"
+      - condition: time
+        after: "21:30"
+        before: "22:00"
+    action:
+      - service: notify.mobile_app_tiffanys_iphone
+        data:
+          message: "request_location_update"
+
+  - alias: Update Mike's Phone For Driving
+    trigger:
+      - platform: time_pattern
+        minutes: "/5"
+    condition:
+      - condition: state
+        entity_id: sensor.michaels_iphone_activity
+        state: "Automotive"
+      - condition: state
+        entity_id: input_boolean.vacation_mode
+        state: "off"
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: sensor.michaels_iphone_battery_state
+            state: "Charging"
+          - condition: state
+            entity_id: sensor.michaels_iphone_battery_state
+            state: "Full"
+    action:
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          message: "request_location_update"
