@@ -94,6 +94,7 @@ automation:
           command: "off"
       - platform: sun
         event: sunrise
+        offset: "+00:30:00"
     action:
       - wait_template: '{{ not is_state("light.nursery_led_strip", "unavailable") }}'
       - service: light.turn_off
@@ -125,6 +126,7 @@ automation:
                   - conditions:
                       - condition: sun
                         before: sunrise
+                        before_offset: "+00:30:00"
                     sequence:
                       - service: scene.turn_on
                         entity_id: scene.baby_nap_off

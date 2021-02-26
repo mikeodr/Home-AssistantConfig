@@ -22,11 +22,15 @@ automation:
               entity_id: light.basement_room_light_dimmer
               data:
                 brightness_pct: 60
-      default:
-        - service: light.turn_on
-          entity_id: light.basement_room_light_dimmer
-          data:
-            brightness_pct: 90
+        - conditions:
+            - condition: state
+              entity_id: light.basement_room_light_dimmer
+              state: "on"
+          sequence:
+            - service: light.turn_on
+              entity_id: light.basement_room_light_dimmer
+              data:
+                brightness_pct: 90
 
   - alias: Sync Basement Hall Light to Basement Room Light
     trigger:
@@ -43,5 +47,5 @@ automation:
     action:
       service: homeassistant.turn_off
       entity_id:
-        - switch.basement_room
+        - light.basement_room_light_dimmer
         - switch.basement_hall
