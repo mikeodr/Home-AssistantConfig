@@ -64,8 +64,6 @@
   trigger:
     - platform: state
       entity_id: binary_sensor.bedroom
-    - platform: state
-      entity_id: binary_sensor.bedroom
       to: "on"
       for:
         minutes: 15
@@ -74,7 +72,9 @@
       entity_id: input_boolean.nap_mode
       state: "off"
     - condition: time
-      after: "06:30:00"
+      after: "07:00:00"
+    - condition: time
+      before: "10:00:00"
     - condition: state
       entity_id: sensor.michaels_iphone_battery_state
       state: "Not Charging"
