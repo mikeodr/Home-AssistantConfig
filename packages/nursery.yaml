@@ -94,7 +94,7 @@ automation:
           command: "off"
       - platform: sun
         event: sunrise
-        offset: "+00:30:00"
+        offset: "+01:00:00"
     action:
       - wait_template: '{{ not is_state("light.nursery_led_strip", "unavailable") }}'
       - service: light.turn_off

@@ -8,6 +8,8 @@ automation:
         entity_id: light.basement_room_light_dimmer
         from: "off"
         to: "on"
+      - platform: homeassistant
+        event: start
     action:
       choose:
         - conditions:
