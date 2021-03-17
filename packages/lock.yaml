@@ -1,0 +1,24 @@
+binary_sensor:
+  - platform: template
+    sensors:
+      lock_jammed:
+        friendly_name: "Front Lock Jammed"
+        value_template: "{{ is_state('sensor.front_door_lock_alarm_access_control', 'Lock Jammed') }}"
+
+alert:
+  lock_jammed:
+    name: Front lock jammed
+    done_message: Lock OK!
+    entity_id: binary_sensor.lock_jammed
+    state: "Lock Jammed"
+    can_acknowledge: true
+    repeat: 5
+    data:
+      url: /lovelace/leak-sensors
+      push:
+        category: "lock_jammed"
+        sound:
+          critical: 1
+          volume: 1.0
+    notifiers:
+      - mobile_app_michaels_iphone
