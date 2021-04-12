@@ -1,5 +1,6 @@
 automation:
   - alias: Basement Dimmer Control
+    id: basement_dimmer_auto_control
     trigger:
       - platform: sun
         event: sunset
@@ -35,6 +36,7 @@ automation:
                 brightness_pct: 90
 
   - alias: Sync Basement Hall Light to Basement Room Light
+    id: basement_sync_hall_room_lights
     trigger:
       - platform: state
         entity_id: switch.basement_hall
@@ -43,6 +45,7 @@ automation:
         entity_id: light.basement_room_light_dimmer
 
   - alias: Basement Lights off Night
+    id: basement_night_auto_off
     trigger:
       - platform: time
         at: "23:00:00"

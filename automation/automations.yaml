@@ -1,4 +1,5 @@
 - alias: Presence Notifications Home
+  id: presence_notification_home
   trigger:
     - platform: state
       entity_id: person.tiff
@@ -20,6 +21,7 @@
         {{ trigger.to_state.attributes.friendly_name }} is {% if trigger.to_state.state == 'home' %}back{% else %}away{% endif %}.
 
 - alias: Weather Alert
+  id: weather_alert
   trigger:
     platform: state
     entity_id:
@@ -42,6 +44,7 @@
         {{ trigger.to_state.attributes['alert detail'] }}
 
 - alias: Doorbell activated
+  id: doorbell_activated
   trigger:
     platform: state
     entity_id: binary_sensor.doorbell_button
@@ -94,6 +97,7 @@
         seconds: 30
 
 - alias: Return Home Annoucement
+  id: return_home_annoucement
   trigger:
     platform: zone
     entity_id: person.mike
@@ -115,6 +119,7 @@
         title: "Mike is almost home"
 
 - alias: Tiff Returning Home Notification
+  id: tiff_return_home_notification
   trigger:
     platform: zone
     entity_id: person.tiff
@@ -133,6 +138,7 @@
         message: "Tiff has entered the home zone"
 
 - alias: Update notification
+  id: update_notification
   trigger:
     - platform: state
       entity_id: binary_sensor.updater

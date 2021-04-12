@@ -11,6 +11,7 @@ input_boolean:
 automation:
   # Automatic boolean control settings
   - alias: Auto Christmas Tree Enabled Input Boolean
+    id: xmas_autO_enable_boolean
     trigger:
       - platform: homeassistant
         event: start
@@ -73,6 +74,7 @@ automation:
   #           entity_id: switch.exterior_xmas_lights
 
   - alias: Exterior Christmas Lights On
+    id: xmas_exteior_lights_on
     trigger:
       platform: sun
       event: sunset
@@ -85,6 +87,7 @@ automation:
       entity_id: switch.exterior_xmas_lights
 
   - alias: Exterior Christmas Lights Off
+    id: xmas_exterior_lights_off
     trigger:
       - platform: time
         at: "23:30:00"
@@ -99,6 +102,7 @@ automation:
       entity_id: switch.exterior_xmas_lights
 
   - alias: Tree lights on when living room occupied
+    id: xmas_lights_room_occupied
     trigger:
       - platform: state
         entity_id: binary_sensor.living_room
@@ -116,6 +120,7 @@ automation:
       entity_id: switch.christmas_tree
 
   - alias: Turn off tree lights bedtime
+    id: xmas_tree_lights_off_night
     trigger:
       platform: time
       at: "23:30:00"

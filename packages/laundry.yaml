@@ -6,6 +6,7 @@ input_datetime:
 
 automation:
   - alias: Laundry Completed
+    id: laundry_completed
     trigger:
       - platform: time
         at: input_datetime.laundry_complete

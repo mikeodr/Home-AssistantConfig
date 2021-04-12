@@ -1,4 +1,5 @@
 - alias: Exterior Lights on Evenings
+  id: exterior_lights_on_evenings
   trigger:
     platform: sun
     event: sunset
@@ -7,6 +8,7 @@
     entity_id: group.exterior_lights
 
 - alias: Exterior Lights off Night, or sunrise
+  id: exterior_lights_off_overnight
   trigger:
     - platform: time
       at: "23:30:00"
@@ -17,6 +19,7 @@
       entity_id: group.exterior_lights
 
 - alias: Keep Exterior Lights off overnight if turned on outside normal hours
+  id: exterior_lights_off_outside_normal_hours
   trigger:
     - platform: state
       entity_id: group.exterior_lights
@@ -36,6 +39,7 @@
       entity_id: group.exterior_lights
 
 - alias: Keep Exterior Lights off during daylight
+  id: exterior_lights_off_daylight
   trigger:
     platform: state
     entity_id: group.exterior_lights
@@ -51,6 +55,7 @@
       entity_id: group.exterior_lights
 
 - alias: Sync Exterior Lights
+  id: exterior_sync_exterior_lights
   trigger:
     platform: state
     to: "on"
@@ -64,6 +69,7 @@
     entity_id: group.exterior_lights
 
 - alias: Turn on external lights, multiple triggers
+  id: exterior_exterior_lights_on_triggers
   trigger:
     - platform: state
       entity_id: cover.garage

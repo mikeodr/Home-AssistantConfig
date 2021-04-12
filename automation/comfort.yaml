@@ -1,4 +1,5 @@
 - alias: Bedroom Comfort when arrival past bedtime
+  id: bedroom_comfort_arrive_past_bedtime
   trigger:
     platform: state
     entity_id: group.adults
@@ -15,6 +16,7 @@
       - switch.master_humidifier
 
 - alias: Bedroom Comfort On Evenings
+  id: bedroom_comfort_evenings
   trigger:
     - platform: time
       at: "22:30:00"
@@ -29,6 +31,7 @@
       - switch.master_humidifier
 
 - alias: Bedroom Comfort if in bed early
+  id: bedroom_comfort_early_bed
   trigger:
     - platform: state
       entity_id: sensor.tiffanys_iphone_battery_state
@@ -51,6 +54,7 @@
       - switch.master_humidifier
 
 - alias: Bedroom Comfort Off Morning
+  id: bedroom_comfort_off_mornings
   trigger:
     - platform: time
       at: "08:30:00"
@@ -61,6 +65,7 @@
       - switch.master_humidifier
 
 - alias: Bedroom off mornings if nursery active.
+  id: bedroom_off_mornings_nursery_active
   trigger:
     - platform: state
       entity_id: binary_sensor.bedroom
@@ -85,6 +90,7 @@
       - switch.master_humidifier
 
 - alias: Spare Bedroom Fan Toggle
+  id: spare_bedroom_fan_toggle
   trigger:
     platform: event
     event_type: zha_event

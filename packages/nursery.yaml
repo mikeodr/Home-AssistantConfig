@@ -40,6 +40,7 @@ scene:
 
 automation:
   - alias: Nap Mode Button Toggle
+    id: nursery_nap_mode_toggle
     trigger:
       - platform: event
         event_type: zha_event
@@ -61,6 +62,7 @@ automation:
           seconds: 1
 
   - alias: Nursery LED On
+    id: nursery_led_on
     trigger:
       platform: event
       event_type: zha_event
@@ -86,6 +88,7 @@ automation:
                 entity_id: scene.nursery_led_on_low
 
   - alias: Nursery LED Off
+    id: nursery_led_off
     trigger:
       - platform: event
         event_type: zha_event
@@ -103,6 +106,7 @@ automation:
             - light.nursery_led_strip
 
   - alias: Set Nap Accessories
+    id: nursery_set_nap_accessories
     trigger:
       platform: state
       entity_id: input_boolean.nap_mode
@@ -140,6 +144,7 @@ automation:
                     entity_id: light.nursery_light
 
   - alias: Toggle TV Monitor
+    id: nursery_toggle_tv_monitor
     trigger:
       platform: state
       entity_id: input_boolean.nap_mode
@@ -211,6 +216,7 @@ automation:
                           command: "POWER"
 
   - alias: Nursery Humidifer on evenings
+    id: nursery_humidifer_evenings
     trigger:
       platform: state
       entity_id: input_boolean.nap_mode
@@ -228,7 +234,8 @@ automation:
       - service: homeassistant.turn_on
         entity_id: switch.nursery_humidifier
 
-  - alias: Nursey Fan On if needed
+  - alias: Nursery Fan On if needed
+    id: nursery_fan_temperature_conditional
     trigger:
       platform: state
       entity_id: input_boolean.nap_mode
@@ -247,7 +254,8 @@ automation:
             entity_id: sensor.kid_s_room_temperature #Acutal Room Temp
             above: 25
 
-  - alias: Nursey Fan on if temperature rises
+  - alias: Nursery Fan on if temperature rises
+    id: nursery_fan_temperature_rise_conditional
     trigger:
       platform: numeric_state
       entity_id: sensor.kid_s_room_temperature
@@ -265,9 +273,10 @@ automation:
       - service: notify.mobile_app_michaels_iphone
         data:
           title: "Nursery Event"
-          message: "Nursey Temperature Fan Trigger"
+          message: "Nursery Temperature Fan Trigger"
 
-  - alias: Nursey Low Temperature Warning
+  - alias: Nursery Low Temperature Warning
+    id: nursery_low_temp_warning
     trigger:
       platform: numeric_state
       entity_id: sensor.kid_s_room_temperature
@@ -285,6 +294,7 @@ automation:
         entity_id: switch.nursery_fan
 
   - alias: Turn nursery off if forgotten
+    id: nursery_off_if_forgotten
     trigger:
       - platform: state
         entity_id: binary_sensor.kid_s_room
@@ -306,6 +316,7 @@ automation:
         entity_id: light.nursery_light
 
   - alias: Turn off nap mode via light switch
+    id: nursery_nap_off_via_lightswitch
     trigger:
       - platform: state
         entity_id: light.nursery_light

@@ -89,6 +89,7 @@ ios:
 
 automation:
   - alias: iOS Toggle Garage
+    id: ios_toggle_garage
     trigger:
       platform: event
       event_type: ios.action_fired
@@ -101,6 +102,7 @@ automation:
         - cover.garage
 
   - alias: iOS Close Garage Door Alert
+    id: ios_close_garage_alert
     trigger:
       platform: event
       event_type: ios.notification_action_fired
@@ -111,6 +113,7 @@ automation:
       entity_id: cover.garage
 
   - alias: iOS Acknowledge Garage Door Alert
+    id: ios_ack_garage_alert
     trigger:
       platform: event
       event_type: ios.notification_action_fired
@@ -121,6 +124,7 @@ automation:
       entity_id: alert.garage_open
 
   - alias: iOS Acknowledge Leak
+    id: ios_ack_leak
     trigger:
       platform: event
       event_type: ios.notification_action_fired
@@ -131,6 +135,7 @@ automation:
       entity_id: alert.water_leak
 
   - alias: iOS Acknowledge Lock Jammed
+    id: ios_ack_locK_jammed
     trigger:
       platform: event
       event_type: ios.notification_action_fired
@@ -141,6 +146,7 @@ automation:
       entity_id: alert.lock_jammed
 
   - alias: iOS Lock Front Door
+    id: ios_lock_front door
     trigger:
       platform: event
       event_type: ios.action_fired
@@ -153,6 +159,7 @@ automation:
         - lock.front_door
 
   - alias: iOS Unlock Front Door
+    id: ios_unlock_front_door
     trigger:
       platform: event
       event_type: ios.action_fired
@@ -165,6 +172,7 @@ automation:
         - lock.front_door
 
   - alias: Trigger sensor updates for Tiff's phone during bedtime period
+    id: ios_trigger_updates
     trigger:
       platform: time_pattern
       hours: "21"
@@ -182,6 +190,7 @@ automation:
           message: "request_location_update"
 
   - alias: Update Mike's Phone For Driving
+    id: ios_update_mike_driving
     trigger:
       - platform: time_pattern
         minutes: "/5"

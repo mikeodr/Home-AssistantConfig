@@ -27,6 +27,7 @@ alert:
 
 automation:
   - alias: Lock Status Change
+    id: lock_status_change
     trigger:
         - platform: state
           entity_id: lock.front_door
@@ -62,6 +63,7 @@ automation:
           {{ trigger.to_state.attributes.friendly_name }} is {{ trigger.to_state.state }}{% if user is defined %} by {{user}}{% endif %}
 
   - alias: Secure House Evenings
+    id: lock_secure_house_evenings
     trigger:
       - platform: time
         at: '22:00:00'
@@ -72,6 +74,7 @@ automation:
         entity_id: lock.front_door
 
   - alias: Enable Cleaners Lock Code
+    id: lock_enable_cleaner_code
     trigger:
       - platform: template
         value_template: "{{ state_attr('calendar.house_planning', 'offset_reached') }}"
@@ -85,6 +88,7 @@ automation:
           message: "Setting cleaners lock code"
 
   - alias: Cleaners Clear Code
+    id: lock_clear_cleaner_code
     trigger:
       - platform: state
         entity_id: calendar.house_planning

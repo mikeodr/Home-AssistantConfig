@@ -1,4 +1,5 @@
 - alias: Ask if Pupper Home after Dark
+  id: ask_pupper_home
   trigger:
     platform: sun
     event: sunset
@@ -16,6 +17,7 @@
           category: 'pupper_home'
           
 - alias: Pupper Question Event yes
+  id: pupper_home_event_yes
   trigger:
     platform: event
     event_type: ios.notification_action_fired
@@ -26,6 +28,7 @@
     entity_id: input_boolean.pupper_home
 
 - alias: Pupper Question Event No
+  id: pupper_home_event_no
   trigger:
     platform: event
     event_type: ios.notification_action_fired
