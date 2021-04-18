@@ -1,7 +1,7 @@
 input_boolean:
   nap_mode:
     name: Nap Mode
-    initial: on
+    initial: off
     icon: mdi:sleep
 
 scene:
@@ -10,7 +10,6 @@ scene:
       light.nursery_led_strip:
         state: "on"
         brightness_pct: 100
-        rgb_color: [255, 191, 0]
         color_temp: 311
 
   - name: nursery_led_on_low
@@ -97,7 +96,7 @@ automation:
           command: "off"
       - platform: sun
         event: sunrise
-        offset: "+01:00:00"
+        offset: "+02:00:00"
     action:
       - wait_template: '{{ not is_state("light.nursery_led_strip", "unavailable") }}'
       - service: light.turn_off
@@ -130,7 +129,7 @@ automation:
                   - conditions:
                       - condition: sun
                         before: sunrise
-                        before_offset: "+00:30:00"
+                        before_offset: "+01:30:00"
                     sequence:
                       - service: scene.turn_on
                         entity_id: scene.baby_nap_off
