@@ -87,6 +87,55 @@ ios:
         text: "Nap Time"
         color: "#ffffff"
 
+sensor:
+  - platform: template
+    sensors:
+      ios_main_status_summary:
+        friendly_name: "iOS Watch Complication Summary Line"
+        unique_id: ios_main_status_summary_line
+        value_template: >-
+          {% if states("lock.front_door") == "locked" %}
+          🔒
+          {% else %}
+          🔓
+          {% endif %} |
+          {% if states("cover.garage") == "closed" %}
+          ⬇
+          {% else %}
+          ⬆
+          {% endif %} |
+          {% if states("person.mike") == 'home' and states("person.tiff") == 'home' %}
+          👫
+          {% elif states("person.mike") == 'home' %}
+          🧍‍♂️
+          {% elif states("person.tiff") == 'home' %}
+          🧍‍♀️
+          {% else %}
+          🙅
+          {% endif %}
+      ios_main_status_body1:
+        friendly_name: "iOS Watch Complication Body 1"
+        unique_id: ios_main_status_body1
+        value_template: >-
+          {% if states("input_boolean.nap_mode") == 'on' %}
+          😴
+          {% else %}
+          👶
+          {% endif %} : {{ states("sensor.kid_s_room_temperature")}} |
+          {% if states("climate.my_ecobee") == "heat" %}
+          🔥
+          {% elif states("climate.my_ecobee") == "cool" %}
+          ❄️
+          {% elif states("climate.my_ecobee") == "heat_cool" %}
+          🔄
+          {% else %}
+          ⏹️
+          {% endif %}{{ state_attr('climate.my_ecobee', 'current_temperature') }}
+      ios_main_status_body2:
+        friendly_name: "iOS Watch Complication Body 2"
+        unique_id: ios_main_status_body2
+        value_template: >-
+          📺 :{{ states('sensor.plex_mikeflix') }}
 automation:
   - alias: iOS Toggle Garage
     id: ios_toggle_garage
