@@ -121,8 +121,7 @@ sensor:
           😴
           {% else %}
           👶
-          {% endif %} : {{ states("sensor.kid_s_room_temperature")}} |
-          {% if states("climate.my_ecobee") == "heat" %}
+          {% endif %} {{ states("sensor.kid_s_room_temperature")}} |{% if states("climate.my_ecobee") == "heat" %}
           🔥
           {% elif states("climate.my_ecobee") == "cool" %}
           ❄️
@@ -135,7 +134,12 @@ sensor:
         friendly_name: "iOS Watch Complication Body 2"
         unique_id: ios_main_status_body2
         value_template: >-
-          📺 :{{ states('sensor.plex_mikeflix') }}
+          📺 {{ states('sensor.plex_mikeflix') }} |{% if states('sun.sun') == 'above_horizon' %}
+          🌛{% set sec = (states.sun.sun.attributes.next_setting |as_timestamp - now() |as_timestamp) |int %}
+          {% else %}
+          ☀️{% set sec = (states.sun.sun.attributes.next_rising | as_timestamp - now()| as_timestamp) |int %}
+          {% endif %}
+          {{ sec//3600 }}h{{ sec%3600//60 }}m
 automation:
   - alias: iOS Toggle Garage
     id: ios_toggle_garage
