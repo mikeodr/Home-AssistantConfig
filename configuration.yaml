@@ -19,7 +19,8 @@ stream:
 wake_on_lan:
 
 alert: !include config/alert.yaml
-automation: !include_dir_merge_list automation
+automation config : !include_dir_merge_list automation
+automation ui: !include automations.yaml
 binary_sensor: !include_dir_merge_list binary_sensor
 camera: !include config/camera.yaml
 cover: !include config/covers.yaml
