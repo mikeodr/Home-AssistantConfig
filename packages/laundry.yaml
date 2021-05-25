@@ -11,7 +11,9 @@ automation:
       - platform: time
         at: input_datetime.laundry_complete
     action:
-      - service: notify.mobile_app_tiffanys_iphone
+      - service: notify.adults
         data:
           title: "Laundry is done!"
           message: "Laundry cycle complete"
+          data:
+            tag: "laundry-notification"
