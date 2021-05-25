@@ -1,14 +1,21 @@
 water_leak:
   name: Water Leak Detected
-  done_message: All Dry!
+  done_message: "clear_notification"
   entity_id: group.leak_sensors
   state: "on"
   can_acknowledge: true
   repeat: 30
   data:
-    url: /lovelace/leak-sensors
+    uri: /lovelace/leak-sensors
+    tag: "water-leak-alert"
+    actions:
+      - action: "ACK_LEAK"
+        title: "Acknowledge Leak"
+        activationMode: "background"
+        authenticationRequired: true
+        destructive: true
+        behavior: "default"
     push:
-      category: "acknowledge_leak"
       sound:
         name: "US-EN-Alexa-Water-Detected-Generic.wav"
         critical: 1
@@ -18,14 +25,27 @@ water_leak:
 
 garage_open:
   name: Garage Door left open
-  done_message: Door closed!
+  done_message: "clear_notification"
   entity_id: cover.garage
   state: "open"
   can_acknowledge: true
   repeat: 15
   skip_first: true
   data:
-    push:
-      category: "garage_alert"
+    uri: /lovelace/leak-sensors
+    tag: "garage-open-alert"
+    actions:
+      - action: "CLOSE_GARAGE"
+        title: "Close Garage"
+        activationMode: "background"
+        authenticationRequired: true
+        destructive: false
+        behavior: "default"
+      - action: "ACK_GARAGE"
+        title: "Acknowledge Garage"
+        activationMode: "background"
+        authenticationRequired: true
+        destructive: true
+        behavior: "default"
   notifiers:
     - mobile_app_michaels_iphone
