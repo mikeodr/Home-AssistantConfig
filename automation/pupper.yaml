@@ -10,8 +10,8 @@
       state: "not_home"
   action:
     - variables:
-      action_home: "{{ 'HOME_' ~ context.id }}"
-      action_away: "{{ 'AWAY_' ~ context.id }}"
+        action_home: "{{ 'HOME_' ~ context.id }}"
+        action_away: "{{ 'AWAY_' ~ context.id }}"
     - service: notify.mobile_app_michaels_iphone
       data:
         message: "Is the pupper home alone?"
