@@ -12,3 +12,4 @@ secrets.yaml
 tts/
 .vscode/
 *.xml
+blueprints/
