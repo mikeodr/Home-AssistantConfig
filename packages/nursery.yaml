@@ -277,7 +277,7 @@ automation:
     trigger:
       - platform: numeric_state
         entity_id: sensor.kid_s_room_temperature
-        below: 18
+        below: 21
     action:
       - service: homeassistant.turn_off
         entity_id: switch.nursery_fan
@@ -297,7 +297,7 @@ automation:
         entity_id: input_boolean.nap_mode
         state: "on"
     action:
-      - service: notify.mobile_app_michaels_iphone
+      - service: notify.adults
         data:
           title: "Nursery Temperature Warning"
           message: >
