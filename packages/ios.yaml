@@ -24,13 +24,13 @@ ios:
       label:
         text: "Unlock Door"
         color: "#ffffff"
-    - name: nap_time
+    - name: toggle_spare_bedroom_fan
       background_color: "#000000"
       icon:
         icon: sleep
         color: "#ffffff"
       label:
-        text: "Nap Time"
+        text: "Spare Bedroom Fan"
         color: "#ffffff"
 
 sensor:
@@ -154,3 +154,15 @@ automation:
       - service: notify.mobile_app_tiffanys_iphone
         data:
           message: "request_location_update"
+
+  - alias: iOS Spare bedroom fan toggle
+    id: ios_spare_bedroom_fan_toggle
+    trigger:
+      - platform: event
+        event_type: ios.action_fired
+        event_data:
+          actionID: toggle_spare_bedroom_fan
+    action:
+      - service: homeassistant.toggle
+        entity_id:
+          - switch.spare_bedroom_fan

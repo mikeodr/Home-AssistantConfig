@@ -55,11 +55,6 @@ automation:
           command: "attribute_updated"
           args:
             value: 1
-      - platform: event
-        event_type: ios.action_fired
-        event_data:
-          actionID: nap_time
-          sourceDeviceID: michaels_iphone
     action:
       - service: homeassistant.toggle
         entity_id:
