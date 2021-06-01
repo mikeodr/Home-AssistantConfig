@@ -3,6 +3,4 @@ filter:
     - light
     - switch
     - cover
-    - lock
-    - camera
     - climate
