@@ -27,7 +27,7 @@ ios:
     - name: toggle_spare_bedroom_fan
       background_color: "#000000"
       icon:
-        icon: sleep
+        icon: fan
         color: "#ffffff"
       label:
         text: "Spare Bedroom Fan"
