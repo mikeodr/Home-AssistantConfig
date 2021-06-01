@@ -40,51 +40,61 @@ sensor:
         friendly_name: "iOS Watch Complication Summary Line"
         unique_id: ios_main_status_summary_line
         value_template: >-
-          {% if states("lock.front_door") == "locked" %}
+          {%- if states("lock.front_door") == "locked" -%}
           🔒
-          {% else %}
+          {%- else -%}
           🔓
-          {% endif %} |
-          {% if states("cover.garage") == "closed" %}
-          ⬇
-          {% else %}
-          ⬆
-          {% endif %} |
-          {% if states("person.mike") == 'home' and states("person.tiff") == 'home' %}
-          👫
-          {% elif states("person.mike") == 'home' %}
-          🧍‍♂️
-          {% elif states("person.tiff") == 'home' %}
-          🧍‍♀️
-          {% else %}
-          🙅
-          {% endif %}
+          {%- endif -%} 
+          {%- if states("cover.garage") == "closed" -%}
+          |⬇
+          {%- else -%}
+          |⬆
+          {%- endif -%}
+          {%- if states("person.mike") == 'home' and states("person.tiff") == 'home' -%}
+          |👫
+          {%- elif states("person.mike") == 'home' -%}
+          |🧍‍♂️
+          {%- elif states("person.tiff") == 'home' -%}
+          |🧍‍♀️
+          {%- else -%}
+          |🙅
+          {%- endif -%}
+          {% set garbage_day=strptime((states('sensor.recollect_waste') | as_timestamp)|timestamp_local, "%Y-%m-%d %H:%M:%S") -%}
+          {%- if now().day == (garbage_day - timedelta(days=1)).day or 
+          now().day == garbage_day.day -%}
+          {% if 'Garbage' in state_attr('sensor.recollect_waste', 'pickup_types') -%}
+          |🗑
+          {%- else -%}
+          |♻
+          {%- endif -%}
+          {%- endif -%}
       ios_main_status_body1:
         friendly_name: "iOS Watch Complication Body 1"
         unique_id: ios_main_status_body1
         value_template: >-
-          {% if states("input_boolean.nap_mode") == 'on' %}
+          {%- if states("input_boolean.nap_mode") == 'on' -%}
           😴
-          {% else %}
+          {%- else -%}
           👶
-          {% endif %} {{ states("sensor.kid_s_room_temperature")}} |{% if states("climate.my_ecobee") == "heat" %}
-          🔥
-          {% elif states("climate.my_ecobee") == "cool" %}
-          ❄️
-          {% elif states("climate.my_ecobee") == "heat_cool" %}
-          🔄
-          {% else %}
-          ⏹️
-          {% endif %}{{ state_attr('climate.my_ecobee', 'current_temperature') }}
+          {%- endif %} {{ states("sensor.kid_s_room_temperature")}}
+          {%- if states("climate.my_ecobee") == "heat" -%}
+          |🔥
+          {%- elif states("climate.my_ecobee") == "cool" -%}
+          |❄️
+          {%- elif states("climate.my_ecobee") == "heat_cool" -%}
+          |🔄
+          {%- else -%}
+          |⏹️
+          {%- endif %} {{ state_attr('climate.my_ecobee', 'current_temperature') }}
       ios_main_status_body2:
         friendly_name: "iOS Watch Complication Body 2"
         unique_id: ios_main_status_body2
         value_template: >-
-          📺 {{ states('sensor.plex_mikeflix') }} |{% if states('sun.sun') == 'above_horizon' %}
+          📺{{ states('sensor.plex_mikeflix') }}|{%- if states('sun.sun') == 'above_horizon' -%}
           🌛{% set sec = (states.sun.sun.attributes.next_setting |as_timestamp - now() |as_timestamp) |int %}
-          {% else %}
+          {%- else -%}
           ☀️{% set sec = (states.sun.sun.attributes.next_rising | as_timestamp - now()| as_timestamp) |int %}
-          {% endif %}
+          {%- endif -%}
           {{ sec//3600 }}h{{ sec%3600//60 }}m
 
 automation:
@@ -142,30 +152,5 @@ automation:
         before: "22:00"
     action:
       - service: notify.mobile_app_tiffanys_iphone
-        data:
-          message: "request_location_update"
-
-  - alias: Update Mike's Phone For Driving
-    id: ios_update_mike_driving
-    trigger:
-      - platform: time_pattern
-        minutes: "/5"
-    condition:
-      - condition: state
-        entity_id: sensor.michaels_iphone_activity
-        state: "Automotive"
-      - condition: state
-        entity_id: input_boolean.vacation_mode
-        state: "off"
-      - condition: or
-        conditions:
-          - condition: state
-            entity_id: sensor.michaels_iphone_battery_state
-            state: "Charging"
-          - condition: state
-            entity_id: sensor.michaels_iphone_battery_state
-            state: "Full"
-    action:
-      - service: notify.mobile_app_michaels_iphone
         data:
           message: "request_location_update"
