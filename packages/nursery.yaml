@@ -4,6 +4,13 @@ input_boolean:
     initial: off
     icon: mdi:sleep
 
+homeassistant:
+  customize:
+    input_boolean.quite_mode:
+      device_class: sound
+    binary_sensor.nursery_door:
+      device_class: door
+
 scene:
   - name: nursery_led_on
     entities:
@@ -127,9 +134,8 @@ automation:
             sequence:
               - choose:
                   - conditions:
-                      - condition: sun
-                        before: sunrise
-                        before_offset: "+01:30:00"
+                      - condition: time
+                        before: "08:30:00"
                     sequence:
                       - service: scene.turn_on
                         entity_id: scene.baby_nap_off
@@ -241,6 +247,8 @@ automation:
         from: "off"
         to: "on"
       - platform: time
+        at: "11:00:00"
+      - platform: time
         at: "15:00:00"
     action:
       service: homeassistant.turn_on
@@ -253,7 +261,7 @@ automation:
             above: 20
           - condition: numeric_state
             entity_id: sensor.kid_s_room_temperature #Acutal Room Temp
-            above: 25
+            above: 23
 
   - alias: Nursery Fan on if temperature rises
     id: nursery_fan_temperature_rise_conditional
@@ -281,7 +289,6 @@ automation:
     action:
       - service: homeassistant.turn_off
         entity_id: switch.nursery_fan
-
 
   - alias: Nursery Temperature Warning
     id: nursery_temp_warning
@@ -341,3 +348,22 @@ automation:
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.nap_mode
+
+  - alias: Notify if door open during nap
+    id: nursery_nap_on_door_open
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.nursery_door
+        to: "on"
+        for:
+          minutes: 10
+    condition:
+      - condition: state
+        entity_id: input_boolean.nap_mode
+        state: "on"
+    action:
+      - service: notify.adults
+        data:
+          title: "Nursery Door Left Open"
+          data:
+            tag: "nursery-door-open-warning"

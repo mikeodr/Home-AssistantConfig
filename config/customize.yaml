@@ -1,4 +1,0 @@
-input_boolean.quite_mode:
-  device_class: sound
-binary_sensor.nursery_door:
-  device_class: door
