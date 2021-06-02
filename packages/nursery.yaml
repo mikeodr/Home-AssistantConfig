@@ -16,14 +16,14 @@ scene:
     entities:
       light.nursery_led_strip:
         state: "on"
-        brightness_pct: 100
+        brightness: 254
         color_temp: 311
 
   - name: nursery_led_on_low
     entities:
       light.nursery_led_strip:
         state: "on"
-        brightness_pct: 80
+        brightness: 203
         rgb_color: [255, 127, 0]
 
   - name: baby_nap_on
@@ -263,7 +263,7 @@ automation:
     trigger:
       platform: numeric_state
       entity_id: sensor.kid_s_room_temperature
-      above: 25
+      above: 23
     condition:
       - condition: state
         entity_id: input_boolean.nap_mode
@@ -291,9 +291,13 @@ automation:
       - platform: numeric_state
         entity_id: sensor.kid_s_room_temperature
         below: 18
+        for:
+          minutes: 10
       - platform: numeric_state
         entity_id: sensor.kid_s_room_temperature
         above: 25
+        for:
+          minutes: 10
     condition:
       - condition: state
         entity_id: input_boolean.nap_mode
