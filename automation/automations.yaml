@@ -142,7 +142,8 @@
       data:
         title: "Tiff is returning home"
         message: "Tiff has entered the home zone"
-        tag: "tiff-return-home"
+        data:
+          tag: "tiff-return-home"
 
 - alias: Update notification
   id: update_notification
