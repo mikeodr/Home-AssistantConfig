@@ -252,7 +252,8 @@ automation:
       - condition: or
         conditions:
           - condition: numeric_state
-            entity_id: sensor.temperature # Outside forecast
+            entity_id: weather.climacell_nowcast
+            attribute: temperature
             above: 20
           - condition: numeric_state
             entity_id: sensor.kid_s_room_temperature #Acutal Room Temp

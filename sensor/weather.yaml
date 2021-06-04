@@ -4,5 +4,3 @@
     - temperature
     - cloud_cover
   units: ca
-
-- platform: environment_canada

@@ -35,7 +35,6 @@ notify: !include config/notify.yaml
 scene: !include config/scenes.yaml
 script: !include_dir_merge_named scripts/
 sensor: !include_dir_merge_list sensor
-weather: !include config/weather.yaml
 
 tts:
   - platform: google_translate
