@@ -34,7 +34,10 @@ influxdb:
 alert: !include config/alert.yaml
 automation config : !include_dir_merge_list automation
 automation ui: !include automations.yaml
-binary_sensor: !include_dir_merge_list binary_sensor
+binary_sensor:
+  - platform: workday
+    country: CA
+    province: "ON"
 camera: !include config/camera.yaml
 cover: !include config/covers.yaml
 group: !include config/groups.yaml
