@@ -4,3 +4,5 @@ filter:
     - switch
     - cover
     - climate
+  include_entity_globs:
+    - sensor.*temperature*
