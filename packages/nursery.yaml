@@ -44,6 +44,13 @@ scene:
       switch.nursery_humidifier:
         state: "off"
 
+script:
+  tv_baby_monitor:
+    alias: TV Baby Monitor
+    sequence:
+      - service: automation.trigger
+        entity_id: automation.toggle_tv_monitor
+
 automation:
   - alias: Nap Mode Button Toggle
     id: nursery_nap_mode_toggle
