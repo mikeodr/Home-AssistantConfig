@@ -48,7 +48,6 @@ media_player: !include config/media_player.yaml
 notify: !include config/notify.yaml
 scene: !include config/scenes.yaml
 script: !include_dir_merge_named scripts/
-sensor: !include_dir_merge_list sensor
 
 tts:
   - platform: google_translate
