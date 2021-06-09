@@ -374,3 +374,15 @@ automation:
           title: "Nursery Door Left Open"
           data:
             tag: "nursery-door-open-warning"
+
+  - alias: Quite mode when change table light on
+    id: nusrey_quite_mode_change_table
+    trigger:
+      - platform: state
+        entity_id: light.nursery_led_strip
+    condition:
+      - condition: time
+        after: "09:00:00"
+    action:
+      - service: homeassistant.turn_{{ trigger.to_state.state }}
+        entity_id: input_boolean.quite_mode
