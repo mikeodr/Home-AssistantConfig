@@ -107,7 +107,7 @@
   trigger:
     platform: zone
     entity_id: person.mike
-    zone: zone.arriving_home
+    zone: zone.home
     event: enter
   condition:
     - condition: state
@@ -118,11 +118,12 @@
       state: "Automotive"
     - condition: state
       entity_id: input_boolean.nap_mode
-      state: "off"
+      state: "on"
   action:
     - service: notify.mobile_app_tiffanys_iphone
       data:
         title: "Mike is almost home"
+        message: "Keep Stella Quiet"
 
 - alias: Tiff Returning Home Notification
   id: tiff_return_home_notification
