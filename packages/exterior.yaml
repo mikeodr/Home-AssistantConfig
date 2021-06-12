@@ -161,25 +161,26 @@ automation:
       - service: notify.mobile_app_michaels_iphone
         data:
           message: "Open the house?"
-          actions:
-            - action: "{{ action_both }}"
-              title: "Open Everything"
-              activationMode: "background"
-              authenticationRequired: true
-              destructive: false
-              behavior: "default"
-            - action: "{{ action_lock }}"
-              title: "Unlock Door"
-              activationMode: "background"
-              authenticationRequired: true
-              destructive: false
-              behavior: "default"
-            - action: "{{ action_garage }}"
-              title: "Open Garage"
-              activationMode: "background"
-              authenticationRequired: true
-              destructive: false
-              behavior: "default"
+          data:
+            actions:
+              - action: "{{ action_both }}"
+                title: "Open Everything"
+                activationMode: "background"
+                authenticationRequired: true
+                destructive: true
+                behavior: "default"
+              - action: "{{ action_lock }}"
+                title: "Unlock Door"
+                activationMode: "background"
+                authenticationRequired: true
+                destructive: true
+                behavior: "default"
+              - action: "{{ action_garage }}"
+                title: "Open Garage"
+                activationMode: "background"
+                authenticationRequired: true
+                destructive: true
+                behavior: "default"
       - wait_for_trigger:
         - platform: event
           event_type: mobile_app_notification_action
@@ -193,6 +194,9 @@ automation:
           event_type: mobile_app_notification_action
           event_data:
             action: "{{ action_garage }}"
+        continue_on_timeout: false
+        timeout:
+          minutes: 10
       - choose:
         - conditions: "{{ wait.trigger.event.data.action == action_both }}"
           sequence:
