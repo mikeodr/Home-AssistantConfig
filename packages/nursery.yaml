@@ -3,6 +3,10 @@ input_boolean:
     name: Nap Mode
     initial: off
     icon: mdi:sleep
+  girls_home_override:
+    name: Girls Home Override
+    initial: off
+    icon: mdi:home-heart
 
 homeassistant:
   customize:
@@ -52,6 +56,15 @@ script:
         entity_id: automation.toggle_tv_monitor
 
 automation:
+  - alias: Reset Home override
+    id: nursery_home_override_reset
+    trigger:
+      - platform: time
+        at: "00:00:01"
+    action:
+      service: homeassistant.turn_off
+      entity_id: input_boolean.girls_home_override
+
   - alias: Nap Mode Button Toggle
     id: nursery_nap_mode_toggle
     trigger:
@@ -246,15 +259,11 @@ automation:
     trigger:
       - platform: state
         entity_id: input_boolean.nap_mode
-        from: "off"
         to: "on"
       - platform: time
         at: "11:00:00"
       - platform: time
         at: "15:00:00"
-    action:
-      service: homeassistant.turn_on
-      entity_id: switch.nursery_fan
     condition:
       - condition: or
         conditions:
@@ -265,6 +274,28 @@ automation:
           - condition: numeric_state
             entity_id: sensor.kid_s_room_temperature #Acutal Room Temp
             above: 23
+    action:
+      - choose:
+        # Manual trigger always turns on.
+        - conditions: >
+            {{ trigger.to_state.state == 'on' and
+               is_state('input_boolean.nap_mode', 'on') }}
+          sequence:
+            service: homeassistant.turn_on
+            entity_id: switch.nursery_fan
+        # If not a workday or override is turn on
+        - conditions:
+            - condition: or
+              conditions:
+                - condition: state
+                  entity_id: binary_sensor.workday_sensor
+                  state: "off"
+                - condition: state
+                  entity_id: input_boolean.girls_home_override
+                  state: "on"
+          sequence:
+            service: homeassistant.turn_on
+            entity_id: switch.nursery_fan
 
   - alias: Nursery Fan on if temperature rises
     id: nursery_fan_temperature_rise_conditional
