@@ -152,7 +152,7 @@ automation:
     condition:
       - condition: state
         entity_id: sensor.michaels_iphone_activity
-        state: "walking"
+        state: "Walking"
     action:
       - variables:
           action_lock: "{{ 'LOCK_' ~ context.id }}"

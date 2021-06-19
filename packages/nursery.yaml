@@ -233,7 +233,7 @@ automation:
       - condition: and
         conditions:
           - condition: time
-            after: " 17:00:00"
+            after: "17:00:00"
           - condition: template
             # Only care about November - March
             value_template: "{{ now().month >= 11 or now().month <= 3 }}"
