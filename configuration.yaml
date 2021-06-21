@@ -31,7 +31,6 @@ influxdb:
   tags:
     source: HA
 
-alert: !include config/alert.yaml
 automation config: !include_dir_merge_list automation
 automation ui: !include automations.yaml
 binary_sensor:
