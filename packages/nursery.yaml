@@ -264,6 +264,8 @@ automation:
         at: "11:00:00"
       - platform: time
         at: "15:00:00"
+      - platform: time
+        at: "17:00:00"
     condition:
       - condition: or
         conditions:
@@ -293,6 +295,8 @@ automation:
                 - condition: state
                   entity_id: input_boolean.girls_home_override
                   state: "on"
+                - condition: time
+                  after: " 16:59:00"
           sequence:
             service: homeassistant.turn_on
             entity_id: switch.nursery_fan
