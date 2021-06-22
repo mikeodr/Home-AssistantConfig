@@ -246,7 +246,7 @@ automation:
       - condition: and
         conditions:
           - condition: time
-            after: "17:00:00"
+            after: "18:00:00"
           - condition: template
             # Only care about November - March
             value_template: "{{ now().month >= 11 or now().month <= 3 }}"
@@ -361,20 +361,29 @@ automation:
         entity_id: binary_sensor.kid_s_room
         from: "on"
         to: "off"
+      - platform: time
+        at: "09:00:00"
     condition:
       - condition: time
         after: "08:30:00"
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "off"
+      - condition: state
+        entity_id: binary_sensor.kid_s_room
+        state: "off"
     action:
       - service: homeassistant.turn_off
         entity_id: input_boolean.nap_mode
-      - service: homeassistant.turn_off
+        # Leave some light for 30 sec
+        # if someone is in the room
+      - service: homeassistant.turn_on
         entity_id: light.nursery_led_strip
-      - delay: 10
+      - delay: 30
       - service: homeassistant.turn_off
         entity_id: light.nursery_light
+      - service: homeassistant.turn_off
+        entity_id: light.nursery_led_strip
 
   - alias: Turn off nap mode via light switch
     id: nursery_nap_off_via_lightswitch
