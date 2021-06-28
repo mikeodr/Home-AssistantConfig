@@ -104,7 +104,9 @@ automation:
         entity_id: cover.garage
         to: "open"
       - platform: state
-        entity_id: lock.front_door
+        entity_id:
+          - lock.front_door
+          - lock.side_door
         to: "unlocked"
       - platform: zone
         entity_id:
@@ -170,7 +172,7 @@ automation:
                 destructive: true
                 behavior: "default"
               - action: "{{ action_lock }}"
-                title: "Unlock Door"
+                title: "Unlock Doors"
                 activationMode: "background"
                 authenticationRequired: true
                 destructive: true
@@ -201,7 +203,9 @@ automation:
         - conditions: "{{ wait.trigger.event.data.action == action_both }}"
           sequence:
             - service: lock.unlock
-              entity_id: lock.front_door
+              entity_id:
+                - lock.front_door
+                - lock.side_door
             - service: cover.open_cover
               entity_id: cover.garage
         - conditions: "{{ wait.trigger.event.data.action == action_garage }}"
@@ -211,4 +215,6 @@ automation:
         - conditions: "{{ wait.trigger.event.data.action == action_lock }}"
           sequence:
             - service: lock.unlock
-              entity_id: lock.front_door
+              entity_id:
+                - lock.front_door
+                - lock.side_door

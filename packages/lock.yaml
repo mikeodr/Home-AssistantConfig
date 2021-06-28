@@ -7,6 +7,13 @@ binary_sensor:
         delay_on:
           seconds: 10
 
+group:
+  locks:
+    name: Locks
+    entities:
+      - lock.front_door
+      - lock.side_door
+
 alert:
   lock_jammed:
     name: Front lock jammed
@@ -46,49 +53,50 @@ automation:
   - alias: Lock Status Change
     id: lock_status_change
     trigger:
-        - platform: state
-          entity_id: lock.front_door
-          from: 'unlocked'
-          to: 'locked'
-        - platform: state
-          entity_id: lock.front_door
-          from: 'locked'
-          to: 'unlocked'
+      - platform: event
+        event_type: zwave_js_notification
+        event_data:
+          command_class: 113
+          type: 6
+          event: 6
     condition:
       - condition: state
         entity_id: person.mike
-        state: 'not_home'
+        state: "not_home"
     action:
       service: notify.mobile_app_michaels_iphone
       data:
-        title: "Front Lock"
+        title: "Lock Event"
         message: >
-          {% set user_slot = states("sensor.front_door_lock_last_user_code") %}
-          {% if user_slot == "1" %}
+          {% set user_slot = trigger.event.data.parameters.userId %}
+          {% if user_slot == 1 %}
           {% set user = "Mike" %}
-          {% elif user_slot == "2" %}
+          {% elif user_slot == 2 %}
           {% set user = "Dad" %}
-          {% elif user_slot == "3" %}
+          {% elif user_slot == 3 %}
           {% set user = "Brendan" %}
-          {% elif user_slot == "4" %}
+          {% elif user_slot == 4 %}
           {% set user = "Tiff" %}
-          {% elif user_slot == "5" %}
+          {% elif user_slot == 5 %}
           {% set user = "Lisa" %}
-          {% elif user_slot == "15" %}
+          {% elif user_slot == 15 %}
           {% set user = "Cleaners" %}
           {% endif %}
-          {{ trigger.to_state.attributes.friendly_name }} is {{ trigger.to_state.state }}{% if user is defined %} by {{user}}{% endif %}
+          Unlocked{% if user is defined %} by {{user}}{% endif %}
+      #{{ trigger.to_state.attributes.friendly_name }} is {{ trigger.to_state.state }}{% if user is defined %} by {{user}}{% endif %}
 
   - alias: Secure House Evenings
     id: lock_secure_house_evenings
     trigger:
       - platform: time
-        at: '22:00:00'
+        at: "22:00:00"
     action:
       - service: cover.close_cover
         entity_id: cover.garage
       - service: lock.lock
-        entity_id: lock.front_door
+        entity_id:
+          - lock.front_door
+          - lock.side_door
 
   - alias: Enable Cleaners Lock Code
     id: lock_enable_cleaner_code
@@ -96,25 +104,30 @@ automation:
       - platform: template
         value_template: "{{ state_attr('calendar.house_planning', 'offset_reached') }}"
     action:
-      - service: mqtt.publish
+      - service: zwave_js.set_lock_usercode
         data:
-          topic: zwave2mqtt/4/99/1/16/set
-          payload: !secret cleaners_door_code_json
+          code_slot: "15"
+          usercode: !secret cleaners_door_code
+        entity_id: lock.front_door
       - service: notify.mobile_app_michaels_iphone
         data:
           message: "Setting cleaners lock code"
+          data:
+            tag: "cleaners-code"
 
   - alias: Cleaners Clear Code
     id: lock_clear_cleaner_code
     trigger:
       - platform: state
         entity_id: calendar.house_planning
-        to: 'off'
+        to: "off"
     action:
-      - service: mqtt.publish
+      - service: zwave_js.clear_lock_usercode
         data:
-          topic: zwave2mqtt/4/99/1/256/set
-          payload: "{\"value\": 16}"
+          code_slot: "15"
+        entity_id: lock.front_door
       - service: notify.mobile_app_michaels_iphone
         data:
           message: "Clearing cleaners lock code"
+          data:
+            tag: "cleaners-code"
