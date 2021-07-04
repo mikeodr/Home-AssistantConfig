@@ -9,11 +9,3 @@ exterior_lights:
   entities:
     - switch.front_porch
     - switch.side_door
-
-leak_sensors:
-  name: Leak Sensors
-  entities:
-    - binary_sensor.leak_detector
-    - binary_sensor.water_leak_laundry
-    - binary_sensor.water_leak_kitchen
-    - binary_sensor.water_leak_furnace_room

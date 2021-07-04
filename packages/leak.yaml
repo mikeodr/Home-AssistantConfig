@@ -1,3 +1,11 @@
+group:
+  leak_sensors:
+    name: Leak Sensors
+    entities:
+      - binary_sensor.water_leak_main_bath
+      - binary_sensor.water_leak_laundry
+      - binary_sensor.water_leak_kitchen
+      - binary_sensor.water_leak_furnace_room
 alert:
   water_leak:
     name: Water Leak Detected
