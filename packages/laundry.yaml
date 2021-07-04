@@ -44,7 +44,7 @@ automation:
     trigger:
       - platform: numeric_state
         entity_id: sensor.laundry_power
-        below: 1.5
+        below: 4.0
     condition:
       - condition: state
         entity_id: input_select.washing_machine_status
