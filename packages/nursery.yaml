@@ -359,8 +359,9 @@ automation:
     trigger:
       - platform: state
         entity_id: binary_sensor.kid_s_room
-        from: "on"
         to: "off"
+        for:
+          minutes: 30
       - platform: time
         at: "09:00:00"
     condition:
@@ -369,9 +370,6 @@ automation:
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "off"
-      - condition: state
-        entity_id: binary_sensor.kid_s_room
-        state: "off"
     action:
       - service: homeassistant.turn_off
         entity_id: input_boolean.nap_mode
@@ -379,9 +377,10 @@ automation:
         # if someone is in the room
       - service: homeassistant.turn_on
         entity_id: light.nursery_led_strip
-      - delay: 30
+      - delay: 10
       - service: homeassistant.turn_off
         entity_id: light.nursery_light
+      - delay: 90
       - service: homeassistant.turn_off
         entity_id: light.nursery_led_strip
 
