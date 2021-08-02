@@ -40,7 +40,7 @@ sensor:
         friendly_name: "iOS Watch Complication Summary Line"
         unique_id: ios_main_status_summary_line
         value_template: >-
-          {%- if states("group.locks") == "locked" -%}
+          {%- if states("lock.front_door") == "locked" and states("lock.side_door") == "locked" -%}
           🔒
           {%- else -%}
           🔓
