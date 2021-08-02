@@ -1,0 +1,30 @@
+automation:
+  - alias: Vacation mode when at trailer
+    id: vacation_mode_at_trailer
+    trigger:
+      platform: zone
+      entity_id:
+        - person.mike
+        - person.tiff
+      zone: zone.trailer
+      event: enter
+    condition:
+      - condition: zone
+        entity_id:
+          - person.mike
+          - person.tiff
+        zone: zone.trailer
+    action:
+      - service: homeassistant.turn_on
+        entity_id: input_boolean.vacation_mode
+      - service: homeassistant.turn_off
+        target:
+          area_id:
+            - 490ec53ba1bc411a96655d0e3492e7d7 # Basement
+            - 591640619ece45269ce3c6a8c71f4b7e # Nursery
+      - service: cover.close_cover
+        entity_id: cover.garage
+      - service: lock.lock
+        entity_id:
+          - lock.front_door
+          - lock.side_door

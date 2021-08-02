@@ -250,6 +250,9 @@ automation:
           - condition: template
             # Only care about November - March
             value_template: "{{ now().month >= 11 or now().month <= 3 }}"
+          - condition: state
+            entity_id: input_boolean.vacation_mode
+            state: "off"
     action:
       - service: homeassistant.turn_on
         entity_id: switch.nursery_humidifier
@@ -267,6 +270,9 @@ automation:
       - platform: time
         at: "17:00:00"
     condition:
+      - condition: state
+        entity_id: input_boolean.vacation_mode
+        state: "off"
       - condition: or
         conditions:
           - condition: numeric_state
@@ -345,6 +351,9 @@ automation:
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "on"
+      - condition: state
+        entity_id: input_boolean.vacation_mode
+        state: "off"
     action:
       - service: notify.adults
         data:
@@ -370,6 +379,14 @@ automation:
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "off"
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: light.nursery_light
+            state: "on"
+          - condition: state
+            entity_id: light.nursery_led_strip
+            state: "on"
     action:
       - service: homeassistant.turn_off
         entity_id: input_boolean.nap_mode
