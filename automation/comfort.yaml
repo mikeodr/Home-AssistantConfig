@@ -71,7 +71,9 @@
       entity_id: binary_sensor.bedroom
       to: "on"
       for:
-        minutes: 15
+        minutes: 3
+    - platform: time
+      at: "07:30:00"
   condition:
     - condition: state
       entity_id: input_boolean.nap_mode
@@ -80,9 +82,6 @@
       after: "07:00:00"
     - condition: time
       before: "10:00:00"
-    - condition: state
-      entity_id: sensor.michaels_iphone_battery_state
-      state: "Not Charging"
   action:
     service: homeassistant.turn_off
     entity_id:
