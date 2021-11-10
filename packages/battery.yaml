@@ -1,0 +1,43 @@
+automation:
+  - alias: Low battery notifications
+    id: battery_low_battery_notifications
+    trigger:
+      platform: time
+      at: '19:00:00'
+    variables:
+      exclude_ids:
+        - sensor.backupsxs1300g_battery_charge
+        - sensor.core10_battery_level
+        - sensor.core10_battery_remaining
+        - sensor.michaels_iphone_battery_level
+        - sensor.michaels_iphone_battery_state
+        - sensor.tiffanys_iphone_battery_level
+        - sensor.tiffanys_iphone_battery_state
+        - sensor.michaels_macbook_air_internal_battery_level
+      sensors: >-
+        {% set result = namespace(sensors=[]) %}
+        {% for state in states.sensor | selectattr('attributes.device_class', '==', 'battery') %}
+          {% if 0 <= state.state | int(-1) < 20 | int and not state.entity_id in exclude_ids %}
+            {% set result.sensors = result.sensors + [state.name ~ ' (' ~ state.state ~ ' %)'] %}
+          {% endif %}
+        {% endfor %}
+        {% for state in states.binary_sensor | selectattr('attributes.device_class', '==', 'battery') | selectattr('state', '==', 'on') %}
+          {% if not state.entity_id in exclude.entity_id %}
+            {% set result.sensors = result.sensors + [state.name] %}
+          {% endif %}
+        {% endfor %}
+        {{result.sensors|join(', ')}}
+    condition:
+      - condition: time
+        weekday:
+          - mon
+          - thu
+          - sat
+      - condition: template
+        value_template: '{{ sensors != ''''}}'
+    action:
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          title: "HA Low Batteries"
+          message: >
+            {{ sensors }}
