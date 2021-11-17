@@ -13,3 +13,4 @@ tts/
 .vscode/
 *.xml
 blueprints/
+home-assistant.log*
