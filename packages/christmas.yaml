@@ -32,6 +32,8 @@ automation:
           minutes: 60
       - platform: homeassistant
         event: start
+      - platform: event
+        event_type: "ios_wakeup_event"
     condition:
       - condition: time
         after: "06:30:00"

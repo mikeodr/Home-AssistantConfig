@@ -1,0 +1,20 @@
+automation:
+  - alias: Morning Wake Up Sequence
+    id: morning_wake_up_sequence
+    trigger:
+      - platform: event
+        event_type: "ios_wakeup_event"
+    action:
+      - choose:
+        - conditions:
+          - condition: template
+            value_template : "{{is_state('person.' ~ trigger.event.data.person, 'home')}}"
+          - condition: state
+            entity_id: sun.sun
+            state: "below_horizon"
+          sequence:
+            - service: homeassistant.turn_on
+              entity_id:
+                - switch.front_porch
+                - switch.side_door
+
