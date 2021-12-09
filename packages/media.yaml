@@ -4,19 +4,27 @@ automation:
     trigger:
       - platform: state
         entity_id: media_player.plex_plex_for_android_tv_living_room
+        to: "playing"
+        id: to_playing
+      - platform: state
+        entity_id: media_player.plex_plex_for_android_tv_living_room
+        from: "playing"
+        for:
+          minutes: 5
+        id: not_playing
     action:
       - choose:
           - conditions:
-              - condition: template
-                value_template: "{{ trigger.to_state.state == 'playing' }}"
+              - condition: trigger 
+                id: to_playing
             sequence:
               - service: media_player.volume_set
                 data:
                   volume_level: 0.5
                 entity_id: media_player.sonos_living_room
           - conditions:
-              - condition: template
-                value_template: "{{ trigger.to_state.state != 'playing' }}"
+              - condition: trigger
+                id: not_playing
             sequence:
               - service: media_player.volume_set
                 data:
