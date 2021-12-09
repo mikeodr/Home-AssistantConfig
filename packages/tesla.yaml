@@ -292,6 +292,7 @@ sensor:
 
 automation:
   - alias: Update Tesla location as MQTT location updates
+    id: tesla_location_update_automation
     initial_state: on
     trigger:
       - platform: mqtt

@@ -16,6 +16,10 @@ cloud:
 discovery:
 stream:
 wake_on_lan:
+logbook:
+  exclude:
+    entities:
+      - automation.update_tesla_location_as_mqtt_location_updates
 
 recorder:
   db_url: !secret db_url
