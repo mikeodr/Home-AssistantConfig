@@ -17,3 +17,4 @@ automation:
                 entity_id:
                   - switch.front_porch
                   - switch.side_door
+                  - switch.christmas_tree
