@@ -137,24 +137,6 @@ automation:
       entity_id:
         - lock.front_door
 
-  - alias: Trigger sensor updates for Tiff's phone during bedtime period
-    id: ios_trigger_updates
-    trigger:
-      platform: time_pattern
-      hours: "21"
-      minutes: "/5"
-    condition:
-      - condition: state
-        entity_id: person.tiff
-        state: "home"
-      - condition: time
-        after: "21:30"
-        before: "22:00"
-    action:
-      - service: notify.mobile_app_tiffanys_iphone
-        data:
-          message: "request_location_update"
-
   - alias: iOS Spare bedroom fan toggle
     id: ios_spare_bedroom_fan_toggle
     trigger:

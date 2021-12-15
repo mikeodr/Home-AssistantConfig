@@ -1,3 +1,8 @@
+homeassistant:
+  customize:
+    binary_sensor.front_door:
+      device_class: door
+
 alert:
   garage_open:
     name: Garage Door left open
