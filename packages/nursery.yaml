@@ -423,7 +423,7 @@ automation:
         entity_id: binary_sensor.nursery_door
         to: "on"
         for:
-          minutes: 10
+          minutes: 5
     condition:
       - condition: state
         entity_id: input_boolean.nap_mode
