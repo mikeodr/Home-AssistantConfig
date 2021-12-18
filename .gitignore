@@ -14,3 +14,4 @@ tts/
 *.xml
 blueprints/
 home-assistant.log*
+known_devices.yaml
