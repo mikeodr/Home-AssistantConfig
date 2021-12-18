@@ -50,3 +50,18 @@ automation:
     action:
       service: homeassistant.turn_off
       entity_id: switch.christmas_tree
+
+  - alias: Exterior Christmas Lights on arriving home
+    id: external_xmas_lights_on_arrive_home
+    trigger:
+      platform: zone
+      entity_id: device_tracker.tesla_location
+      zone: zone.home
+      event: enter
+    condition:
+      condition: sun
+      after: sunset
+      after_offset: "01:00:00"
+    action:
+      service: homeassistant.turn_on
+      entity_id: switch.exterior_xmas_lights
