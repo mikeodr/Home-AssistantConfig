@@ -3,46 +3,33 @@ automation:
     id: disable_climate_door_ajar
     trigger:
       - platform: state
-        id: "climate_door_open"
-        entity_id: binary_sensor.front_door
-        to: "on"
-        for:
-          minutes: 2
-      - platform: state
         id: "notification_door_open"
         entity_id: binary_sensor.front_door
         to: "on"
         for:
           minutes: 5
     action:
-      - choose:
-          - conditions:
-              - condition: trigger
-                id: "notification_door_open"
-            sequence:
-              - service: notify.adults
-                data:
-                  title: "Front Door Left Open"
-                  data:
-                    tag: "front-door-open-warning"
-          - conditions:
-              - condition: trigger
-                id: "climate_door_open"
-            sequence:
-              - variables:
-                  climate_restore_state: '{{ states("cimate.my_ecobee") }}'
-              - service: climate.turn_off
-                target:
-                  entity_id: climate.my_ecobee
-              - wait_for_trigger:
-                  - platform: state
-                    entity_id: binary_sensor.front_door
-                    to: "off"
-              - service: climate.set_hvac_mode
-                target:
-                  entity_id: climate.my_ecobee
-                data:
-                  hvac_mode: heat
+      - variables:
+          climate_restore_state: '{{ states("cimate.my_ecobee") }}'
+      - service: notify.adults
+        data:
+          message: "Front Door Left Open"
+          data:
+            tag: "front-door-open-warning"
+            push:
+              critical: 1
+      - service: climate.turn_off
+        target:
+          entity_id: climate.my_ecobee
+      - wait_for_trigger:
+          - platform: state
+            entity_id: binary_sensor.front_door
+            to: "off"
+      - service: climate.set_hvac_mode
+        target:
+          entity_id: climate.my_ecobee
+        data:
+          hvac_mode: heat
 
   - alias: Bedroom Comfort when arrival past bedtime
     id: bedroom_comfort_arrive_past_bedtime
