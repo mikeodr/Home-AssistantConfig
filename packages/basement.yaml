@@ -80,71 +80,39 @@ automation:
               - condition: trigger
                 id: "garage_open"
             sequence:
-              - service: zwave_js.set_config_parameter
-                target:
-                  entity_id: light.basement_room_light_dimmer
+              # Set LED to Red
+              - service: script.lzw31_set_led
                 data:
-                  # Set LED Colour to RED
-                  value: "0"
-                  parameter: "13"
-              - service: zwave_js.set_config_parameter
-                target:
-                  entity_id: light.basement_room_light_dimmer
-                data:
-                  # Set LED brightness to 100%
-                  value: "10"
-                  parameter: "14"
+                  entity: light.basement_room_light_dimmer
+                  led_colour: 0
+                  led_brightness: 10
           - conditions:
               - condition: trigger
                 id: "garage_closed"
             sequence:
-              - service: zwave_js.set_config_parameter
-                target:
-                  entity_id: light.basement_room_light_dimmer
+              # Set LED to Blue
+              - service: script.lzw31_set_led
                 data:
-                  # Set LED Colour to blue
-                  value: "170"
-                  parameter: "13"
-              - service: zwave_js.set_config_parameter
-                target:
-                  entity_id: light.basement_room_light_dimmer
-                data:
-                  # Set LED brightness to 50%
-                  value: "5"
-                  parameter: "14"
+                  entity: light.basement_room_light_dimmer
+                  led_colour: 170
+                  led_brightness: 5
           - conditions:
               - condition: trigger
                 id: "doors_unlocked"
             sequence:
-              - service: zwave_js.set_config_parameter
-                target:
-                  entity_id: switch.basement_hall
+              # Set LED to Red
+              - service: script.lzw30_set_led
                 data:
-                  # Set LED Colour to red
-                  value: "0"
-                  parameter: "5"
-              - service: zwave_js.set_config_parameter
-                target:
-                  entity_id: switch.basement_hall
-                data:
-                  # Set LED brightness to 100%
-                  value: "10"
-                  parameter: "6"
+                  entity: switch.basement_hall
+                  led_colour: 0
+                  led_brightness: 10
           - conditions:
               - condition: trigger
                 id: "doors_locked"
             sequence:
-              - service: zwave_js.set_config_parameter
-                target:
-                  entity_id: switch.basement_hall
+              # Set LED to blue
+              - service: script.lzw30_set_led
                 data:
-                  # Set LED Colour to red
-                  value: "170"
-                  parameter: "5"
-              - service: zwave_js.set_config_parameter
-                target:
-                  entity_id: switch.basement_hall
-                data:
-                  # Set LED brightness to 100%
-                  value: "5"
-                  parameter: "6"
+                  entity: switch.basement_hall
+                  led_colour: 170
+                  led_brightness: 5

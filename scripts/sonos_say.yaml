@@ -1,5 +1,6 @@
 sonos_say:
   alias: "Sonos TTS script"
+  mode: restart
   sequence:
     - service: sonos.snapshot
       data:
@@ -22,6 +23,7 @@ sonos_say:
 
 sonos_group_say:
   alias: "Sonos Group TTS Scripts"
+  mode: restart
   sequence:
     - service: sonos.snapshot
       data:
