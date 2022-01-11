@@ -18,3 +18,4 @@ automation:
                   - switch.front_porch
                   - switch.side_door
                   - switch.christmas_tree
+                  - switch.kitchen_island
