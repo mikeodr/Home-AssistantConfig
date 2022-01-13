@@ -1,0 +1,72 @@
+input_boolean:
+  pupper_home:
+    name: Pupper Home
+    initial: on
+    icon: mdi:dog
+
+automation:
+  - alias: Ask if Pupper Home after Dark
+    id: ask_pupper_home
+    trigger:
+      platform: sun
+      event: sunset
+      offset: "-01:00:00"
+    condition:
+      - condition: state
+        entity_id: group.adults
+        state: "not_home"
+    action:
+      - variables:
+          action_home: "{{ 'HOME_' ~ context.id }}"
+          action_away: "{{ 'AWAY_' ~ context.id }}"
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          message: "Is the pupper home alone?"
+          data:
+            actions:
+              - action: "{{ action_home }}"
+                title: "Pupper Home"
+                activationMode: "background"
+                authenticationRequired: true
+                destructive: false
+                behavior: "default"
+              - action: "{{ action_away }}"
+                title: "Not Home"
+                activationMode: "background"
+                authenticationRequired: true
+                destructive: true
+                behavior: "default"
+      - wait_for_trigger:
+          - platform: event
+            event_type: mobile_app_notification_action
+            event_data:
+              action: "{{ action_home }}"
+          - platform: event
+            event_type: mobile_app_notification_action
+            event_data:
+              action: "{{ action_away }}"
+      - choose:
+          - conditions: "{{ wait.trigger.event.data.action == action_home }}"
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.pupper_home
+          - conditions: "{{ wait.trigger.event.data.action == action_away }}"
+            sequence:
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.pupper_home
+
+  - alias: Set light on for Pupper at dark
+    id: set_pupper_light_on
+    trigger:
+      - platform: sun
+        event: sunset
+      - platform: state
+        entity_id: group.adults
+        to: "not_home"
+    condition:
+      - condition: sun
+        after: sunset
+        after_offset: "-00:30:00"
+    action:
+      - service: homeassistant.turn_on
+        entity_id: switch.kitchen_island

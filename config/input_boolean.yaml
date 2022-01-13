@@ -1,8 +1,3 @@
-pupper_home:
-  name: Puppy Home
-  initial: on
-  icon: mdi:dog
-
 quite_mode:
   name: Quite Mode
   initial: off
