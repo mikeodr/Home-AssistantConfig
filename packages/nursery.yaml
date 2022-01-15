@@ -446,3 +446,29 @@ automation:
     action:
       - service: homeassistant.turn_{{ trigger.to_state.state }}
         entity_id: input_boolean.quite_mode
+
+  - alias: Turn on nap mode if forgotten
+    id: nursery_nap_mode_on_forgotten
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.nursery_door
+        to: "off"
+        for:
+          minutes: 1
+    condition:
+      # (Nap or bed) and (light off)
+      - condition: or
+        conditions:
+          # Naptime
+          - condition: time
+            after: "11:30:00"
+            before: "14:30:00"
+          # Bedtime
+          - condition: time
+            after: "18:00:00"
+      - condition: state
+        entity_id: light.nursery_light
+        state: "off"
+    action:
+      - service: homeassistant.turn_on
+        entity_id: input_boolean.nap_mode
