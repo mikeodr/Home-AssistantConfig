@@ -92,15 +92,12 @@ automation:
     id: exterior_sync_exterior_lights
     trigger:
       platform: state
-      to: "on"
+      to: ~
       entity_id:
-        # If the front porch goes on/off update the rest
-        # of the group
         - switch.front_porch
     action:
-      service: >
-        homeassistant.turn_on
-      entity_id: group.exterior_lights
+      service: homeassistant.turn_{{ trigger.to_state.state }}
+      entity_id: switch.side_door
 
   - alias: Turn on external lights, multiple triggers
     id: exterior_exterior_lights_on_triggers
