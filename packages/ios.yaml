@@ -59,10 +59,10 @@ sensor:
           {%- else -%}
           |🙅
           {%- endif -%}
-          {% set garbage_day=states('sensor.recollect_waste') | as_datetime -%}
+          {% set garbage_day=states('sensor.waste_current_pickup') | as_datetime -%}
           {%- if now().day == (garbage_day - timedelta(days=1)).day or 
           now().day == garbage_day.day and now().hour < 10 -%}
-          {% if 'Garbage' in state_attr('sensor.recollect_waste', 'pickup_types') -%}
+          {% if 'Garbage' in state_attr('sensor.waste_current_pickup', 'pickup_types') -%}
           |🗑
           {%- else -%}
           |♻
