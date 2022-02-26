@@ -98,6 +98,21 @@ sensor:
           {{ sec//3600 }}h{{ sec%3600//60 }}m
 
 automation:
+  - alias: Update Complications On Specific State changes
+    id: update_complications_state_changes
+    trigger:
+      - platform: state
+        entity_id:
+          - cover.garage
+          - lock.front_door
+          - lock.side_door
+          - input_boolean.nap_mode
+        to: ~
+    action:
+      service: notify.mobile_app_michaels_iphone
+      data:
+        message: update_complications
+
   - alias: iOS Toggle Garage
     id: ios_toggle_garage
     trigger:
