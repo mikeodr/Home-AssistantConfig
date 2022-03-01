@@ -18,30 +18,22 @@ automation:
         before: "16:00:00"
     action:
       - wait_for_trigger:
-        - platform: zone
-          entity_id:
-            - person.mike
-            - device_tracker.tesla_location
-          zone: zone.daycare
-          event: enter
-          id: reentry
-        - platform: time
-          at: "15:40:00"
-          id: 'message_send'
+          - platform: zone
+            entity_id:
+              - person.mike
+              - device_tracker.tesla_location
+            zone: zone.daycare
+            event: enter
+            id: reentry
+          - platform: time
+            at: "15:40:00"
+            id: "message_send"
         timeout: "10:00:00"
         continue_on_timeout: false
       - choose:
-        - conditions: "{{ wait.trigger.id == 'message_send' }}"
-          sequence:
-            - service: notify.mobile_app_michaels_iphone
-              data:
-                title: "Pickup Reminder"
-                message: "Pickup the twins"
+          - conditions: "{{ wait.trigger.id == 'message_send' }}"
+            sequence:
+              - service: notify.mobile_app_michaels_iphone
                 data:
-                  push:
-                    sound:
-                      critical: 1
-                      volume: 1.0
-
-
-      
+                  title: "Pickup Reminder"
+                  message: "Pickup the twins!"
