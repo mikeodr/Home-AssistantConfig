@@ -26,7 +26,7 @@ automation:
             event: enter
             id: reentry
           - platform: time
-            at: "15:40:00"
+            at: "15:45:00"
             id: "message_send"
         timeout: "10:00:00"
         continue_on_timeout: false
