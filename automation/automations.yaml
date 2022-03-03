@@ -147,8 +147,7 @@
   id: update_notification
   trigger:
     - platform: state
-      entity_id: binary_sensor.updater
-      from: "off"
+      entity_id: binary_sensor.docker_hub_update_available
       to: "on"
   action:
     - service: notify.mobile_app_michaels_iphone
