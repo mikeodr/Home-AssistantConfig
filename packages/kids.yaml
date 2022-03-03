@@ -1,6 +1,6 @@
 automation:
   - alias: Pick up girls reminder
-    id: kids_pick_up_reminder
+    id: pick_up_girls_reminder
     mode: single
     max_exceeded: silent
     trigger:

@@ -90,7 +90,7 @@ automation:
     id: bedroom_comfort_off_mornings
     trigger:
       - platform: time
-        at: "08:30:00"
+        at: "07:30:00"
     action:
       service: homeassistant.turn_off
       entity_id:
