@@ -18,6 +18,10 @@ automation:
         before: "15:30:00"
     action:
       - wait_for_trigger:
+          - platform: numeric_state
+            entity_id: proximity.daycare
+            above: 500 # m from zone.
+      - wait_for_trigger:
           - platform: zone
             entity_id:
               - person.mike
