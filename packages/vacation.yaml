@@ -2,29 +2,45 @@ automation:
   - alias: Vacation mode when at trailer
     id: vacation_mode_at_trailer
     trigger:
-      platform: zone
-      entity_id:
-        - person.mike
-        - person.tiff
-      zone: zone.trailer
-      event: enter
+      - platform: numeric_state
+        entity_id: proximity.trailer
+        below: 20
     condition:
-      - condition: zone
-        entity_id:
-          - person.mike
-          - person.tiff
-        zone: zone.trailer
+      - condition: state
+        entity_id: input_boolean.girls_home_override
+        state: "off"
     action:
-      - service: homeassistant.turn_on
-        entity_id: input_boolean.vacation_mode
+      - service: select.select_option
+        entity_id: select.my_ecobee_current_mode
+        data:
+          option: away
       - service: homeassistant.turn_off
         target:
           area_id:
             - 490ec53ba1bc411a96655d0e3492e7d7 # Basement
             - 591640619ece45269ce3c6a8c71f4b7e # Nursery
+            - e153ba2916a6441a8e5dbc47d58b9a73 # Living Room
       - service: cover.close_cover
         entity_id: cover.garage
       - service: lock.lock
         entity_id:
           - lock.front_door
           - lock.side_door
+
+  - alias: Returning from trailer
+    id: vacation_mode_return
+    trigger:
+      - platform: numeric_state
+        entity_id: proximity.trailer
+        above: 20 # km
+        below: 40 # km
+    condition:
+      - condition: state
+        entity_id: proximity.trailer
+        attribute: dir_of_travel
+        state: "away_from"
+    action:
+      - service: select.select_option
+        entity_id: select.my_ecobee_current_mode
+        data:
+          option: home
