@@ -15,7 +15,7 @@ automation:
         entity_id: binary_sensor.workday_sensor
         state: "on"
       - condition: time
-        before: "15:30:00"
+        before: "15:00:00"
     action:
       - wait_for_trigger:
           - platform: numeric_state
