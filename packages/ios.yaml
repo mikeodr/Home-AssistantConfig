@@ -59,6 +59,9 @@ sensor:
           {%- else -%}
           |🙅
           {%- endif -%}
+          {%- if is_state('binary_sensor.girls_home_bayesian', 'on') -%}
+          |👧
+          {%- endif -%}
           {% set garbage_day=states('sensor.waste_current_pickup') | as_datetime -%}
           {%- if now().day == (garbage_day - timedelta(days=1)).day or 
           now().day == garbage_day.day and now().hour < 10 -%}
