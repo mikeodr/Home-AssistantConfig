@@ -56,15 +56,6 @@ script:
         entity_id: automation.toggle_tv_monitor
 
 automation:
-  - alias: Reset Home override
-    id: nursery_home_override_reset
-    trigger:
-      - platform: time
-        at: "00:00:01"
-    action:
-      service: homeassistant.turn_off
-      entity_id: input_boolean.girls_home_override
-
   - alias: Nap Mode Button Toggle
     id: nursery_nap_mode_toggle
     trigger:
@@ -250,9 +241,6 @@ automation:
           - condition: template
             # Only care about November - March
             value_template: "{{ now().month >= 11 or now().month <= 3 }}"
-          - condition: state
-            entity_id: input_boolean.vacation_mode
-            state: "off"
     action:
       - service: homeassistant.turn_on
         entity_id: switch.nursery_humidifier
@@ -270,9 +258,6 @@ automation:
       - platform: time
         at: "17:00:00"
     condition:
-      - condition: state
-        entity_id: input_boolean.vacation_mode
-        state: "off"
       - condition: or
         conditions:
           - condition: numeric_state
@@ -299,7 +284,7 @@ automation:
                     entity_id: binary_sensor.workday_sensor
                     state: "off"
                   - condition: state
-                    entity_id: input_boolean.girls_home_override
+                    entity_id: binary_sensor.girls_home_bayesian
                     state: "on"
                   - condition: time
                     after: "14:00:00"
@@ -351,9 +336,6 @@ automation:
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "on"
-      - condition: state
-        entity_id: input_boolean.vacation_mode
-        state: "off"
     action:
       - service: notify.adults
         data:
