@@ -1,0 +1,10 @@
+binary_sensor:
+  - platform: workday
+    country: CA
+    province: "ON"
+
+  - platform: template
+    sensors:
+      guests_present:
+        friendly_name: "Guests Home"
+        value_template: "{{ states.device_tracker | rejectattr('attributes.host_name', '==', 'Tiffanys-Air') |  selectattr('attributes.essid', '==', 'CoreGuest')| list | count}}"
