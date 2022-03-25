@@ -12,9 +12,14 @@ automation:
       event: sunset
       offset: "-01:00:00"
     condition:
-      - condition: state
-        entity_id: group.adults
-        state: "not_home"
+      - condition: and
+        conditions:
+        - condition: state
+          entity_id: group.adults
+          state: "not_home"
+        - condition: state
+          entity_id: binary_sensor.guests_present
+          state: "off"
     action:
       - variables:
           action_home: "{{ 'HOME_' ~ context.id }}"
