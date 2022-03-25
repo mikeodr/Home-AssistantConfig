@@ -1,0 +1,105 @@
+automation:
+  - alias: Bedroom Comfort when arrival past bedtime
+    id: bedroom_comfort_arrive_past_bedtime
+    trigger:
+      platform: state
+      entity_id: group.adults
+      from: "not_home"
+      to: "home"
+    condition:
+      - condition: time
+        after: "22:00:00"
+        before: "07:00:00"
+    action:
+      service: homeassistant.turn_on
+      entity_id:
+        - switch.master_white_noise
+        - switch.master_humidifier
+
+  - alias: Bedroom Comfort On Evenings
+    id: bedroom_comfort_evenings
+    trigger:
+      - platform: time
+        at: "22:30:00"
+    condition:
+      - condition: state
+        entity_id: group.adults
+        state: "home"
+    action:
+      service: homeassistant.turn_on
+      entity_id:
+        - switch.master_white_noise
+        - switch.master_humidifier
+
+  - alias: Bedroom Comfort if in bed early
+    id: bedroom_comfort_early_bed
+    trigger:
+      - platform: state
+        entity_id: sensor.tiffanys_iphone_battery_state
+        from: "Not Charging"
+        to: "Charging"
+      - platform: state
+        entity_id: sensor.tiffanys_iphone_battery_state
+        from: "Not Charging"
+        to: "Full"
+    condition:
+      - condition: time
+        after: "22:00:00"
+      - condition: state
+        entity_id: binary_sensor.bedroom
+        state: "on"
+    action:
+      service: homeassistant.turn_on
+      entity_id:
+        - switch.master_white_noise
+        - switch.master_humidifier
+
+  - alias: Bedroom Comfort Off Morning
+    id: bedroom_comfort_off_mornings
+    trigger:
+      - platform: time
+        at: "07:30:00"
+    action:
+      service: homeassistant.turn_off
+      entity_id:
+        - switch.master_white_noise
+        - switch.master_humidifier
+
+  - alias: Bedroom off mornings if nursery active.
+    id: bedroom_off_mornings_nursery_active
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.bedroom
+        to: ~
+        for:
+          minutes: 3
+      - platform: time
+        at: "07:30:00"
+    condition:
+      - condition: state
+        entity_id: input_boolean.nap_mode
+        state: "off"
+      - condition: time
+        after: "07:00:00"
+      - condition: time
+        before: "08:00:00"
+    action:
+      service: homeassistant.turn_off
+      entity_id:
+        - switch.master_white_noise
+        - switch.master_humidifier
+  
+  # - alias: Spare Bedroom Fan Toggle
+  #   id: spare_bedroom_fan_toggle
+  #   trigger:
+  #     platform: event
+  #     event_type: zha_event
+  #     event_data:
+  #       device_ieee: "00:15:8d:00:03:ce:96:86"
+  #       command: "click"
+  #       args:
+  #         click_type: "single"
+  #   action:
+  #     service: homeassistant.toggle
+  #     entity_id:
+  #       - switch.bedroom_fan
