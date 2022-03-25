@@ -12,7 +12,6 @@ proximity:
       - zone.mike_work
     devices:
       - device_tracker.michaels_iphone
-      - device_tracker.tesla_location
     tolerance: 100
   daycare:
     zone: daycare
