@@ -3,12 +3,7 @@
   trigger:
     - platform: state
       entity_id: person.tiff
-      from: "not_home"
-      to: "home"
-    - platform: state
-      entity_id: person.tiff
-      from: "home"
-      to: "not_home"
+      to: ~
   condition:
     - condition: state
       entity_id: person.mike
