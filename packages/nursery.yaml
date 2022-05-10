@@ -234,13 +234,8 @@ automation:
       from: "off"
       to: "on"
     condition:
-      - condition: and
-        conditions:
-          - condition: time
-            after: "18:00:00"
-          - condition: template
-            # Only care about November - March
-            value_template: "{{ now().month >= 11 or now().month <= 3 }}"
+      - condition: time
+        after: "18:00:00"
     action:
       - service: homeassistant.turn_on
         entity_id: switch.nursery_humidifier
@@ -258,8 +253,7 @@ automation:
       - platform: time
         at: "17:00:00"
     condition:
-      - condition: or
-        conditions:
+      - or:
           - condition: numeric_state
             entity_id: weather.climacell_nowcast
             attribute: temperature
@@ -278,8 +272,7 @@ automation:
               entity_id: switch.nursery_fan
           # If not a workday or override is turn on
           - conditions:
-              - condition: or
-                conditions:
+              - or:
                   - condition: state
                     entity_id: binary_sensor.workday_sensor
                     state: "off"
@@ -361,8 +354,7 @@ automation:
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "off"
-      - condition: or
-        conditions:
+      - or:
           - condition: state
             entity_id: light.nursery_light
             state: "on"
@@ -398,7 +390,7 @@ automation:
       - service: input_boolean.turn_off
         entity_id: input_boolean.nap_mode
 
-  - alias: Notify if door open during nap
+  - alias: Notify if door left open during nap
     id: nursery_nap_on_door_open
     trigger:
       - platform: state
@@ -439,8 +431,7 @@ automation:
           minutes: 1
     condition:
       # (Nap or bed) and (light off)
-      - condition: or
-        conditions:
+      - or:
           # Naptime
           - condition: time
             after: "11:30:00"
@@ -454,3 +445,26 @@ automation:
     action:
       - service: homeassistant.turn_on
         entity_id: input_boolean.nap_mode
+
+  - alias: Nursey Door Open During Sleep
+    id: nursery_door_open_during_sleep
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.nursery_door
+        to: "on"
+    condition:
+      - condition: state
+        entity_id: input_boolean.nap_mode
+        state: "on"
+        for: 30m
+      - condition: state
+        entity_id: group.adults
+        state: "home"
+    action:
+      - service: notify.adults
+        data:
+          title: "Nursery Door Opened!"
+          message: >
+            Someone has left the nursery
+          data:
+            tag: "nursery-escape-warning"
