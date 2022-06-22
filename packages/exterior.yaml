@@ -61,8 +61,7 @@ automation:
         for:
           hours: 1
     condition:
-      - condition: and
-        conditions:
+      - and:
           - condition: time
             after: "23:30:00"
             before: "10:00:00" # Time condition to span midnight reset
@@ -186,37 +185,37 @@ automation:
                 destructive: true
                 behavior: "default"
       - wait_for_trigger:
-        - platform: event
-          event_type: mobile_app_notification_action
-          event_data:
-            action: "{{ action_both }}"
-        - platform: event
-          event_type: mobile_app_notification_action
-          event_data:
-            action: "{{ action_lock }}"
-        - platform: event
-          event_type: mobile_app_notification_action
-          event_data:
-            action: "{{ action_garage }}"
+          - platform: event
+            event_type: mobile_app_notification_action
+            event_data:
+              action: "{{ action_both }}"
+          - platform: event
+            event_type: mobile_app_notification_action
+            event_data:
+              action: "{{ action_lock }}"
+          - platform: event
+            event_type: mobile_app_notification_action
+            event_data:
+              action: "{{ action_garage }}"
         continue_on_timeout: false
         timeout:
           minutes: 10
       - choose:
-        - conditions: "{{ wait.trigger.event.data.action == action_both }}"
-          sequence:
-            - service: lock.unlock
-              entity_id:
-                - lock.front_door
-                - lock.side_door
-            - service: cover.open_cover
-              entity_id: cover.garage
-        - conditions: "{{ wait.trigger.event.data.action == action_garage }}"
-          sequence:
-            - service: cover.open_cover
-              entity_id: cover.garage
-        - conditions: "{{ wait.trigger.event.data.action == action_lock }}"
-          sequence:
-            - service: lock.unlock
-              entity_id:
-                - lock.front_door
-                - lock.side_door
+          - conditions: "{{ wait.trigger.event.data.action == action_both }}"
+            sequence:
+              - service: lock.unlock
+                entity_id:
+                  - lock.front_door
+                  - lock.side_door
+              - service: cover.open_cover
+                entity_id: cover.garage
+          - conditions: "{{ wait.trigger.event.data.action == action_garage }}"
+            sequence:
+              - service: cover.open_cover
+                entity_id: cover.garage
+          - conditions: "{{ wait.trigger.event.data.action == action_lock }}"
+            sequence:
+              - service: lock.unlock
+                entity_id:
+                  - lock.front_door
+                  - lock.side_door
