@@ -12,7 +12,6 @@ binary_sensor:
       - platform: template
         value_template: >
           {{ (now().hour > 16 or now().hour < 8) }}
-        #and is_state('binary_sensor.workday_sensor', 'on') }}
         prob_given_true: 0.80
         prob_given_false: 0.33
       - platform: state
