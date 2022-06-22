@@ -12,14 +12,12 @@ automation:
       event: sunset
       offset: "-01:00:00"
     condition:
-      - condition: and
-        conditions:
-        - condition: state
-          entity_id: group.adults
-          state: "not_home"
-        - condition: state
-          entity_id: binary_sensor.guests_present
-          state: "off"
+      - condition: state
+        entity_id: group.adults
+        state: "not_home"
+      - condition: state
+        entity_id: binary_sensor.guests_present
+        state: "off"
     action:
       - variables:
           action_home: "{{ 'HOME_' ~ context.id }}"
@@ -72,6 +70,9 @@ automation:
       - condition: sun
         after: sunset
         after_offset: "-00:30:00"
+      - condition: state
+        entity_id: group.adults
+        state: "not_home"
     action:
       - service: homeassistant.turn_on
         entity_id: switch.kitchen_island
