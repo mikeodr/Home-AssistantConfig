@@ -456,7 +456,8 @@ automation:
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "on"
-        for: 30m
+        for:
+          minutes: 10
       - condition: state
         entity_id: group.adults
         state: "home"
@@ -468,3 +469,24 @@ automation:
             Someone has left the nursery
           data:
             tag: "nursery-escape-warning"
+
+  - alias: Let the girls get up
+    id: nursery_let_girls_get_up
+    trigger:
+      - platform: time
+        at: "07:10:00"
+    condition:
+      - condition: state
+        entity_id: input_boolean.nap_mode
+        state: "on"
+      - or:
+          - condition: state
+            entity_id: group.adults
+            state: "home"
+          - condition: state
+            entity_id: binary_sensor.guests_present
+            state: "home"
+    action:
+      - wait_template: '{{ not is_state("light.nursery_led_strip", "unavailable") }}'
+      - service: scene.turn_on
+        entity_id: scene.nursery_led_on
