@@ -30,3 +30,10 @@ automation:
           entity_id: climate.my_ecobee
         data:
           hvac_mode: "{{ climate_restore_state }}"
+      - service: notify.adults
+        data:
+          message: "clear_notification"
+          data:
+            tag: "front-door-open-warning"
+            push:
+              critical: 1
