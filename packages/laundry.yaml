@@ -28,7 +28,7 @@ automation:
         entity_id: sensor.laundry_power
         above: 30
         for:
-          minutes: 5
+          seconds: 10
     condition:
       - condition: not
         conditions:
@@ -46,7 +46,9 @@ automation:
     trigger:
       - platform: numeric_state
         entity_id: sensor.laundry_power
-        below: 4.0
+        below: 3.5
+        for:
+          minutes: 5
     condition:
       - condition: state
         entity_id: input_select.washing_machine_status
