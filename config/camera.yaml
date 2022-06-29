@@ -1,4 +1,0 @@
-- platform: generic
-  name: Streaming
-  still_image_url: !secret baby_cam_snap
-  stream_source: !secret baby_cam_stream

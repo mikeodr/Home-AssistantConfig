@@ -1,0 +1,48 @@
+automation:
+  - alias: Faux Motion for Nursery Door Event
+    id: homekit_faux_event_nursery
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.nursery_door
+        to: "on"
+    condition:
+      - condition: state
+        entity_id: input_boolean.nap_mode
+        state: "on"
+        for:
+        #   minutes: 5
+    action:
+      - event: homekit_faux_camera_event
+
+template:
+  - trigger:
+      - platform: event
+        event_type: homekit_faux_camera_event
+    binary_sensor:
+      - name: faux_nursery_homekit_motion
+        auto_off: 1
+        state: "true"
+
+homekit:
+  - name: General Accessories
+    filter:
+      include_domains:
+        - light
+        - switch
+        - cover
+        - climate
+      exclude_entity_globs:
+        - switch.sonos*
+        - sensor.*temperature*
+        - light.jasco_products_43100_db9405fe_on_off
+
+  - name: Camera Accessories Bridge
+    mode: accessory
+    port: 21065
+    filter:
+      include_entities:
+        - camera.baby_high
+    entity_config:
+      camera.baby_high:
+        support_audio: false
+        linked_doorbell_sensor: binary_sensor.faux_nursery_homekit_motion
