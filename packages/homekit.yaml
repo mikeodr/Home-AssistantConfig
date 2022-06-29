@@ -43,6 +43,6 @@ homekit:
       include_entities:
         - camera.172_16_0_7
     entity_config:
-      camera.baby_high:
+      camera.172_16_0_7:
         support_audio: false
         linked_doorbell_sensor: binary_sensor.faux_nursery_homekit_motion
