@@ -10,7 +10,7 @@ automation:
         entity_id: input_boolean.nap_mode
         state: "on"
         for:
-        #   minutes: 5
+          minutes: 5
     action:
       - event: homekit_faux_camera_event
 
