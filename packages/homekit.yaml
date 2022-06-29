@@ -41,7 +41,7 @@ homekit:
     port: 21065
     filter:
       include_entities:
-        - camera.baby_high
+        - camera.172_16_0_7
     entity_config:
       camera.baby_high:
         support_audio: false
