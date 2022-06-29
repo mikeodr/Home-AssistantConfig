@@ -448,6 +448,7 @@ automation:
 
   - alias: Nursey Door Open During Sleep
     id: nursery_door_open_during_sleep
+    mode: single
     trigger:
       - platform: state
         entity_id: binary_sensor.nursery_door
@@ -469,6 +470,10 @@ automation:
             Someone has left the nursery
           data:
             tag: "nursery-escape-warning"
+      - delay:
+          # Debounce this from happening
+          # again quickly.
+          minutes: 3
 
   - alias: Let the girls get up
     id: nursery_let_girls_get_up
