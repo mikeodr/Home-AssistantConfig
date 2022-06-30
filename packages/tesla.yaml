@@ -249,6 +249,8 @@ automation:
   - alias: Update Tesla location as MQTT location updates
     id: tesla_location_update_automation
     initial_state: on
+    mode: single
+    max_exceeded: silent
     trigger:
       - platform: mqtt
         topic: teslamate/cars/1/latitude
