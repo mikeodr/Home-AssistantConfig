@@ -19,11 +19,23 @@ template:
       - platform: event
         event_type: homekit_faux_camera_event
     binary_sensor:
-      - name: faux_nursery_homekit_motion
-        auto_off: 1
+      - name: faux_nursery_homekit_bell
+        auto_off: 3
         state: "true"
 
 homekit:
+  - name: Camera Accessories Bridge
+    mode: accessory
+    port: 21065
+    filter:
+      include_entities:
+        - camera.baby_high
+    entity_config:
+      camera.baby_high:
+        video_codec: copy
+        support_audio: false
+        linked_doorbell_sensor: binary_sensor.faux_nursery_homekit_bell
+
   - name: General Accessories
     filter:
       include_domains:
@@ -35,14 +47,3 @@ homekit:
         - switch.sonos*
         - sensor.*temperature*
         - light.jasco_products_43100_db9405fe_on_off
-
-  - name: Camera Accessories Bridge
-    mode: accessory
-    port: 21065
-    filter:
-      include_entities:
-        - camera.172_16_0_7
-    entity_config:
-      camera.172_16_0_7:
-        support_audio: false
-        linked_doorbell_sensor: binary_sensor.faux_nursery_homekit_motion
