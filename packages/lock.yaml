@@ -100,34 +100,50 @@ automation:
 
   - alias: Enable Cleaners Lock Code
     id: lock_enable_cleaner_code
+    mode: queued
     trigger:
-      - platform: template
-        value_template: "{{ state_attr('calendar.house_planning', 'offset_reached') }}"
-    action:
-      - service: zwave_js.set_lock_usercode
-        data:
-          code_slot: "15"
-          usercode: !secret cleaners_door_code
-        entity_id: lock.front_door
-      - service: notify.mobile_app_michaels_iphone
-        data:
-          message: "Setting cleaners lock code"
-          data:
-            tag: "cleaners-code"
-
-  - alias: Cleaners Clear Code
-    id: lock_clear_cleaner_code
-    trigger:
-      - platform: state
+      - platform: calendar
+        event: start
         entity_id: calendar.house_planning
-        to: "off"
+        offset: "-03:00:00"
+        id: set_lock
+      - platform: calendar
+        event: start
+        entity_id: calendar.house_planning
+        id: set_lock
+      - platform: calendar
+        event: end
+        entity_id: calendar.house_planning
+        id: clear_lock
+    condition:
+      - condition: template
+        value_template: "{{ 'Cleaners' in trigger.calendar_event.summary}}"
     action:
-      - service: zwave_js.clear_lock_usercode
-        data:
-          code_slot: "15"
-        entity_id: lock.front_door
-      - service: notify.mobile_app_michaels_iphone
-        data:
-          message: "Clearing cleaners lock code"
-          data:
-            tag: "cleaners-code"
+      choose:
+        - conditions:
+            - condition: trigger
+              id: set_lock
+          sequence:
+            - service: zwave_js.set_lock_usercode
+              data:
+                code_slot: "15"
+                usercode: !secret cleaners_door_code
+              entity_id: lock.front_door
+            - service: notify.mobile_app_michaels_iphone
+              data:
+                message: "Setting cleaners lock code"
+                data:
+                  tag: "cleaners-code"
+        - conditions:
+            - condition: trigger
+              id: clear_lock
+          sequence:
+            - service: zwave_js.clear_lock_usercode
+              data:
+                code_slot: "15"
+              entity_id: lock.front_door
+            - service: notify.mobile_app_michaels_iphone
+              data:
+                message: "Clearing cleaners lock code"
+                data:
+                  tag: "cleaners-code"
