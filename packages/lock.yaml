@@ -89,7 +89,18 @@ automation:
     id: lock_secure_house_evenings
     trigger:
       - platform: time
-        at: "22:00:00"
+        at: "22:30:00"
+      - platform: state
+        entity_id:
+          - lock.front_door
+          - lock.side_door
+        to: "unlocked"
+        for:
+          minutes: 5
+    condition:
+      condition: time
+      after: "22:25:00"
+      before: "07:00:00"
     action:
       - service: cover.close_cover
         entity_id: cover.garage
