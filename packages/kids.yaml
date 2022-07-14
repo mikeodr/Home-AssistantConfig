@@ -1,3 +1,9 @@
+input_datetime:
+  pickup_girls_reminder:
+    name: Pickup Girls Reminder
+    has_date: true
+    has_time: true
+
 binary_sensor:
   - platform: bayesian
     name: "Girls Home Bayesian"
@@ -42,40 +48,46 @@ automation:
     mode: single
     max_exceeded: silent
     trigger:
-      platform: zone
-      entity_id:
-        - person.mike
-        - device_tracker.tesla_location
-      zone: zone.daycare
-      event: enter
+      - platform: zone
+        entity_id:
+          - person.mike
+          - device_tracker.tesla_location
+        zone: zone.daycare
+        event: enter
+        id: enter_pickup_zone
+      - platform: time
+        at: input_datetime.pickup_girls_reminder
+        id: pickup_reminder
     condition:
       - condition: state
         entity_id: binary_sensor.workday_sensor
         state: "on"
       - condition: time
-        before: "15:00:00"
+        after: "06:00:00"
+        before: "16:00:00"
     action:
-      - wait_for_trigger:
-          - platform: numeric_state
-            entity_id: proximity.daycare
-            above: 500 # m from zone.
-      - wait_for_trigger:
-          - platform: zone
-            entity_id:
-              - person.mike
-              - device_tracker.tesla_location
-            zone: zone.daycare
-            event: enter
-            id: reentry
-          - platform: time
-            at: "15:45:00"
-            id: "message_send"
-        timeout: "10:00:00"
-        continue_on_timeout: false
       - choose:
-          - conditions: "{{ wait.trigger.id == 'message_send' }}"
-            sequence:
-              - service: notify.mobile_app_michaels_iphone
+        - conditions:
+            - condition: trigger
+              id: enter_pickup_zone
+          sequence:
+            - service: input_datetime.set_datetime
+              target:
+                entity_id: input_datetime.pickup_girls_reminder
+              data:
+                date: "{{ now().strftime('%Y-%m-%d') }}"
+                time: '15:45:00'
+        - conditions:
+            - condition: trigger
+              id: pickup_reminder
+          sequence:
+            - service: notify.mobile_app_michaels_iphone
+              data:
+                title: "Pickup Reminder"
+                message: "Pickup the twins!"
                 data:
-                  title: "Pickup Reminder"
-                  message: "Pickup the twins!"
+                  tag: "pickup-reminder"
+                  push:
+                    sound:
+                      critical: 1
+                      volume: 0.6

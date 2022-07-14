@@ -35,8 +35,10 @@ automation:
   - alias: Exterior Lights on Evenings
     id: exterior_lights_on_evenings
     trigger:
-      platform: sun
-      event: sunset
+      - platform: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        below: 0.15
     action:
       service: homeassistant.turn_on
       entity_id: group.exterior_lights

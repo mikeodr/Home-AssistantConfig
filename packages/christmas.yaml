@@ -59,9 +59,10 @@ automation:
       zone: zone.home
       event: enter
     condition:
-      condition: sun
-      after: sunset
-      after_offset: "-01:00:00"
+      - condition: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        below: 5.0
     action:
       service: homeassistant.turn_on
       entity_id: switch.exterior_xmas_lights

@@ -8,9 +8,10 @@ automation:
   - alias: Ask if Pupper Home after Dark
     id: ask_pupper_home
     trigger:
-      platform: sun
-      event: sunset
-      offset: "-01:00:00"
+      - platform: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        below: 5
     condition:
       - condition: state
         entity_id: group.adults
@@ -67,9 +68,10 @@ automation:
         entity_id: group.adults
         to: "not_home"
     condition:
-      - condition: sun
-        after: sunset
-        after_offset: "-00:30:00"
+      - condition: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        below: 4.0
       - condition: state
         entity_id: group.adults
         state: "not_home"

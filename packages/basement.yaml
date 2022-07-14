@@ -2,9 +2,10 @@ automation:
   - alias: Basement Dimmer Control
     id: basement_dimmer_auto_control
     trigger:
-      - platform: sun
-        event: sunset
-        offset: "-00:30:00"
+      - platform: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        below: 5.0
       - platform: state
         entity_id: light.basement_room_light_dimmer
         from: "off"
@@ -14,9 +15,10 @@ automation:
     action:
       choose:
         - conditions:
-            - condition: sun
-              after: sunset
-              after_offset: "-00:35:00"
+            - condition: numeric_state
+              entity_id: sun.sun
+              attribute: elevation
+              below: 5.0
             - condition: state
               entity_id: light.basement_room_light_dimmer
               state: "on"
