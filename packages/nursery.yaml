@@ -423,3 +423,37 @@ automation:
       - wait_template: '{{ not is_state("light.nursery_led_strip", "unavailable") }}'
       - service: scene.turn_on
         entity_id: scene.nursery_led_on
+
+  - alias: Reenable nursery light on power loss
+    id: nusery_led_strip_reenable
+    trigger:
+      - platform: state
+        entity_id: sensor.backupsxs1300g_status
+        from: "Online"
+      - platform: state
+        entity_id: input_boolean.nap_mode
+        to: "off"
+        from: "on"
+      - platform: time
+        at: "07:09:30"
+    action:
+      # Wait for the switch we want to turn on to be available
+      - wait_template: '{{ not is_state("switch.nursery_power_loss_gate", "unavailable") }}'
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.nap_mode
+                state: "off"
+            sequence:
+              - service: homeassistant.turn_on
+                entity_id: switch.nursery_power_loss_gate
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.nap_mode
+                state: "on"
+              - condition: time
+                after: "07:00:00"
+                before: "08:00:00"
+            sequence:
+              - service: homeassistant.turn_on
+                entity_id: switch.nursery_power_loss_gate
