@@ -183,7 +183,7 @@ automation:
     condition:
       - or:
           - condition: numeric_state
-            entity_id: weather.climacell_nowcast
+            entity_id: weather.tomorrow_io_home_nowcast
             attribute: temperature
             above: 20
           - condition: numeric_state
