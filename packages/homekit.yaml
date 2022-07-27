@@ -36,14 +36,41 @@ homekit:
         support_audio: false
         linked_doorbell_sensor: binary_sensor.faux_nursery_homekit_bell
 
+  - name: Front Door Lock
+    mode: accessory
+    port: 21066
+    filter:
+      include_entities:
+        - lock.front_door
+
+  - name: Side Door Lock
+    mode: accessory
+    port: 21067
+    filter:
+      include_entities:
+        - lock.side_door
+
   - name: General Accessories
+    port: 21068
     filter:
       include_domains:
-        - light
-        - switch
-        - cover
         - climate
-      exclude_entity_globs:
-        - switch.sonos*
-        - sensor.*temperature*
-        - light.jasco_products_43100_db9405fe_on_off
+        - cover
+      include_entities:
+        # Nursery
+        - switch.nursery_fan
+        - light.nursery_led_strip
+        - switch.nursery_white_noise
+        - light.nursery_light
+        - sensor.kid_s_room_temperature
+        # Front Bedroom
+        - switch.spare_bedroom_fan
+        # Bedroom
+        - switch.master_white_noise
+        - sensor.bedroom_temperature
+        # Basement
+        - switch.basement_hall
+        - light.basement_room_light_dimmer
+        # Living Room
+        - switch.kitchen_island
+        - sensor.living_room_temperature
