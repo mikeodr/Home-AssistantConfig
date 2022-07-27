@@ -1,11 +1,9 @@
 input_boolean:
   nap_mode:
     name: Nap Mode
-    initial: off
     icon: mdi:sleep
   girls_home_override:
     name: Girls Home Override
-    initial: off
     icon: mdi:home-heart
 
 homeassistant:
