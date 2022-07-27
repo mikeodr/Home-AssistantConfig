@@ -16,3 +16,4 @@ blueprints/
 home-assistant.log*
 known_devices.yaml
 backups/
+zigbee.db*
