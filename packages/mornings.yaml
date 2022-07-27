@@ -5,6 +5,9 @@ automation:
       - platform: event
         event_type: "ios_wakeup_event"
     action:
+      - service: homeassistant.turn_off
+        entity_id:
+          - switch.spare_bedroom_fan
       - choose:
           - conditions:
               - condition: template
