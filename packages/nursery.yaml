@@ -41,7 +41,7 @@ scene:
     entities:
       switch.nursery_white_noise:
         state: "off"
-      switch.nursery_fan:
+      fan.nursery_fan:
         state: "off"
       switch.nursery_humidifier:
         state: "off"
@@ -87,15 +87,31 @@ automation:
                 entity_id: input_boolean.nap_mode
                 state: "off"
             sequence:
-              - service: scene.turn_on
-                entity_id: scene.nursery_led_on
+              - repeat:
+                  sequence:
+                    - service: scene.turn_on
+                      entity_id: scene.nursery_led_on
+                    - delay:
+                        seconds: 1
+                  until:
+                    - condition: state
+                      entity_id: light.nursery_led_strip
+                      state: "on"
           - conditions:
               - condition: state
                 entity_id: input_boolean.nap_mode
                 state: "on"
             sequence:
-              - service: scene.turn_on
-                entity_id: scene.nursery_led_on_low
+              - repeat:
+                  sequence:
+                    - service: scene.turn_on
+                      entity_id: scene.nursery_led_on_low
+                    - delay:
+                        seconds: 1
+                  until:
+                    - condition: state
+                      entity_id: light.nursery_led_strip
+                      state: "on"
 
   - alias: Nursery LED Off
     id: nursery_led_off
@@ -144,8 +160,16 @@ automation:
                       - service: scene.turn_on
                         entity_id: scene.baby_nap_off
                       - wait_template: '{{ not is_state("light.nursery_led_strip", "unavailable") }}'
-                      - service: scene.turn_on
-                        entity_id: scene.nursery_led_on
+                      - repeat:
+                          sequence:
+                            - service: scene.turn_on
+                              entity_id: scene.nursery_led_on
+                            - delay:
+                                seconds: 1
+                          until:
+                            - condition: state
+                              entity_id: light.nursery_led_strip
+                              state: "on"
                 default:
                   - service: scene.turn_on
                     entity_id: scene.baby_nap_off
@@ -195,7 +219,7 @@ automation:
                  is_state('input_boolean.nap_mode', 'on') }}
             sequence:
               service: homeassistant.turn_on
-              entity_id: switch.nursery_fan
+              entity_id: fan.nursery_fan
           # If not a workday or override is turn on
           - conditions:
               - or:
@@ -203,13 +227,13 @@ automation:
                     entity_id: binary_sensor.workday_sensor
                     state: "off"
                   - condition: state
-                    entity_id: binary_sensor.girls_home_bayesian
+                    entity_id: input_boolean.girls_home_override
                     state: "on"
                   - condition: time
                     after: "14:00:00"
             sequence:
               service: homeassistant.turn_on
-              entity_id: switch.nursery_fan
+              entity_id: fan.nursery_fan
 
   - alias: Nursery Fan on if temperature rises
     id: nursery_fan_temperature_rise_conditional
@@ -222,11 +246,11 @@ automation:
         entity_id: input_boolean.nap_mode
         state: "on"
       - condition: state
-        entity_id: switch.nursery_fan
+        entity_id: fan.nursery_fan
         state: "off"
     action:
       - service: homeassistant.turn_on
-        entity_id: switch.nursery_fan
+        entity_id: fan.nursery_fan
 
   - alias: Nursery Low Temperature Fan Off
     id: nursery_low_temp_fan_off
@@ -236,7 +260,7 @@ automation:
         below: 21
     action:
       - service: homeassistant.turn_off
-        entity_id: switch.nursery_fan
+        entity_id: fan.nursery_fan
 
   - alias: Nursery Temperature Warning
     id: nursery_temp_warning
@@ -332,6 +356,7 @@ automation:
       - service: notify.adults
         data:
           title: "Nursery Door Left Open"
+          message: "Door is Open"
           data:
             tag: "nursery-door-open-warning"
 
@@ -401,7 +426,7 @@ automation:
           # again quickly.
           minutes: 3
 
-  - alias: Let the girls get up
+  - alias: Let the girls get out of bed
     id: nursery_let_girls_get_up
     trigger:
       - platform: time
@@ -419,8 +444,16 @@ automation:
             state: "home"
     action:
       - wait_template: '{{ not is_state("light.nursery_led_strip", "unavailable") }}'
-      - service: scene.turn_on
-        entity_id: scene.nursery_led_on
+      - repeat:
+          sequence:
+            - service: scene.turn_on
+              entity_id: scene.nursery_led_on
+            - delay:
+                seconds: 1
+          until:
+            - condition: state
+              entity_id: light.nursery_led_strip
+              state: "on"
 
   - alias: Reenable nursery light on power loss
     id: nusery_led_strip_reenable
@@ -462,6 +495,11 @@ automation:
       - platform: state
         entity_id: input_boolean.nap_mode
         to: "on"
+    condition:
+      not:
+        - condition: state
+          entity_id: media_player.apple_tv_living_room
+          state: "playing"
     action:
       - service: remote.send_command
         target:
