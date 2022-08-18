@@ -1,7 +1,3 @@
 quite_mode:
   name: Quite Mode
   icon: mdi:bell-off
-
-vacation_mode:
-  name: Vacation Mode
-  icon: mdi:palm-tree
