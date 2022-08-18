@@ -1,46 +1,94 @@
+input_boolean:
+  vacation_mode:
+    name: Vacation Mode
+    icon: mdi:palm-tree
+
 automation:
-  - alias: Vacation mode when at trailer
-    id: vacation_mode_at_trailer
+  - alias: Vacation mode
+    id: vacation_mode_depart
     trigger:
       - platform: numeric_state
-        entity_id: proximity.trailer
-        below: 20
+        entity_id: proximity.home
+        above: 55000
     condition:
       - condition: state
         entity_id: input_boolean.girls_home_override
         state: "off"
     action:
-      - service: select.select_option
-        entity_id: select.my_ecobee_current_mode
-        data:
-          option: away
       - service: homeassistant.turn_off
         target:
           area_id:
             - 490ec53ba1bc411a96655d0e3492e7d7 # Basement
             - 591640619ece45269ce3c6a8c71f4b7e # Nursery
             - e153ba2916a6441a8e5dbc47d58b9a73 # Living Room
+            - a5cdd949b6a34fccbefe6e6b2d1d61db # Main Bedroom
       - service: cover.close_cover
         entity_id: cover.garage
       - service: lock.lock
         entity_id:
           - lock.front_door
           - lock.side_door
+      - service: homeassistant.turn_on
+        entity_id:
+          - input_boolean.vacation_mode
+      - service: select.select_option
+        entity_id: select.my_ecobee_current_mode
+        data:
+          option: away
 
   - alias: Returning from trailer
     id: vacation_mode_return
     trigger:
       - platform: numeric_state
-        entity_id: proximity.trailer
-        above: 20 # km
-        below: 40 # km
+        entity_id: proximity.home
+        below: 50000
+      - platform: state
+        entity_id: proximity.home
+        attribute: dir_of_travel
+        to: "arrived"
     condition:
       - condition: state
-        entity_id: proximity.trailer
-        attribute: dir_of_travel
-        state: "away_from"
+        entity_id: input_boolean.vacation_mode
+        state: "on"
     action:
       - service: select.select_option
         entity_id: select.my_ecobee_current_mode
         data:
           option: home
+      - service: homeassistant.turn_off
+        entity_id:
+          - input_boolean.vacation_mode
+
+  - alias: Vacation Lighting
+    mode: single
+    max_exceeded: silent
+    id: vacation_lighting
+    trigger:
+      - platform: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        below: 1.0
+        id: light_on
+      - platform: time
+        at: "20:30:00"
+        id: light_off
+    condition:
+      - condition: state
+        entity_id: input_boolean.vacation_mode
+        state: "on"
+    action:
+      - delay:
+          minutes: "{{ (range(0, 40)|random|int) }}"
+      - choose:
+        - conditions:
+            - condition: trigger
+              id: light_on
+          sequence:
+            - service: homeassistant.turn_on
+              entity_id: switch.kitchen_island
+        - conditions:
+            - condition: trigger
+              id: light_off
+          sequence:
+            - service: homeassistant.turn_off
+              entity_id: switch.kitchen_island
