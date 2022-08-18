@@ -6,13 +6,6 @@ proximity:
       - device_tracker.tiffanys_iphone
     tolerance: 100
     unit_of_measurement: m
-  mike_home:
-    zone: home
-    ignored_zones:
-      - zone.mike_work
-    devices:
-      - device_tracker.michaels_iphone
-    tolerance: 100
   daycare:
     zone: daycare
     devices:
@@ -21,14 +14,10 @@ proximity:
       - device_tracker.tiffanys_iphone
     tolerance: 100
     unit_of_measurement: m
-  tiff_home:
-    zone: home
-    devices:
-      - device_tracker.tiffanys_iphone
-    tolerance: 100
   trailer:
     zone: trailer
     devices:
       - device_tracker.michaels_iphone
       - device_tracker.tiffanys_iphone
+      - device_tracker.tesla_location
     tolerance: 100
