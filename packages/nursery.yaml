@@ -36,6 +36,8 @@ scene:
         state: "off"
       light.nursery_light:
         state: "off"
+      switch.nursery_power_loss_gate:
+        state: "off"
 
   - name: baby_nap_off
     entities:
@@ -45,6 +47,8 @@ scene:
         state: "off"
       switch.nursery_humidifier:
         state: "off"
+      switch.nursery_power_loss_gate:
+        state: "on"
 
 script:
   tv_baby_monitor:
@@ -80,6 +84,8 @@ automation:
         device_ieee: "00:0d:6f:ff:fe:a6:af:1d"
         command: "on"
     action:
+      - service: homeassistant.turn_on
+        entity_id: switch.nursery_power_loss_gate
       - wait_template: '{{ not is_state("light.nursery_led_strip", "unavailable") }}'
       - choose:
           - conditions:
@@ -203,6 +209,13 @@ automation:
       - platform: time
         at: "17:00:00"
     condition:
+      - or:
+        - condition: state
+          entity_id: input_boolean.vacation_mode
+          state: "off"
+        - condition: state
+          entity_id: input_boolean.girls_home_override
+          state: "on"
       - or:
           - condition: numeric_state
             entity_id: weather.tomorrow_io_home_nowcast
@@ -421,6 +434,8 @@ automation:
             Someone has left the nursery
           data:
             tag: "nursery-escape-warning"
+      - service: media_player.media_pause
+        entity_id: media_player.apple_tv_living_room
       - delay:
           # Debounce this from happening
           # again quickly.
@@ -467,6 +482,8 @@ automation:
         from: "on"
       - platform: time
         at: "07:09:30"
+      - platform: time # On for bedtime
+        at: "18:30:00"
     action:
       # Wait for the switch we want to turn on to be available
       - wait_template: '{{ not is_state("switch.nursery_power_loss_gate", "unavailable") }}'
