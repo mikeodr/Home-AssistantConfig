@@ -50,7 +50,7 @@ automation:
     trigger:
       - platform: zone
         entity_id:
-          - person.mike
+          - device_tracker.michaels_iphone
           - device_tracker.tesla_location
         zone: zone.daycare
         event: enter
@@ -90,4 +90,4 @@ automation:
                   push:
                     sound:
                       critical: 1
-                      volume: 0.6
+                      volume: 0.5
