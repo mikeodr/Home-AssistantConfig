@@ -25,7 +25,7 @@ automation:
     id: laundry_start_detected
     trigger:
       - platform: numeric_state
-        entity_id: sensor.laundry_power
+        entity_id: sensor.washing_machine_electric_consumption_w
         above: 30
         for:
           seconds: 10
@@ -45,7 +45,7 @@ automation:
     id: laundry_transition_finishing
     trigger:
       - platform: numeric_state
-        entity_id: sensor.laundry_power
+        entity_id: sensor.washing_machine_electric_consumption_w
         below: 3.5
         for:
           minutes: 5
