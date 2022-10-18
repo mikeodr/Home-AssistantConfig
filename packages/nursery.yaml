@@ -36,8 +36,6 @@ scene:
         state: "off"
       light.nursery_light:
         state: "off"
-      switch.nursery_power_loss_gate:
-        state: "off"
 
   - name: baby_nap_off
     entities:
@@ -210,12 +208,12 @@ automation:
         at: "17:00:00"
     condition:
       - or:
-        - condition: state
-          entity_id: input_boolean.vacation_mode
-          state: "off"
-        - condition: state
-          entity_id: input_boolean.girls_home_override
-          state: "on"
+          - condition: state
+            entity_id: input_boolean.vacation_mode
+            state: "off"
+          - condition: state
+            entity_id: input_boolean.girls_home_override
+            state: "on"
       - or:
           - condition: numeric_state
             entity_id: weather.tomorrow_io_home_nowcast
@@ -378,9 +376,12 @@ automation:
     trigger:
       - platform: state
         entity_id: light.nursery_led_strip
+        to: ~
     condition:
       - condition: time
         after: "09:00:00"
+      - condition: template
+        value_template: "{{ trigger.to_state.state in ['off', 'on'] }}"
     action:
       - service: homeassistant.turn_{{ trigger.to_state.state }}
         entity_id: input_boolean.quite_mode
@@ -533,3 +534,19 @@ automation:
           entity_id: remote.apple_tv_living_room
         data:
           command: "home"
+
+  - alias: Turn on kitchen lighting when bedtime starts
+    id: nursery_turn_on_kitchen_lighting
+    trigger:
+      - platform: state
+        entity_id: input_boolean.nap_mode
+        to: "on"
+    condition:
+      - condition: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        below: 1.5
+    action:
+      - service: homeassistant.turn_on
+        entity_id:
+          - switch.kitchen_island
