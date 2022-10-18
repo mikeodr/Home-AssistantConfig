@@ -5,20 +5,17 @@ automation:
       - platform: event
         event_type: "ios_wakeup_event"
     action:
-      - service: homeassistant.turn_off
-        entity_id:
-          - switch.spare_bedroom_fan
       - choose:
           - conditions:
-              - condition: template
-                value_template: "{{is_state('person.' ~ trigger.event.data.person, 'home')}}"
               - condition: state
+                entity_id: person.mike
+                state: "home"
+              - condition: numeric_state
                 entity_id: sun.sun
-                state: "below_horizon"
+                attribute: elevation
+                below: 1.5
             sequence:
               - service: homeassistant.turn_on
                 entity_id:
-                  - switch.front_porch
-                  - switch.side_door
-                  # - switch.christmas_tree
                   - switch.kitchen_island
+                  - switch.christmas_tree
