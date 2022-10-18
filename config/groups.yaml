@@ -3,9 +3,3 @@ adults:
   entities:
     - person.mike
     - person.tiff
-
-exterior_lights:
-  name: Exterior Lights
-  entities:
-    - switch.front_porch
-    - switch.side_door

@@ -3,6 +3,13 @@ homeassistant:
     binary_sensor.front_door:
       device_class: door
 
+group:
+  exterior_lights:
+    name: Exterior Lights
+    entities:
+      - switch.front_porch
+      - switch.side_door
+
 alert:
   garage_open:
     name: Garage Door left open
@@ -38,7 +45,7 @@ automation:
       - platform: numeric_state
         entity_id: sun.sun
         attribute: elevation
-        below: 0.15
+        below: 0.25
     action:
       service: homeassistant.turn_on
       entity_id: group.exterior_lights
@@ -48,8 +55,10 @@ automation:
     trigger:
       - platform: time
         at: "23:30:00"
-      - platform: sun
-        event: sunrise
+      - platform: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        above: 0.25
     action:
       - service: homeassistant.turn_off
         entity_id: group.exterior_lights
@@ -92,13 +101,17 @@ automation:
   - alias: Sync Exterior Lights
     id: exterior_sync_exterior_lights
     trigger:
-      platform: state
-      to: ~
-      entity_id:
-        - switch.front_porch
+      - platform: state
+        to: ~
+        entity_id:
+          - switch.front_porch
+          - switch.side_door
+    condition:
+      condition: template
+      value_template: "{{ trigger.to_state.state in ['off', 'on'] }}"
     action:
       service: homeassistant.turn_{{ trigger.to_state.state }}
-      entity_id: switch.side_door
+      entity_id: group.exterior_lights
 
   - alias: Turn on external lights, multiple triggers
     id: exterior_exterior_lights_on_triggers
@@ -110,7 +123,7 @@ automation:
         entity_id:
           - lock.front_door
           - lock.side_door
-        to: "unlocked"
+        to: ~
       - platform: zone
         entity_id:
           - person.mike
@@ -119,9 +132,10 @@ automation:
         zone: zone.home
         event: enter
     condition:
-      - condition: state
+      - condition: numeric_state
         entity_id: sun.sun
-        state: "below_horizon"
+        attribute: elevation
+        below: 1.0
     action:
       - service: homeassistant.turn_on
         entity_id: group.exterior_lights
