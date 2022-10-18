@@ -15,6 +15,7 @@ binary_sensor:
         entity_id: binary_sensor.workday_sensor
         to_state: "off"
         prob_given_true: 0.85
+        prob_given_false: 0.25
       - platform: template
         value_template: >
           {{ (now().hour > 16 or now().hour < 8) }}
@@ -35,6 +36,7 @@ binary_sensor:
         value_template: >
           {{ as_local(state_attr('automation.pick_up_girls_reminder', 'last_triggered')).day != now().day}}
         prob_given_true: 0.67
+        prob_given_false: 1.0
       # Parents not home, sitters home, likely home.
       - platform: template
         value_template: >
