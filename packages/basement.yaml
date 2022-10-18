@@ -1,4 +1,44 @@
 automation:
+  - alias: Basement Light Presence Control On
+    id: basement_light_presence_controls_on
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.basement_presence
+        to: "on"
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_id: 5fe497358dad962cba14901506e49bc8
+          command: Approach
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_id: 5fe497358dad962cba14901506e49bc8
+          command: Enter
+    condition:
+      - condition: time
+        after: "06:00:00"
+        before: "23:00:00"
+    action:
+      - service: homeassistant.turn_on
+        entity_id:
+          - switch.basement_hall
+          - light.basement_room_light_dimmer
+
+  - alias: Basement Light Presence Control Off
+    id: basement_light_presence_controls_off
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.basement_presence
+        to: "off"
+        for:
+          minutes: 10
+    action:
+      - service: homeassistant.turn_off
+        entity_id:
+          - switch.basement_hall
+          - light.basement_room_light_dimmer
+
   - alias: Basement Dimmer Control
     id: basement_dimmer_auto_control
     trigger:
@@ -41,7 +81,11 @@ automation:
     id: basement_sync_hall_room_lights
     trigger:
       - platform: state
+        to: ~
         entity_id: switch.basement_hall
+    condition:
+      condition: template
+      value_template: "{{ trigger.to_state.state in ['off', 'on'] }}"
     action:
       - service: homeassistant.turn_{{ trigger.to_state.state }}
         entity_id: light.basement_room_light_dimmer
