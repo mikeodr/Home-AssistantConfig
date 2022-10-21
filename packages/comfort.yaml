@@ -17,6 +17,7 @@ automation:
           data:
             tag: "front-door-open-warning"
             push:
+              name: "default"
               critical: 1
       - service: climate.turn_off
         target:
@@ -36,4 +37,5 @@ automation:
           data:
             tag: "front-door-open-warning"
             push:
+              name: "default"
               critical: 1

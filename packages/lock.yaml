@@ -33,6 +33,7 @@ alert:
           behavior: "default"
       push:
         sound:
+          name: "default"
           critical: 1
           volume: 1.0
     notifiers:

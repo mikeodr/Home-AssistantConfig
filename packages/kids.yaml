@@ -91,5 +91,6 @@ automation:
                   tag: "pickup-reminder"
                   push:
                     sound:
+                      name: "default"
                       critical: 1
                       volume: 0.5
