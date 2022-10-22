@@ -36,6 +36,8 @@ scene:
         state: "off"
       light.nursery_light:
         state: "off"
+      switch.nursery_humidifier:
+        state: "on"
 
   - name: baby_nap_off
     entities:
