@@ -36,7 +36,7 @@ scene:
         state: "off"
       light.nursery_light:
         state: "off"
-      switch.nursery_humidifier:
+      fan.nursery_humidifier:
         state: "on"
 
   - name: baby_nap_off
@@ -45,7 +45,7 @@ scene:
         state: "off"
       fan.nursery_fan:
         state: "off"
-      switch.nursery_humidifier:
+      fan.nursery_humidifier:
         state: "off"
       switch.nursery_power_loss_gate:
         state: "on"
