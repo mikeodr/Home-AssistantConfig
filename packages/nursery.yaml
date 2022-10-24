@@ -521,6 +521,8 @@ automation:
           entity_id: media_player.apple_tv_living_room
           state: "playing"
     action:
+      - service: homeassistant.turn_on
+        entity_id: remote.apple_tv_living_room
       - service: remote.send_command
         target:
           entity_id: remote.apple_tv_living_room
