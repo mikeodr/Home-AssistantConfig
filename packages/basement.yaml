@@ -17,8 +17,8 @@ automation:
           command: Enter
     condition:
       - condition: time
-        after: "06:00:00"
-        before: "23:00:00"
+        after: "07:00:00"
+        before: "10:00:00"
     action:
       - service: homeassistant.turn_on
         entity_id:
