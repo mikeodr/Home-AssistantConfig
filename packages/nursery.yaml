@@ -60,6 +60,8 @@ script:
 automation:
   - alias: Nap Mode Button Toggle
     id: nursery_nap_mode_toggle
+    mode: single
+    max_exceeded: silent
     trigger:
       - platform: event
         event_type: zha_event
@@ -76,6 +78,8 @@ automation:
           seconds: 1
 
   - alias: Nursery LED On
+    mode: single
+    max_exceeded: silent
     id: nursery_led_on
     trigger:
       platform: event
@@ -416,6 +420,7 @@ automation:
   - alias: Nursey Door Open During Sleep
     id: nursery_door_open_during_sleep
     mode: single
+    max_exceeded: silent
     trigger:
       - platform: state
         entity_id: binary_sensor.nursery_door
@@ -437,8 +442,14 @@ automation:
             Someone has left the nursery
           data:
             tag: "nursery-escape-warning"
-      - service: media_player.media_pause
-        entity_id: media_player.apple_tv_living_room
+      - choose:
+        - conditions:
+          - condition: state
+            entity_id: media_player.apple_tv_living_room
+            state: "playing"
+          sequence:
+            - service: media_player.media_pause
+              entity_id: media_player.apple_tv_living_room
       - delay:
           # Debounce this from happening
           # again quickly.
