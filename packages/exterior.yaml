@@ -46,6 +46,20 @@ automation:
         entity_id: sun.sun
         attribute: elevation
         below: 0.25
+      - platform: state
+        entity_id:
+          - switch.front_porch
+          - switch.side_door
+        to: "off"
+        for:
+          seconds: 5
+    condition:
+      - condition: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        below: 0.25
+      - condition: time
+        before: "23:30:00"
     action:
       service: homeassistant.turn_on
       entity_id: group.exterior_lights
@@ -75,7 +89,7 @@ automation:
       - and:
           - condition: time
             after: "23:30:00"
-            before: "10:00:00" # Time condition to span midnight reset
+            before: "09:00:00" # Time condition to span midnight reset
           - condition: sun
             before: sunrise
     action:
@@ -85,21 +99,28 @@ automation:
   - alias: Keep Exterior Lights off during daylight
     id: exterior_lights_off_daylight
     trigger:
-      platform: state
-      entity_id: group.exterior_lights
-      to: "on"
-      for:
-        minutes: 30
-    condition:
-      - condition: state
+      - platform: state
+        entity_id: group.exterior_lights
+        to: "on"
+        for:
+          minutes: 30
+      - platform: numeric_state
         entity_id: sun.sun
-        state: "above_horizon"
+        attribute: elevation
+        above: 0.25
+    condition:
+      - condition: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        above: 0.25
     action:
       - service: homeassistant.turn_off
         entity_id: group.exterior_lights
 
   - alias: Sync Exterior Lights
     id: exterior_sync_exterior_lights
+    mode: single
+    max_exceeded: silent
     trigger:
       - platform: state
         to: ~
@@ -107,8 +128,8 @@ automation:
           - switch.front_porch
           - switch.side_door
     condition:
-      condition: template
-      value_template: "{{ trigger.to_state.state in ['off', 'on'] }}"
+      - condition: template
+        value_template: '{{ trigger.to_state.state in ["off", "on"] }}'
     action:
       service: homeassistant.turn_{{ trigger.to_state.state }}
       entity_id: group.exterior_lights
@@ -131,6 +152,10 @@ automation:
           - device_tracker.tesla_location
         zone: zone.home
         event: enter
+      - platform: state
+        entity_id: binary_sensor.doorbell_button
+        from: "off"
+        to: "on"
     condition:
       - condition: numeric_state
         entity_id: sun.sun
