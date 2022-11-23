@@ -85,6 +85,7 @@ homekit:
         # Bedroom
         - switch.master_white_noise
         - sensor.bedroom_temperature
+        - switch.master_humidifier
         # Basement
         - switch.basement_hall
         - light.basement_room_light_dimmer
