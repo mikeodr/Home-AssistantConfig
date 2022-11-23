@@ -39,3 +39,27 @@ automation:
             push:
               name: "default"
               critical: 1
+
+  - alias: Furnace on if left off and cold forecase
+    id: furnace_on_if_left_off_cold_forecast
+    trigger:
+      - platform: time
+        at: "21:00:00"
+    condition:
+      - not:
+          - condition: state
+            entity_id: climate.my_ecobee
+            state: "heat"
+      - condition: template
+        value_template: "{{ state_attr('weather.tomorrow_io_home_nowcast', 'forecast') | map(attribute='temperature')| list | min < 10 }}"
+    action:
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          message: "Furnace enabled, cold weather forecast"
+          data:
+            tag: "furnace-enabled-cold-notification"
+      - service: climate.set_hvac_mode
+        data:
+          hvac_mode: heat
+        target:
+          entity_id: climate.my_ecobee
