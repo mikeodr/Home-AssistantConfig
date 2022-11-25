@@ -1,3 +1,10 @@
+group:
+  exterior_christmas_lights:
+    name: Exterior Christmas Lights
+    entities:
+      - light.front_christmas_lights
+      - light.deck_christmas_lights
+
 automation:
   - alias: Exterior Christmas Lights On
     id: xmas_exteior_lights_on
@@ -6,7 +13,7 @@ automation:
       event: sunset
     action:
       service: homeassistant.turn_on
-      entity_id: switch.exterior_xmas_lights
+      entity_id: group.exterior_christmas_lights
 
   - alias: Exterior Christmas Lights Off
     id: xmas_exterior_lights_off
@@ -17,7 +24,7 @@ automation:
         event: sunrise
     action:
       service: homeassistant.turn_off
-      entity_id: switch.exterior_xmas_lights
+      entity_id: group.exterior_christmas_lights
 
   - alias: Christmas Tree lights on when living room occupied
     id: xmas_lights_room_occupied
@@ -30,17 +37,17 @@ automation:
         to: "off"
         for:
           minutes: 60
-      - platform: homeassistant
-        event: start
       - platform: event
         event_type: "ios_wakeup_event"
     condition:
       - condition: time
         after: "06:30:00"
         before: "22:30:00"
+      - condition: template
+        value_template: "{{ trigger.to_state.state in ['off', 'on'] }}"
     action:
       service: homeassistant.turn_{{ trigger.to_state.state }}
-      entity_id: switch.christmas_tree
+      entity_id: light.christmas_tree
 
   - alias: Christmas Tree off at bedtime
     id: xmas_tree_lights_off_night
@@ -49,15 +56,18 @@ automation:
       at: "22:30:00"
     action:
       service: homeassistant.turn_off
-      entity_id: switch.christmas_tree
+      entity_id: light.christmas_tree
 
   - alias: Exterior Christmas Lights on arriving home
     id: external_xmas_lights_on_arrive_home
     trigger:
-      platform: zone
-      entity_id: device_tracker.tesla_location
-      zone: zone.home
-      event: enter
+      - platform: zone
+        entity_id:
+          - device_tracker.tesla_location
+          - device_tracker.tiffanys_iphone
+          - device_tracker.michaels_iphone
+        zone: zone.home
+        event: enter
     condition:
       - condition: numeric_state
         entity_id: sun.sun
@@ -65,4 +75,4 @@ automation:
         below: 3.0
     action:
       service: homeassistant.turn_on
-      entity_id: switch.exterior_xmas_lights
+      entity_id: group.exterior_christmas_lights
