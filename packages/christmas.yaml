@@ -39,6 +39,13 @@ automation:
           minutes: 60
       - platform: event
         event_type: "ios_wakeup_event"
+      - platform: zone
+        entity_id:
+          - device_tracker.tesla_location
+          - person.mike
+          - person.tiff
+        zone: zone.home
+        event: enter
     condition:
       - condition: time
         after: "06:30:00"
@@ -64,8 +71,8 @@ automation:
       - platform: zone
         entity_id:
           - device_tracker.tesla_location
-          - device_tracker.tiffanys_iphone
-          - device_tracker.michaels_iphone
+          - person.mike
+          - person.tiff
         zone: zone.home
         event: enter
     condition:
