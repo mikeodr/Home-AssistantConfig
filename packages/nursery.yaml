@@ -166,6 +166,8 @@ automation:
                   - conditions:
                       - condition: time
                         before: "08:30:00"
+                      - condition: time
+                        after: "17:00:00"
                     sequence:
                       - service: scene.turn_on
                         entity_id: scene.baby_nap_off
@@ -401,15 +403,9 @@ automation:
         for:
           minutes: 1
     condition:
-      # (Nap or bed) and (light off)
-      - or:
-          # Naptime
-          - condition: time
-            after: "11:30:00"
-            before: "14:30:00"
-          # Bedtime
-          - condition: time
-            after: "18:00:00"
+      # Bedtime
+      - condition: time
+        after: "19:00:00"
       - condition: state
         entity_id: light.nursery_light
         state: "off"
