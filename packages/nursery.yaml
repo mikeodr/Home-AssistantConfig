@@ -165,9 +165,8 @@ automation:
               - choose:
                   - conditions:
                       - condition: time
-                        before: "08:30:00"
-                      - condition: time
                         after: "17:00:00"
+                        before: "08:30:00"
                     sequence:
                       - service: scene.turn_on
                         entity_id: scene.baby_nap_off
