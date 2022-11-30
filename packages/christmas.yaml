@@ -48,12 +48,12 @@ automation:
         event: enter
     condition:
       - condition: time
-        after: "06:30:00"
+        after: "06:00:00"
         before: "22:30:00"
       - condition: template
-        value_template: "{{ trigger.to_state.state in ['off', 'on'] }}"
+        value_template: "{{ trigger.to_state.state in ['off', 'on', 'home'] }}"
     action:
-      service: homeassistant.turn_{{ trigger.to_state.state }}
+      service: homeassistant.turn_{{ 'on' if 'home' == trigger.to_state.state else trigger.to_state.state }}
       entity_id: light.christmas_tree
 
   - alias: Christmas Tree off at bedtime
