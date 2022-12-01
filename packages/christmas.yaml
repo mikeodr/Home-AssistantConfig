@@ -39,6 +39,7 @@ automation:
           minutes: 60
       - platform: event
         event_type: "ios_wakeup_event"
+        id: turn_on
       - platform: zone
         entity_id:
           - device_tracker.tesla_location
@@ -46,15 +47,25 @@ automation:
           - person.tiff
         zone: zone.home
         event: enter
+        id: turn_on
     condition:
       - condition: time
         after: "06:00:00"
         before: "22:30:00"
-      - condition: template
-        value_template: "{{ trigger.to_state.state in ['off', 'on', 'home'] }}"
     action:
-      service: homeassistant.turn_{{ 'on' if 'home' == trigger.to_state.state else trigger.to_state.state }}
-      entity_id: light.christmas_tree
+      choose:
+        - conditions:
+            - condition: trigger
+              id: turn_on
+          sequence:
+            - service: homeassistant.turn_on
+              entity_id: light.christmas_tree
+        - conditions:
+            - condition: template
+              value_template: "{{ trigger.to_state.state in ['off', 'on'] }}"
+          sequence:
+            - service: homeassistant.turn_{{ 'on' if 'home' == trigger.to_state.state else trigger.to_state.state }}
+              entity_id: light.christmas_tree
 
   - alias: Christmas Tree off at bedtime
     id: xmas_tree_lights_off_night
@@ -79,7 +90,7 @@ automation:
       - condition: numeric_state
         entity_id: sun.sun
         attribute: elevation
-        below: 3.0
+        below: 3.35
     action:
       service: homeassistant.turn_on
       entity_id: group.exterior_christmas_lights
