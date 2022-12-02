@@ -265,3 +265,27 @@ automation:
               "{{ states.sensor.tesla_latitude.state }}",
               "{{ states.sensor.tesla_longitude.state }}",
             ]
+
+  - alias: Reminder to turn on sentry mode at home in the driveway
+    id: tesla_sentry_mode_home_reminder
+    trigger:
+      - platform: state
+        entity_id: sensor.tesla_state
+        from: "driving"
+        for:
+          minutes: 15
+    condition:
+      - condition: state
+        entity_id: device_tracker.tesla_location
+        state: "home"
+      - condition: state
+        entity_id:
+          - binary_sensor.tesla_plugged_in
+          - binary_sensor.tesla_sentry_mode
+        state: "off"
+    action:
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          message: "📷 Turn on sentry mode 📷"
+          data:
+            tag: "tesla-turn-on-sentry-mode"
