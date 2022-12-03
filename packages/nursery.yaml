@@ -315,10 +315,10 @@ automation:
         for:
           minutes: 30
       - platform: time
-        at: "09:00:00"
+        at: "08:00:00"
     condition:
       - condition: time
-        after: "08:30:00"
+        after: "07:30:00"
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "off"
