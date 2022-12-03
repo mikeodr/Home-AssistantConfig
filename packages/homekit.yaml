@@ -72,12 +72,11 @@ homekit:
       include_domains:
         - climate
         - cover
+        - light
       include_entities:
         # Nursery
         - switch.nursery_fan
-        - light.nursery_led_strip
         - switch.nursery_white_noise
-        - light.nursery_light
         - sensor.kid_s_room_temperature
         - switch.nap_mode
         # Front Bedroom
@@ -88,7 +87,6 @@ homekit:
         - switch.master_humidifier
         # Basement
         - switch.basement_hall
-        - light.basement_room_light_dimmer
         # Living Room
         - switch.kitchen_island
         - sensor.living_room_temperature
