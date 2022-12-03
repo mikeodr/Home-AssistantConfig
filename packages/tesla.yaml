@@ -121,10 +121,6 @@ mqtt:
     - name: tesla_wheel_type
       state_topic: "teslamate/cars/1/wheel_type"
 
-    - name: tesla_spoiler_type
-      state_topic: "teslamate/cars/1/spoiler_type"
-      icon: mdi:car-sports
-
     - name: tesla_geofence
       state_topic: "teslamate/cars/1/geofence"
       icon: mdi:earth
@@ -244,6 +240,10 @@ mqtt:
       state_topic: "teslamate/cars/1/time_to_full_charge"
       unit_of_measurement: h
       icon: mdi:clock-outline
+
+    - name: tesla_shift_state
+      state_topic: "teslamate/cars/1/shift_state"
+      icon: mdi:car-shift-pattern
 
 automation:
   - alias: Update Tesla location as MQTT location updates
