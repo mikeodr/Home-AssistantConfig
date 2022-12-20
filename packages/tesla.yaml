@@ -245,6 +245,13 @@ mqtt:
       state_topic: "teslamate/cars/1/shift_state"
       icon: mdi:car-shift-pattern
 
+proximity:
+  garage:
+    zone: garage
+    devices:
+      - device_tracker.tesla_location
+    unit_of_measurement: m
+
 automation:
   - alias: Update Tesla location as MQTT location updates
     id: tesla_location_update_automation
@@ -289,3 +296,47 @@ automation:
           message: "📷 Turn on sentry mode 📷"
           data:
             tag: "tesla-turn-on-sentry-mode"
+
+  - alias: Close Garage daycare days
+    id: tesla_close_garage_daycare_days
+    trigger:
+      - platform: numeric_state
+        entity_id: proximity.home
+        above: 50
+    condition:
+      - condition: time
+        after: "07:00:00"
+        before: "12:00:00"
+      - condition: state
+        entity_id: binary_sensor.workday_sensor
+        state: "on"
+    action:
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          message: "️⬇️ Closing Garage Door ⬇️"
+          data:
+            tag: "tesla-close-garage-door"
+      - service: cover.close_cover
+        entity_id: cover.garage
+
+  - alias: Open garage Daycare Days
+    id: tesla_open_garage_daycare_days
+    trigger:
+      - platform: numeric_state
+        entity_id: proximity.home
+        below: 50
+    condition:
+      - condition: state
+        entity_id: binary_sensor.workday_sensor
+        state: "on"
+      - condition: time
+        after: "15:30:00"
+        before: "16:30:00"
+    action:
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          message: "⬆️ Opening Garage Door ⬆️"
+          data:
+            tag: "tesla-close-garage-door"
+      - service: cover.open_cover
+        entity_id: cover.garage
