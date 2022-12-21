@@ -301,12 +301,12 @@ automation:
     id: tesla_close_garage_daycare_days
     trigger:
       - platform: numeric_state
-        entity_id: proximity.home
+        entity_id: proximity.garage
         above: 50
     condition:
       - condition: time
         after: "07:00:00"
-        before: "12:00:00"
+        before: "09:00:00"
       - condition: state
         entity_id: binary_sensor.workday_sensor
         state: "on"
@@ -316,6 +316,8 @@ automation:
           message: "️⬇️ Closing Garage Door ⬇️"
           data:
             tag: "tesla-close-garage-door"
+            push:
+              interruption-level: time-sensitive
       - service: cover.close_cover
         entity_id: cover.garage
 
@@ -323,7 +325,7 @@ automation:
     id: tesla_open_garage_daycare_days
     trigger:
       - platform: numeric_state
-        entity_id: proximity.home
+        entity_id: proximity.garage
         below: 50
     condition:
       - condition: state
@@ -331,12 +333,14 @@ automation:
         state: "on"
       - condition: time
         after: "15:30:00"
-        before: "16:30:00"
+        before: "17:00:00"
     action:
       - service: notify.mobile_app_michaels_iphone
         data:
           message: "⬆️ Opening Garage Door ⬆️"
           data:
-            tag: "tesla-close-garage-door"
+            tag: "tesla-open-garage-door"
+            push:
+              interruption-level: time-sensitive
       - service: cover.open_cover
         entity_id: cover.garage
