@@ -345,11 +345,14 @@ automation:
       - service: homeassistant.turn_off
         entity_id: switch.nursery_white_noise
 
-  - alias: Turn off white noise if forgotten
+  - alias: Turn off nursery accessories if forgotten
     id: nursery_turn_off_white_noise_forgotten
     trigger:
       - platform: state
-        entity_id: switch.nursery_white_noise
+        entity_id:
+          - switch.nursery_white_noise
+          - fan.nursery_humidifier
+          - switch.nursery_fan
         to: "on"
         for:
           minutes: 30
@@ -359,7 +362,8 @@ automation:
         state: "off"
     action:
       - service: homeassistant.turn_off
-        entity_id: switch.nursery_white_noise
+        target:
+          entity_id: "{{ trigger.entity_id }}"
 
   - alias: Turn off nap mode via light switch
     id: nursery_nap_off_via_lightswitch
