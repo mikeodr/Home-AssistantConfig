@@ -578,3 +578,21 @@ automation:
       - service: homeassistant.turn_on
         entity_id:
           - switch.kitchen_island
+
+  - alias: Girls Light Control
+    id: nursery_girls_light_control
+    trigger:
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: 00:15:8d:00:03:ce:96:86
+          command: click
+          args:
+            click_type: single
+    condition:
+      - condition: state
+        entity_id: input_boolean.nap_mode
+        state: "off"
+    action:
+      - service: homeassistant.toggle
+        entity_id: light.nursery_light
