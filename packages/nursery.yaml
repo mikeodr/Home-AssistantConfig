@@ -485,6 +485,9 @@ automation:
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "on"
+      - condition: state
+        entity_id: binary_sensor.workday_sensor
+        state: "on"
       - or:
           - condition: state
             entity_id: group.adults
@@ -597,10 +600,15 @@ automation:
           command: click
           args:
             click_type: single
-    condition:
-      - condition: state
-        entity_id: input_boolean.nap_mode
-        state: "off"
     action:
-      - service: homeassistant.toggle
-        entity_id: light.nursery_light
+      - choose:
+        - conditions:
+          - condition: state
+            entity_id: input_boolean.nap_mode
+            state: "off"
+          sequence:
+            - service: homeassistant.toggle
+              entity_id: light.nursery_light
+        default:
+          - service: homeassistant.toggle
+            entity_id: light.nursery_led_strip
