@@ -1,0 +1,62 @@
+template:
+  - sensor:
+      - name: Hydro Rate
+        unique_id: energy_template_hydro_rate
+        icon: mdi:transmission-tower
+        state: >-
+          {# Holidays and weekends #}
+          {% if states('binary_sensor.workday_sensor') == 'off' %}
+            off_peak
+          {% else %}
+          {# Everything else #}
+            {% if now().hour < 7 or now().hour >= 19 %}
+              off_peak
+            {% elif now().hour >= 7 and now().hour < 11 %}
+              {% if now().month >= 5 and now().month <= 10 %}
+                mid_peak
+              {% else %}
+                on_peak
+              {% endif %}
+            {% elif now().hour >= 11 and now().hour < 17 %}
+              {% if now().month >= 5 and now().month <= 10 %}
+                on_peak
+              {% else %}
+                mid_peak
+              {% endif %}
+            {% elif now().hour >= 17 and now().hour < 19 %}
+              {% if now().month >= 5 and now().month <= 10 %}
+                mid_peak
+              {% else %}
+                on_peak
+              {% endif %}
+            {% endif %}
+          {% endif %}
+
+sensor:
+  - platform: rest
+    name: Enova Hydro Off Peak Rate
+    unique_id: rest_enova_off_peak_rate
+    icon: mdi:currency-usd
+    resource: https://www.oeb.ca/_html/calculator/data/BillData.xml
+    unit_of_measurement: CAD/kWh
+    value_template: >-
+      {% set data = value_json['BillDataTable']['BillDataRow'] %}
+      {{ data | selectattr('Dist', 'eq', 'Enova Power Corp.-Kitchener-Wilmot Hydro Rate Zone') | map(attribute='RPPOffP') | first }}
+  - platform: rest
+    name: Enova Hydro Mid Peak Rate
+    unique_id: rest_enova_mid_peak_rate
+    icon: mdi:currency-usd
+    resource: https://www.oeb.ca/_html/calculator/data/BillData.xml
+    unit_of_measurement: CAD/kWh
+    value_template: >-
+      {% set data = value_json['BillDataTable']['BillDataRow'] %}
+      {{ data | selectattr('Dist', 'eq', 'Enova Power Corp.-Kitchener-Wilmot Hydro Rate Zone') | map(attribute='RPPMidP') | first }}
+  - platform: rest
+    name: Enova Hydro On Peak Rate
+    unique_id: rest_enova_on_peak_rate
+    icon: mdi:currency-usd
+    resource: https://www.oeb.ca/_html/calculator/data/BillData.xml
+    unit_of_measurement: CAD/kWh
+    value_template: >-
+      {% set data = value_json['BillDataTable']['BillDataRow'] %}
+      {{ data | selectattr('Dist', 'eq', 'Enova Power Corp.-Kitchener-Wilmot Hydro Rate Zone') | map(attribute='RPPOnP') | first }}
