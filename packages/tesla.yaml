@@ -310,6 +310,9 @@ automation:
       - condition: state
         entity_id: binary_sensor.workday_sensor
         state: "on"
+      - condition: state
+        entity_id: cover.garage
+        state: "open"
     action:
       - service: notify.mobile_app_michaels_iphone
         data:
@@ -331,9 +334,16 @@ automation:
       - condition: state
         entity_id: binary_sensor.workday_sensor
         state: "on"
+      - condition: state
+        entity_id: cover.garage
+        state: "closed"
       - condition: time
-        after: "15:30:00"
+        after: "16:00:00"
         before: "17:00:00"
+      - not: # Garbage day, don't pull the car in
+        - condition: time
+          weekday:
+            - "thu"
     action:
       - service: notify.mobile_app_michaels_iphone
         data:
