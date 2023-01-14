@@ -187,77 +187,26 @@ automation:
       service: homeassistant.turn_off
       entity_id: alert.garage_open
 
-  - alias: Prompt open when returning home from walk
-    id: exterior_prompt_open_walk
+  - alias: Unlock door on return home
+    id: exterior_unlock_door_return_home
     trigger:
-      platform: zone
-      entity_id: person.mike
-      zone: zone.home
-      event: enter
+      - platform: zone
+        entity_id:
+          - device_tracker.tesla_location
+          - person.mike
+        zone: zone.home
+        event: enter
     condition:
       - condition: state
-        entity_id: sensor.michaels_iphone_activity
-        state: "Walking"
+        entity_id: binary_sensor.workday_sensor
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.nap_mode
+        state: "off"
+      - condition: state
+        entity_id: lock.front_door
+        state: "locked"
     action:
-      - variables:
-          action_lock: "{{ 'LOCK_' ~ context.id }}"
-          action_garage: "{{ 'GARAGE_' ~ context.id }}"
-          action_both: "{{ 'BOTH_' ~ context.id }}"
-      - service: notify.mobile_app_michaels_iphone
-        data:
-          message: "Open the house?"
-          data:
-            actions:
-              - action: "{{ action_both }}"
-                title: "Open Everything"
-                activationMode: "background"
-                authenticationRequired: true
-                destructive: true
-                behavior: "default"
-              - action: "{{ action_lock }}"
-                title: "Unlock Doors"
-                activationMode: "background"
-                authenticationRequired: true
-                destructive: true
-                behavior: "default"
-              - action: "{{ action_garage }}"
-                title: "Open Garage"
-                activationMode: "background"
-                authenticationRequired: true
-                destructive: true
-                behavior: "default"
-      - wait_for_trigger:
-          - platform: event
-            event_type: mobile_app_notification_action
-            event_data:
-              action: "{{ action_both }}"
-          - platform: event
-            event_type: mobile_app_notification_action
-            event_data:
-              action: "{{ action_lock }}"
-          - platform: event
-            event_type: mobile_app_notification_action
-            event_data:
-              action: "{{ action_garage }}"
-        continue_on_timeout: false
-        timeout:
-          minutes: 10
-      - choose:
-          - conditions: "{{ wait.trigger.event.data.action == action_both }}"
-            sequence:
-              - service: lock.unlock
-                entity_id:
-                  - lock.front_door
-                  - lock.side_door
-              - service: cover.open_cover
-                entity_id: cover.garage
-          - conditions: "{{ wait.trigger.event.data.action == action_garage }}"
-            sequence:
-              - service: cover.open_cover
-                entity_id: cover.garage
-          - conditions: "{{ wait.trigger.event.data.action == action_lock }}"
-            sequence:
-              - service: lock.unlock
-                entity_id:
-                  - lock.front_door
-                  - lock.side_door
+      - service: lock.unlock
+        entity_id:
+          - lock.front_door
