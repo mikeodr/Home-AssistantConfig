@@ -91,6 +91,8 @@ automation:
         entity_id: sun.sun
         attribute: elevation
         below: 3.35
+      - condition: time
+        after: '14:00:00'
     action:
       service: homeassistant.turn_on
       entity_id: group.exterior_christmas_lights
