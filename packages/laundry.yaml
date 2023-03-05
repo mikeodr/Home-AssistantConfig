@@ -22,10 +22,10 @@ homeassistant:
 
 template:
   - binary_sensor:
-      - name: “Washer Status”
+      - name: Washer Status
         unique_id: laundry_binary_sensor_status
         icon: mdi:washing-machine
-        state: "{{ states(‘sensor.washing_machine_electric_consumption_w’) | float(0) > 2 }}"
+        state: "{{ states('sensor.washing_machine_electric_consumption_w') | float(0) > 2 }}"
         device_class: running
         delay_on:
           seconds: 60
