@@ -16,9 +16,12 @@ automation:
           device_id: 5fe497358dad962cba14901506e49bc8
           command: Enter
     condition:
-      - condition: time
-        after: "07:00:00"
-        before: "10:00:00"
+      - condition: state
+        entity_id: binary_sensor.workday_sensor
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.nap_mode
+        state: "off"
     action:
       - service: homeassistant.turn_on
         entity_id:
@@ -32,7 +35,7 @@ automation:
         entity_id: binary_sensor.basement_presence
         to: "off"
         for:
-          minutes: 10
+          minutes: 30
     action:
       - service: homeassistant.turn_off
         entity_id:
@@ -50,8 +53,6 @@ automation:
         entity_id: light.basement_room_light_dimmer
         from: "off"
         to: "on"
-      - platform: homeassistant
-        event: start
     action:
       choose:
         - conditions:
