@@ -1,31 +1,17 @@
-input_select:
-  washing_machine_status:
-    name: Washing Machine Status
-    options:
-      - idle
-      - running
-      - finishing
-      - clean
-    initial: idle
-
 sensor:
-  - platform: template
-    sensors:
-      washing_machine_status:
-        value_template: "{{ states.input_select.washing_machine_status.state}}"
-        friendly_name: "Washing Machine Status"
-
-homeassistant:
-  customize:
-    sensor.washing_machine_status:
-      icon: mdi:washing-machine
+  - platform: statistics
+    name: Washing Machine Power Average
+    entity_id: sensor.washing_machine_electric_consumption_w
+    state_characteristic: mean
+    max_age:
+      minutes: 5
 
 template:
   - binary_sensor:
       - name: Washer Status
         unique_id: laundry_binary_sensor_status
         icon: mdi:washing-machine
-        state: "{{ states('sensor.washing_machine_electric_consumption_w') | float(0) > 2 }}"
+        state: "{{ states('sensor.washing_machine_power_average') | float(0) | default(0) > 4 }}"
         device_class: running
         delay_on:
           seconds: 60
@@ -46,101 +32,3 @@ automation:
           message: Landry cycle complete
           data:
             tag: laundry-notification
-  # - alias: Laundry Start Detected
-  #   id: laundry_start_detected
-  #   trigger:
-  #     - platform: numeric_state
-  #       entity_id: sensor.washing_machine_electric_consumption_w
-  #       above: 30
-  #       for:
-  #         seconds: 10
-  #   condition:
-  #     - condition: not
-  #       conditions:
-  #         - condition: state
-  #           entity_id: input_select.washing_machine_status
-  #           state: running
-  #   action:
-  #     - service: input_select.select_option
-  #       data:
-  #         entity_id: input_select.washing_machine_status
-  #         option: running
-  # - alias: Laundry Finishing
-  #   id: laundry_transition_finishing
-  #   trigger:
-  #     - platform: numeric_state
-  #       entity_id: sensor.washing_machine_electric_consumption_w
-  #       below: 3.5
-  #       for:
-  #         minutes: 5
-  #   condition:
-  #     - condition: state
-  #       entity_id: input_select.washing_machine_status
-  #       state: running
-  #   action:
-  #     - service: input_select.select_option
-  #       data:
-  #         entity_id: input_select.washing_machine_status
-  #         option: finishing
-  # - alias: Laundry Finished Timeout
-  #   id: laundry_finished_timeout
-  #   trigger:
-  #     - platform: state
-  #       entity_id: input_select.washing_machine_status
-  #       to: "finishing"
-  #       for:
-  #         minutes: 5
-  #   action:
-  #     - service: input_select.select_option
-  #       data:
-  #         entity_id: input_select.washing_machine_status
-  #         option: clean
-  # - alias: Laundry is clean
-  #   id: laundry_clean_notification
-  #   trigger:
-  #     - platform: state
-  #       entity_id: input_select.washing_machine_status
-  #       to: clean
-  #     - platform: state
-  #       entity_id: person.mike
-  #       to: "home"
-  #       for:
-  #         minutes: 10
-  #     - platform: state
-  #       entity_id: person.tiff
-  #       to: "home"
-  #       for:
-  #         minutes: 10
-  #   condition:
-  #     - condition: state
-  #       entity_id: input_select.washing_machine_status
-  #       state: clean
-  #     - condition: state
-  #       entity_id: group.adults
-  #       state: "home"
-  #     - condition: template
-  #       value_template: >
-  #         {% if states.automation.laundry_is_clean.last_triggered is not none %}
-  #           {% if as_timestamp(now()) | int - as_timestamp(states.automation.laundry_is_clean.attributes.last_triggered) | int > 1800 %} true {% else %} false
-  #           {% endif %}
-  #         {% else %}
-  #         false
-  #         {% endif %}
-  #   action:
-  #     - service: >
-  #         {% if (is_state('person.mike', 'home')) and (is_state('person.tiff', 'home'))  %}
-  #           notify.adults
-  #         {% elif is_state('person.mike', 'home') %}
-  #           notify.mobile_app_michaels_iphone
-  #         {% elif is_state('person.tiff', 'home') %}
-  #           notify.mobile_app_tiffanys_iphone
-  #         {% endif %}
-  #       data:
-  #         title: "Laundry is done!"
-  #         message: "Landry cycle complete"
-  #         data:
-  #           tag: "laundry-notification"
-  #     - service: input_select.select_option
-  #       data:
-  #         entity_id: input_select.washing_machine_status
-  #         option: idle
