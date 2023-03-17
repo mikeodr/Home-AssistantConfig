@@ -191,19 +191,30 @@ automation:
                   - service: homeassistant.turn_on
                     entity_id: light.nursery_light
 
-  - alias: Nursery Humidifer on evenings
+  - alias: Nursery Humidifier on evenings
     id: nursery_humidifer_evenings
     trigger:
-      platform: state
-      entity_id: input_boolean.nap_mode
-      from: "off"
-      to: "on"
+      - platform: state
+        entity_id: input_boolean.nap_mode
+        from: "off"
+        to: "on"
+        id: manual_on
+      - platform: time
+        at: "19:00:00"
+        id: early_on
     condition:
-      - condition: time
-        after: "18:00:00"
+      or:
+        - condition: trigger
+          id: manual_on
+        - and:
+            - condition: trigger
+              id: early_on
+            - condition: state
+              entity_id: group.adults
+              state: "home"
     action:
       - service: homeassistant.turn_on
-        entity_id: switch.nursery_humidifier
+        entity_id: fan.nursery_humidifier
 
   - alias: Nursery Fan On if needed
     id: nursery_fan_temperature_conditional
@@ -361,6 +372,8 @@ automation:
         for:
           minutes: 30
     condition:
+      - condition: time
+        before: "17:00:00"
       - condition: state
         entity_id: switch.nap_mode
         state: "off"
