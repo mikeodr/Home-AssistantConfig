@@ -62,6 +62,9 @@ sensor:
           {%- if is_state('binary_sensor.girls_home_bayesian', 'on') -%}
           |👧
           {%- endif -%}
+          {%- if is_state('binary_sensor.washer_status', 'on') -%}
+          |🧺
+          {%- endif -%}
           {%- if states('sensor.waste_current_pickup') != "unknown" -%}
           {% set garbage_day=states('sensor.waste_current_pickup') | as_datetime -%}
           {%- if now().day == (garbage_day - timedelta(days=1)).day or 
