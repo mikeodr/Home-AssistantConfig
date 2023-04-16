@@ -43,7 +43,7 @@ scene:
     entities:
       switch.nursery_white_noise:
         state: "off"
-      fan.nursery_fan:
+      fan.nursery:
         state: "off"
       fan.nursery_humidifier:
         state: "off"
@@ -243,7 +243,7 @@ automation:
             above: 20
           - condition: numeric_state
             entity_id: sensor.kid_s_room_temperature #Acutal Room Temp
-            above: 23
+            above: 22
     action:
       - choose:
           # Manual trigger always turns on.
@@ -252,7 +252,7 @@ automation:
                  is_state('input_boolean.nap_mode', 'on') }}
             sequence:
               service: homeassistant.turn_on
-              entity_id: fan.nursery_fan
+              entity_id: fan.nursery
           # If not a workday or override is turn on
           - conditions:
               - or:
@@ -266,7 +266,7 @@ automation:
                     after: "14:00:00"
             sequence:
               service: homeassistant.turn_on
-              entity_id: fan.nursery_fan
+              entity_id: fan.nursery
 
   - alias: Nursery Fan on if temperature rises
     id: nursery_fan_temperature_rise_conditional
@@ -279,11 +279,11 @@ automation:
         entity_id: input_boolean.nap_mode
         state: "on"
       - condition: state
-        entity_id: fan.nursery_fan
+        entity_id: fan.nursery
         state: "off"
     action:
       - service: homeassistant.turn_on
-        entity_id: fan.nursery_fan
+        entity_id: fan.nursery
 
   - alias: Nursery Low Temperature Fan Off
     id: nursery_low_temp_fan_off
@@ -293,7 +293,7 @@ automation:
         below: 21
     action:
       - service: homeassistant.turn_off
-        entity_id: fan.nursery_fan
+        entity_id: fan.nursery
 
   - alias: Nursery Temperature Warning
     id: nursery_temp_warning
@@ -367,7 +367,7 @@ automation:
         entity_id:
           - switch.nursery_white_noise
           - fan.nursery_humidifier
-          - switch.nursery_fan
+          - switch.nursery
         to: "on"
         for:
           minutes: 30
