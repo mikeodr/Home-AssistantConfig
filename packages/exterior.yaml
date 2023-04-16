@@ -160,7 +160,7 @@ automation:
       - condition: numeric_state
         entity_id: sun.sun
         attribute: elevation
-        below: 1.0
+        below: 0.5
     action:
       - service: homeassistant.turn_on
         entity_id: group.exterior_lights
