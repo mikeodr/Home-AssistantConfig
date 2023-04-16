@@ -40,7 +40,7 @@ automation:
               name: "default"
               critical: 1
 
-  - alias: Furnace on if left off and cold forecase
+  - alias: Furnace on if left off and cold forecast
     id: furnace_on_if_left_off_cold_forecast
     trigger:
       - platform: time
