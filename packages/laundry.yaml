@@ -4,7 +4,7 @@ sensor:
     entity_id: sensor.washing_machine_electric_consumption_w
     state_characteristic: mean
     max_age:
-      minutes: 5
+      minutes: 2
 
 template:
   - binary_sensor:
@@ -24,6 +24,7 @@ automation:
     trigger:
       - platform: state
         entity_id: binary_sensor.washer_status
+        from: "on"
         to: "off"
     action:
       - service: notify.adults
