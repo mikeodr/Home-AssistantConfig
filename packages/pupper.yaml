@@ -70,10 +70,13 @@ automation:
       - condition: numeric_state
         entity_id: sun.sun
         attribute: elevation
-        below: 4.0
+        below: 2.0
       - condition: state
         entity_id: group.adults
         state: "not_home"
+      - condition: state
+        entity_id: input_boolean.pupper_home
+        state: "on"
     action:
       - service: homeassistant.turn_on
         entity_id: switch.kitchen_island
