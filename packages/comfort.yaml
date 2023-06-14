@@ -45,11 +45,13 @@ automation:
     trigger:
       - platform: time
         at: "21:00:00"
+      - platform: time
+        at: "23:00:00"
     condition:
-      - not:
-          - condition: state
-            entity_id: climate.my_ecobee
-            state: "heat"
+      - condition: state
+        entity_id: climate.my_ecobee
+        state:
+          - "off"
       - condition: template
         value_template: "{{ state_attr('weather.tomorrow_io_home_nowcast', 'forecast') | map(attribute='temperature')| list | min < 10 }}"
     action:
