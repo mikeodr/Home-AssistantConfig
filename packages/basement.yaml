@@ -88,12 +88,18 @@ automation:
         variables:
           default_level: 90
     action:
-        service: zwave_js.set_config_parameter
-        target:
-          entity_id: light.basement_room_light_dimmer
-        data:
-          parameter: 9
-          value: "{{ default_level }}"
+        - service: zwave_js.set_config_parameter
+          target:
+            entity_id: light.basement_room_light_dimmer
+          data:
+            parameter: 9
+            value: "{{ default_level }}"
+        - service: zwave_js.set_config_parameter
+          target:
+            entity_id: light.basement_room_light_dimmer
+          data:
+            parameter: 10
+            value: "{{ default_level }}"
 
   - alias: Sync Basement Hall Light to Basement Room Light
     id: basement_sync_hall_room_lights
