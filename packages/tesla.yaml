@@ -341,9 +341,9 @@ automation:
         after: "16:00:00"
         before: "17:00:00"
       - not: # Garbage day, don't pull the car in
-        - condition: time
-          weekday:
-            - "thu"
+          - condition: time
+            weekday:
+              - "thu"
     action:
       - service: notify.mobile_app_michaels_iphone
         data:
