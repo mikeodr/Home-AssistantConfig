@@ -2,6 +2,9 @@ homeassistant:
   auth_providers:
     - type: homeassistant
   packages: !include_dir_named packages
+  customize:
+    zone.home:
+      radius: 65
 
 http:
   server_port: 80
