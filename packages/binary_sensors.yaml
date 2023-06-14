@@ -1,8 +1,4 @@
 binary_sensor:
-  - platform: workday
-    country: CA
-    province: "ON"
-
   - platform: template
     sensors:
       guests_present:
