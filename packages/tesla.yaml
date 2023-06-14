@@ -354,3 +354,29 @@ automation:
               interruption-level: time-sensitive
       - service: cover.open_cover
         entity_id: cover.garage
+
+  - alias: Disable Tesla Wifi in Driveway
+    id: tesla_disable_wifi_in_driveway
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.tesla_plugged_in
+        to: "on"
+        id: plugged_in
+      - platform: state
+        entity_id: binary_sensor.tesla_plugged_in
+        to: "off"
+        id: unplugged
+    action:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: plugged_in
+            sequence:
+              - service: homeassistant.turn_on
+                entity_id: switch.tesla
+          - conditions:
+              - condition: trigger
+                id: unplugged
+            sequence:
+              - service: homeassistant.turn_off
+                entity_id: switch.tesla
