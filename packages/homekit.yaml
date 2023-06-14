@@ -90,3 +90,5 @@ homekit:
         # Living Room
         - switch.kitchen_island
         - sensor.living_room_temperature
+      exclude_entities:
+        - light.tagreader_led
