@@ -37,7 +37,7 @@ automation:
             - service: homeassistant.turn_on
               entity_id: switch.modem_reset
             - delay:
-                minutes: 15gg
+                minutes: 15
           until:
             - condition: state
               state: "on"
