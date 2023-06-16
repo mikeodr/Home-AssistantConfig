@@ -17,9 +17,9 @@ on:
 jobs:
   test_config:
     runs-on: ubuntu-latest
-    container: 
+    container:
       image: homeassistant/home-assistant:latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: mv test_secrets.yaml secrets.yaml
       - run: hass -c . --script check_config
