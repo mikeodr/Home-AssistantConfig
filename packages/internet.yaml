@@ -1,0 +1,44 @@
+binary_sensor:
+  - platform: ping
+    name: "ping cloudflare"
+    host: 1.1.1.1
+    count: 5
+    scan_interval: 180 # 3 minutes
+
+  - platform: ping
+    name: "ping google"
+    host: 8.8.8.8
+    count: 5
+    scan_interval: 180 # 3 minutes
+
+automation:
+  - alias: "Reset Modem when internet down"
+    id: internet_reset_modem_internet_down
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.internet_state
+        from: "on"
+        to: "off"
+        for:
+          minutes: 30
+    action:
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          title: "Internet down"
+          message: "Attempting to reset modem"
+          data:
+            tag: "internet-down-notification"
+      - repeat:
+          sequence:
+            - service: homeassistant.turn_off
+              entity_id: switch.modem_reset
+            - delay:
+                seconds: 30
+            - service: homeassistant.turn_on
+              entity_id: switch.modem_reset
+            - delay:
+                minutes: 15gg
+          until:
+            - condition: state
+              state: "on"
+              entity_id: binary_sensor.internet_state
