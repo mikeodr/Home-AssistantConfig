@@ -1,7 +1,7 @@
 template:
   - sensor:
-      - name: Hydro Rate
-        unique_id: energy_template_hydro_rate
+      - name: Current Hydro Time of Use State
+        unique_id: energy_hydro_tou_state
         icon: mdi:transmission-tower
         state: >-
           {# Holidays and weekends #}
@@ -30,6 +30,19 @@ template:
                 on_peak
               {% endif %}
             {% endif %}
+          {% endif %}
+
+      - name: Current Hydro TOU Rate
+        unique_id: energy_hydro_tou_rate
+        icon: mdi:currency-usd
+        unit_of_measurement: CAD/kWh
+        state: >-
+          {% if states('sensor.current_hydro_time_of_use_state') == 'off_peak' %}
+            {{ states('sensor.enova_hydro_off_peak_rate') }}
+          {% elif states('sensor.current_hydro_time_of_use_state') == 'mid_peak' %}
+            {{ states('sensor.enova_hydro_mid_peak_rate') }}
+          {% elif states('sensor.current_hydro_time_of_use_state') == 'on_peak' %}
+            {{ states('sensor.enova_hydro_on_peak_rate') }}
           {% endif %}
 
 sensor:
