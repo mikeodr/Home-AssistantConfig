@@ -75,7 +75,7 @@ sensor:
           {%- else -%}
           |🙅
           {%- endif -%}
-          {%- if states("alarm_control_panel.alarmo") in ['disamred', 'unknown', 'unavailable'] -%}
+          {%- if states("alarm_control_panel.alarmo") in ['disamred', 'pending', 'arming', 'unknown', 'unavailable'] -%}
           |🛡️
           {%- endif -%}
           {%- if is_state('binary_sensor.washer_status', 'on') -%}
