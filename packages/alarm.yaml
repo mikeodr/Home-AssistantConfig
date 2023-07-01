@@ -44,3 +44,27 @@ automation:
       - service: alarm_control_panel.alarm_arm_vacation
         target:
           entity_id: alarm_control_panel.alarmo
+
+  - alias: iOS Alarm Away
+    id: alarm_ios_alarm_arm_away
+    trigger:
+      - platform: event
+        event_type: ios.action_fired
+        event_data:
+          actionID: alarm_arm_away
+    action:
+      - service: alarm_control_panel.alarm_arm_away
+        target:
+          entity_id: alarm_control_panel.alarmo
+
+  - alias: iOS Alarm Disarm
+    id: alarm_ios_alarm_arm_disarm
+    trigger:
+      - platform: event
+        event_type: ios.action_fired
+        event_data:
+          actionID: alarm_disarm
+    action:
+      - service: alarm_control_panel.alarm_disarm
+        target:
+          entity_id: alarm_control_panel.alarmo

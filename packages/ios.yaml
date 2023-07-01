@@ -32,6 +32,22 @@ ios:
       label:
         text: "Spare Bedroom Fan"
         color: "#ffffff"
+    - name: alarm_arm_away
+      background_color: "#000000"
+      icon:
+        icon: shield-lock
+        color: "#ffffff"
+      label:
+        text: "Arm Alarm"
+        color: "#ffffff"
+    - name: alarm_disarm
+      background_color: "#000000"
+      icon:
+        icon: shield-lock-open
+        color: "#ffffff"
+      label:
+        text: "Disarm Alarm"
+        color: "#ffffff"
 
 sensor:
   - platform: template
@@ -59,7 +75,7 @@ sensor:
           {%- else -%}
           |🙅
           {%- endif -%}
-          {%- if states("alarm_control_panel.alarmo") in ['armed_away', 'armed_night'] -%}
+          {%- if states("alarm_control_panel.alarmo") in ['disamred', 'unknown', 'unavailable'] -%}
           |🛡️
           {%- endif -%}
           {%- if is_state('binary_sensor.washer_status', 'on') -%}
