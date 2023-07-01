@@ -59,8 +59,8 @@ sensor:
           {%- else -%}
           |🙅
           {%- endif -%}
-          {%- if is_state('binary_sensor.girls_home_bayesian', 'on') -%}
-          |👧
+          {%- if states("alarm_control_panel.alarmo") in ['armed_away', 'armed_night'] -%}
+          |🛡️
           {%- endif -%}
           {%- if is_state('binary_sensor.washer_status', 'on') -%}
           |🧺

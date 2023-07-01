@@ -1,0 +1,46 @@
+automation:
+  - alias: "Faux device tracker for twins"
+    id: alarm_device_tracker_for_twins
+    trigger:
+      - platform: state
+        entity_id: input_boolean.girls_home_override
+        to: ~
+    condition:
+      condition: template
+      value_template: "{{ trigger.to_state.state in ['off', 'on'] }}"
+    action:
+      - service: device_tracker.see
+        data_template:
+          dev_id: faux_girls_home
+          location_name: "{{ 'home' if 'on' == trigger.to_state.state else 'not_home' }}"
+    mode: single
+
+  - alias: Auto Arm and Disarm System
+    id: alarm_arm_based_on_presence
+    trigger:
+      - platform: state
+        entity_id:
+          - group.presence_home
+        to: ~
+    condition:
+      condition: template
+      value_template: "{{ trigger.to_state.state in ['home', 'not_home'] }}"
+    action:
+      - service: alarm_control_panel.alarm_{{ 'disarm' if 'home' == trigger.to_state.state else 'arm_away' }}
+        target:
+          entity_id: alarm_control_panel.alarmo
+    mode: single
+
+  - alias: Disable Armed Night on iOS alarm wakeup
+    id: alarm_disable_armed_night_ios_wakeup
+    trigger:
+      - platform: event
+        event_type: "ios_wakeup_event"
+    condition:
+      - condition: state
+        entity_id: alarm_control_panel.alarmo
+        state: "armed_night"
+    action:
+      - service: alarm_control_panel.alarm_arm_vacation
+        target:
+          entity_id: alarm_control_panel.alarmo
