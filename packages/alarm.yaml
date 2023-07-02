@@ -41,7 +41,7 @@ automation:
         entity_id: alarm_control_panel.alarmo
         state: "armed_night"
     action:
-      - service: alarm_control_panel.alarm_arm_vacation
+      - service: alarm_control_panel.alarm_disarm
         target:
           entity_id: alarm_control_panel.alarmo
 
