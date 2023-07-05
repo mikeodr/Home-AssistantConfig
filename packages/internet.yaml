@@ -22,7 +22,7 @@ automation:
         for:
           minutes: 30
     action:
-      - service: notify.mobile_app_michaels_iphone
+      - service: notify.adults
         data:
           title: "Internet down"
           message: "Attempting to reset modem"
@@ -42,3 +42,8 @@ automation:
             - condition: state
               state: "on"
               entity_id: binary_sensor.internet_state
+      - service: notify.adults
+        data:
+          title: "Internet Restored"
+          data:
+            tag: "internet-up-notification"
