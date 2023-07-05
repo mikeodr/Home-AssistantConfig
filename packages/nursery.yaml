@@ -685,12 +685,18 @@ automation:
               - condition: state
                 entity_id: input_boolean.nap_mode
                 state: "off"
+              - condition: time
+                before: "19:15:00"
             sequence:
               - service: homeassistant.toggle
                 entity_id: light.nursery_light
+              - service: homeassistant.turn_off
+                entity_id: light.nursery_led_strip
         default:
           - service: homeassistant.toggle
             entity_id: light.nursery_led_strip
+          - service: homeassistant.turn_off
+            entity_id: light.nursery_light
 
   - alias: Set warmer temperature for LED strip
     id: nursery_warmer_temp_led
