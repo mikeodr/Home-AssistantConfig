@@ -42,10 +42,6 @@ automation:
         event_data:
           device_id: acf54e514580d88c801347c10c5355ee
           command: button_2_double
-          args:
-            button: button_2
-            press_type: double
-            command_id: 0
       - platform: event
         id: garage_down_trigger
         event_type: zha_event
@@ -76,10 +72,6 @@ automation:
         event_data:
           device_id: b2e1fe5291c815d4f340372d29d4cd55
           command: button_2_double
-          args:
-            button: button_2
-            press_type: double
-            command_id: 0
       - platform: event
         id: door_lock_trigger
         event_type: zha_event
