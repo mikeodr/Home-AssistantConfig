@@ -4,35 +4,6 @@ input_datetime:
     has_date: true
     has_time: true
 
-binary_sensor:
-  - platform: bayesian
-    name: "Girls Home Bayesian"
-    prior: 0.58
-    probability_threshold: 0.75
-    observations:
-      # Not a workday, likely home
-      - platform: state
-        entity_id: binary_sensor.workday_sensor
-        to_state: "off"
-        prob_given_true: 0.85
-        prob_given_false: 0.15
-      - platform: template
-        value_template: >
-          {{ (now().hour > 16 or now().hour < 8) }}
-        prob_given_true: 0.85
-        prob_given_false: 0.10
-      - platform: state
-        entity_id: group.adults
-        to_state: "home"
-        prob_given_true: 0.6
-        prob_given_false: 0.15
-      # Did not visit school, likely home
-      - platform: template
-        value_template: >
-          {{ as_local(state_attr('automation.pick_up_girls_reminder', 'last_triggered')).day != now().day}}
-        prob_given_true: 0.65
-        prob_given_false: 0.15
-
 automation:
   - alias: Pick up girls reminder
     id: pick_up_girls_reminder
