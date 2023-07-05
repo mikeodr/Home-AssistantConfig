@@ -1,3 +1,8 @@
+input_boolean:
+  sleeping_in:
+    name: Sleeping In
+    icon: mdi:alarm-snooze
+
 automation:
   - alias: Bedroom Comfort when arrival past bedtime
     id: bedroom_comfort_arrive_past_bedtime
@@ -17,7 +22,7 @@ automation:
         - switch.master_humidifier
 
   - alias: Bedroom Humidifier On Early Evenings
-    id: bedroom_comfort_evenings
+    id: bedroom_comfort_early_evenings
     trigger:
       - platform: time
         at: "21:30:00"
@@ -45,8 +50,8 @@ automation:
         - switch.master_white_noise
         - switch.master_humidifier
 
-  - alias: Bedroom Comfort if in bed early
-    id: bedroom_comfort_early_bed
+  - alias: Bedroom Comfort if in bed
+    id: bedroom_comfort_if_in_bed_early
     trigger:
       - platform: state
         entity_id: sensor.tiffanys_iphone_battery_state
@@ -56,45 +61,37 @@ automation:
         entity_id: sensor.tiffanys_iphone_battery_state
         from: "Not Charging"
         to: "Full"
+      - platform: time
+        at: "22:45:00"
     condition:
       - condition: time
         after: "22:00:00"
       - condition: state
-        entity_id: binary_sensor.bedroom
-        state: "on"
+        entity_id: group.adults
+        state: "home"
     action:
       service: homeassistant.turn_on
       entity_id:
         - switch.master_white_noise
         - switch.master_humidifier
 
-  - alias: Bedroom Comfort Off Morning
-    id: bedroom_comfort_off_mornings
-    trigger:
-      - platform: time
-        at: "07:30:00"
-    action:
-      service: homeassistant.turn_off
-      entity_id:
-        - switch.master_white_noise
-        - switch.master_humidifier
-
-  - alias: Bedroom off mornings if nursery active.
+  - alias: Bedroom off mornings
     id: bedroom_off_mornings_nursery_active
     trigger:
       - platform: state
         entity_id: binary_sensor.bedroom
-        to: ~
-        for:
-          minutes: 3
+        to: "on"
       - platform: time
         at: "07:30:00"
     condition:
       - condition: state
+        entity_id: input_boolean.sleeping_in
+        state: "off"
+      - condition: state
         entity_id: input_boolean.nap_mode
         state: "off"
       - condition: time
-        after: "07:00:00"
+        after: "07:25:00"
       - condition: time
         before: "08:00:00"
     action:
@@ -102,6 +99,7 @@ automation:
       entity_id:
         - switch.master_white_noise
         - switch.master_humidifier
+
   - alias: Spare Bedroom Fan Toggle
     id: spare_bedroom_fan_toggle
     trigger:
@@ -115,3 +113,26 @@ automation:
       service: homeassistant.turn_on
       entity_id:
         - switch.spare_bedroom_fan
+
+  - alias: Reset Sleeping in
+    id: bedroom_reset_sleeping_in
+    trigger:
+      - platform: time
+        at: "12:00:00"
+    condition:
+      - condition: state
+        entity_id: input_boolean.sleeping_in
+        state: "on"
+    action:
+      service: homeassistant.jjturn_off
+      entity_id: input_boolean.sleeping_in
+
+  - alias: Morning Wake Up Sequence
+    id: bedroom_morning_wake_up_sequence
+    trigger:
+      - platform: event
+        event_type: "ios_wakeup_event"
+    action:
+      - service: homeassistant.turn_off
+        entity_id:
+          - switch.spare_bedroom_fan
