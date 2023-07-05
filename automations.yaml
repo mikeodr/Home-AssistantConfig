@@ -1,1 +1,13 @@
-[]
+- id: '1688483068220'
+  alias: Enable Tesla Wifi When Tag Scanned
+  description: ''
+  trigger:
+  - platform: tag
+    tag_id: e4c51def-84c8-4349-913d-9c711e814b37
+  condition: []
+  action:
+  - service: homeassistant.turn_on
+    data: {}
+    target:
+      entity_id: switch.tesla
+  mode: single
