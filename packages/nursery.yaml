@@ -12,6 +12,8 @@ homeassistant:
       device_class: sound
     binary_sensor.nursery_door:
       device_class: door
+    input_boolean.girls_home_override:
+      device_class: presence
 
 scene:
   - name: nursery_led_on
@@ -234,8 +236,8 @@ automation:
             entity_id: input_boolean.vacation_mode
             state: "off"
           - condition: state
-            entity_id: input_boolean.girls_home_override
-            state: "on"
+            entity_id: device_tracker.faux_girls_home
+            state: "home"
       - or:
           - condition: numeric_state
             entity_id: weather.tomorrow_io_home_nowcast
@@ -261,7 +263,7 @@ automation:
                     state: "off"
                   - condition: state
                     entity_id: input_boolean.girls_home_override
-                    state: "on"
+                    state: "home"
                   - condition: time
                     after: "14:00:00"
             sequence:
@@ -417,20 +419,52 @@ automation:
           data:
             tag: "nursery-door-open-warning"
 
-  - alias: Quite mode when change table light on
-    id: nusrey_quite_mode_change_table
+  - alias: Quiet mode control
+    id: nursery_quite_mode_control
     trigger:
+      - platform: time
+        at: "19:00:00"
+        id: quite_on
+      - platform: state
+        entity_id: input_boolean.nap_mode
+        to: "on"
+        id: quite_on
+      - platform: time
+        at: "08:00:00"
+        id: quite_off
+      - platform: state
+        entity_id: input_boolean.nap_mode
+        to: "off"
+        id: quite_off
       - platform: state
         entity_id: light.nursery_led_strip
         to: ~
-    condition:
-      - condition: time
-        after: "09:00:00"
-      - condition: template
-        value_template: "{{ trigger.to_state.state in ['off', 'on'] }}"
+        id: led_control
     action:
-      - service: homeassistant.turn_{{ trigger.to_state.state }}
-        entity_id: input_boolean.quite_mode
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: quite_on
+            sequence:
+              - service: homeassistant.turn_on
+                entity_id: input_boolean.quite_mode
+          - conditions:
+              - condition: trigger
+                id: quite_off
+            sequence:
+              - service: homeassistant.turn_off
+                entity_id: input_boolean.quite_mode
+          - conditions:
+              - condition: trigger
+                id: led_control
+              - condition: time
+                after: "08:00:00"
+                before: "19:00:00"
+              - condition: template
+                value_template: "{{ trigger.to_state.state in ['off', 'on'] }}"
+            sequence:
+              - service: homeassistant.turn_{{ trigger.to_state.state }}
+                entity_id: input_boolean.quite_mode
 
   - alias: Turn on nap mode if forgotten
     id: nursery_nap_mode_on_forgotten
@@ -489,8 +523,8 @@ automation:
           # again quickly.
           minutes: 3
 
-  - alias: Let the girls get out of bed
-    id: nursery_let_girls_get_up
+  - alias: Let the girls get out of bed weekday
+    id: nursery_let_girls_get_up_weekday
     trigger:
       - platform: time
         at: "07:10:00"
@@ -501,6 +535,38 @@ automation:
       - condition: state
         entity_id: binary_sensor.workday_sensor
         state: "on"
+      - or:
+          - condition: state
+            entity_id: group.adults
+            state: "home"
+          - condition: state
+            entity_id: binary_sensor.guests_present
+            state: "home"
+    action:
+      - wait_template: '{{ not is_state("light.nursery_led_strip", "unavailable") }}'
+      - repeat:
+          sequence:
+            - service: scene.turn_on
+              entity_id: scene.nursery_led_on
+            - delay:
+                seconds: 1
+          until:
+            - condition: state
+              entity_id: light.nursery_led_strip
+              state: "on"
+
+  - alias: Let the girls get out of bed weekend and holiday
+    id: nursery_let_girls_get_up_holiday
+    trigger:
+      - platform: time
+        at: "07:30:00"
+    condition:
+      - condition: state
+        entity_id: input_boolean.nap_mode
+        state: "on"
+      - condition: state
+        entity_id: binary_sensor.workday_sensor
+        state: "off"
       - or:
           - condition: state
             entity_id: group.adults

@@ -12,8 +12,8 @@ automation:
         above: 55000
     condition:
       - condition: state
-        entity_id: input_boolean.girls_home_override
-        state: "off"
+        entity_id: device_tracker.faux_girls_home
+        state: "not_home"
     action:
       - service: homeassistant.turn_off
         target:
