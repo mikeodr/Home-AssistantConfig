@@ -3,3 +3,10 @@ adults:
   entities:
     - person.mike
     - person.tiff
+
+presence_home:
+  name: Home Presence
+  entities:
+    - person.mike
+    - person.tiff
+    - device_tracker.faux_girls_home
