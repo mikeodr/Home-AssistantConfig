@@ -296,6 +296,7 @@ automation:
           message: "📷 Turn on sentry mode 📷"
           data:
             tag: "tesla-turn-on-sentry-mode"
+            group: "tesla-notification"
 
   - alias: Close Garage daycare days
     id: tesla_close_garage_daycare_days
@@ -318,6 +319,7 @@ automation:
         data:
           message: "️⬇️ Closing Garage Door ⬇️"
           data:
+            group: "tesla-notification"
             tag: "tesla-close-garage-door"
             push:
               interruption-level: time-sensitive
@@ -350,6 +352,7 @@ automation:
           message: "⬆️ Opening Garage Door ⬆️"
           data:
             tag: "tesla-open-garage-door"
+            group: "tesla-notification"
             push:
               interruption-level: time-sensitive
       - service: cover.open_cover

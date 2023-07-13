@@ -18,6 +18,7 @@
         {{ trigger.to_state.attributes.friendly_name }} is {% if trigger.to_state.state == 'home' %}back{% else %}away{% endif %}.
       data:
         tag: "tiff-presence-notification"
+        group: "presence-notification"
 
 - alias: Weather Alert
   id: weather_alert
@@ -58,6 +59,7 @@
         title: "Ding Dong"
         data:
           tag: "doorbell-notification"
+          group: "doorbell-group"
         message: "Someone is at the front door"
     - service: media_player.media_pause
       entity_id: media_player.living_room_tv
@@ -136,6 +138,7 @@
         message: "Tiff has entered the home zone"
         data:
           tag: "tiff-return-home"
+          group: "presence-notification"
 
 - alias: Update notification
   id: update_notification

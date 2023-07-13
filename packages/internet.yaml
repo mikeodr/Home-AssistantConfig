@@ -28,6 +28,7 @@ automation:
           message: "Attempting to reset modem"
           data:
             tag: "internet-down-notification"
+            group: "internet-notification"
       - repeat:
           sequence:
             - service: homeassistant.turn_off
@@ -47,3 +48,4 @@ automation:
           title: "Internet Restored"
           data:
             tag: "internet-up-notification"
+            group: "internet-notification"

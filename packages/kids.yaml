@@ -49,6 +49,7 @@ automation:
                 message: "Pickup the twins!"
                 data:
                   tag: "pickup-reminder"
+                  group: "pickup-notification"
                   push:
                     sound:
                       name: "default"

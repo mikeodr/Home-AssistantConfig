@@ -33,3 +33,4 @@ automation:
           message: Landry cycle complete
           data:
             tag: laundry-notification
+            group: "laundry-notification-group"

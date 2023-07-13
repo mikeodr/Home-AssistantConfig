@@ -60,6 +60,7 @@ automation:
           message: "Furnace enabled, cold weather forecast"
           data:
             tag: "furnace-enabled-cold-notification"
+            group: "furnace-notification"
       - service: climate.set_hvac_mode
         data:
           hvac_mode: heat

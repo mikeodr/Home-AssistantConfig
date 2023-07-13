@@ -322,6 +322,7 @@ automation:
             Temperature {% if trigger.below != None %}Low{% else %}High{% endif %}: {{ trigger.to_state.state }}
           data:
             tag: "nursery-temp-warning"
+            group: "nursery-notification"
 
   - alias: Turn nursery off if forgotten
     id: nursery_off_if_forgotten
@@ -418,6 +419,7 @@ automation:
           message: "Door is Open"
           data:
             tag: "nursery-door-open-warning"
+            group: "nursery-notification"
 
   - alias: Quiet mode control
     id: nursery_quite_mode_control
@@ -510,6 +512,7 @@ automation:
             Someone has left the nursery
           data:
             tag: "nursery-escape-warning"
+            group: "nursery-notification"
       - choose:
           - conditions:
               - condition: state
