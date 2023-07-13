@@ -20,9 +20,6 @@ logbook:
     entities:
       - automation.update_tesla_location_as_mqtt_location_updates
 
-recorder:
-  db_url: !secret db_url
-
 prometheus:
   namespace: hass
 
