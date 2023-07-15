@@ -558,7 +558,7 @@ automation:
               entity_id: light.nursery_led_strip
               state: "on"
 
-  - alias: Let the girls get out of bed weekend and holiday
+  - alias: Let the girls get out of bed weekends and holiday
     id: nursery_let_girls_get_up_holiday
     trigger:
       - platform: time
