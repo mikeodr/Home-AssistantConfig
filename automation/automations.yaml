@@ -54,13 +54,23 @@
       entity_id: group.adults
       state: "home"
   action:
-    - service: notify.adults
-      data:
-        title: "Ding Dong"
-        data:
-          tag: "doorbell-notification"
-          group: "doorbell-group"
-        message: "Someone is at the front door"
+    - choose:
+        - conditions:
+            - condition: state
+              state: "home"
+              entity_id: group.adults
+          sequence:
+            - repeat:
+                for_each: >
+                  {{ states.person | selectattr('state', 'eq', 'home') | map(attribute='attributes.notifier') | list}}
+                sequence:
+                  - service: "{{ repeat.item }}"
+                    data:
+                      title: "Ding Dong"
+                      message: "Someone is at the front door"
+                      data:
+                        tag: "doorbell-notification"
+                        group: "doorbell-group"
     - service: media_player.media_pause
       entity_id: media_player.living_room_tv
     - choose:
@@ -172,3 +182,4 @@
         {{ trigger.to_state.attributes.friendly_name }} is arriving
       data:
         tag: "person-presence-notification"
+        group: "presence-notification"

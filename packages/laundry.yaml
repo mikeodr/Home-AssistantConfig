@@ -27,10 +27,21 @@ automation:
         from: "on"
         to: "off"
     action:
-      - service: notify.adults
-        data:
-          title: Laundry is done!
-          message: Landry cycle complete
-          data:
-            tag: laundry-notification
-            group: "laundry-notification-group"
+      - wait_template: "{{ is_state('group.adults', 'home') }}"
+      - choose:
+          - conditions:
+              - condition: state
+                state: "home"
+                entity_id: group.adults
+            sequence:
+              - repeat:
+                  for_each: >
+                    {{ states.person | selectattr('state', 'eq', 'home') | map(attribute='attributes.notifier') | list}}
+                  sequence:
+                    - service: "{{ repeat.item }}"
+                      data:
+                        title: Laundry is done!
+                        message: Laundry cycle complete
+                        data:
+                          tag: "laundry-done-notification"
+                          group: "laundry-notification-group"
