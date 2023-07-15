@@ -124,7 +124,7 @@ automation:
         entity_id: input_boolean.sleeping_in
         state: "on"
     action:
-      service: homeassistant.jjturn_off
+      service: homeassistant.turn_off
       entity_id: input_boolean.sleeping_in
 
   - alias: Morning Wake Up Sequence
