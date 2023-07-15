@@ -315,14 +315,18 @@ automation:
         entity_id: input_boolean.nap_mode
         state: "on"
     action:
-      - service: notify.adults
-        data:
-          title: "Nursery Temperature Warning"
-          message: >
-            Temperature {% if trigger.below != None %}Low{% else %}High{% endif %}: {{ trigger.to_state.state }}
-          data:
-            tag: "nursery-temp-warning"
-            group: "nursery-notification"
+      - repeat:
+          for_each: >
+            {{ states.person | selectattr('state', 'eq', 'home') | map(attribute='attributes.notifier') | list}}
+          sequence:
+            - service: "{{ repeat.item }}"
+              data:
+                title: "Nursery Temperature Warning"
+                message: >
+                  Temperature {% if trigger.below != None %}Low{% else %}High{% endif %}: {{ trigger.to_state.state }}
+                data:
+                  tag: "nursery-temp-warning"
+                  group: "nursery-notification"
 
   - alias: Turn nursery off if forgotten
     id: nursery_off_if_forgotten
@@ -413,13 +417,17 @@ automation:
         entity_id: input_boolean.nap_mode
         state: "on"
     action:
-      - service: notify.adults
-        data:
-          title: "Nursery Door Left Open"
-          message: "Door is Open"
-          data:
-            tag: "nursery-door-open-warning"
-            group: "nursery-notification"
+      - repeat:
+          for_each: >
+            {{ states.person | selectattr('state', 'eq', 'home') | map(attribute='attributes.notifier') | list}}
+          sequence:
+            - service: "{{ repeat.item }}"
+              data:
+                title: "Nursery Door Left Open"
+                message: "Door is Open"
+                data:
+                  tag: "nursery-door-open-warning"
+                  group: "nursery-notification"
 
   - alias: Quiet mode control
     id: nursery_quite_mode_control
@@ -505,14 +513,18 @@ automation:
         entity_id: group.adults
         state: "home"
     action:
-      - service: notify.adults
-        data:
-          title: "Nursery Door Opened!"
-          message: >
-            Someone has left the nursery
-          data:
-            tag: "nursery-escape-warning"
-            group: "nursery-notification"
+      - repeat:
+          for_each: >
+            {{ states.person | selectattr('state', 'eq', 'home') | map(attribute='attributes.notifier') | list}}
+          sequence:
+            - service: "{{ repeat.item }}"
+              data:
+                title: "Nursery Door Opened!"
+                message: >
+                  Someone has left the nursery
+                data:
+                  tag: "nursery-escape-warning"
+                  group: "nursery-notification"
       - choose:
           - conditions:
               - condition: state
