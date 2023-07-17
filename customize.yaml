@@ -5,4 +5,4 @@ person.mike:
   notifier: notify.mobile_app_michaels_iphone
 
 person.tiff:
-  notifier: notify.nmobile_app_tiffanys_iphone
+  notifier: notify.mobile_app_tiffanys_iphone
