@@ -69,15 +69,68 @@ automation:
         target:
           entity_id: alarm_control_panel.alarmo
 
+  - alias: Lock all doors when alarm armed
+    id: alarm_lock_all_doors_armed
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.alarmo
+        to:
+          - armed_night
+          - armed_vacation
+          - armed_away
+    action:
+      - service: lock.lock
+        entity_id:
+          - lock.front_door
+          - lock.side_door
+
+  - alias: Alert armed state and garage open
+    id: alarm_alert_garage_left_open
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.alarmo
+        to:
+          - armed_night
+          - armed_vacation
+          - armed_away
+    condition:
+      - condition: state
+        entity_id: cover.garage
+        state: "open"
+    action:
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          message: "Garage Door Left Open"
+          data:
+            tag: "alarmo-garage-open-alert"
+            actions:
+              - action: "CLOSE_GARAGE"
+                title: "Close Garage"
+                activationMode: "background"
+                authenticationRequired: true
+                destructive: true
+                behavior: "default"
+            push:
+              sound:
+                name: "default"
+                critical: 1
+                volume: 1.0
+
   - alias: Save power when not home
     id: alarm_energy_saver_not_home
     trigger:
       - platform: state
         entity_id: alarm_control_panel.alarmo
         to:
-          - armed_away
           - armed_night
           - armed_vacation
+        id: alarm_armed
+      - platform: state
+        entity_id: alarm_control_panel.alarmo
+        to:
+          - armed_away
+        for:
+          minutes: 30
         id: alarm_armed
       - platform: state
         entity_id: alarm_control_panel.alarmo
