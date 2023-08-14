@@ -10,7 +10,6 @@ http:
 default_config:
 bluetooth:
 cloud:
-discovery:
 stream:
 wake_on_lan:
 logbook:
