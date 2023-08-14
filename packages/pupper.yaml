@@ -18,6 +18,9 @@ automation:
       - condition: state
         entity_id: binary_sensor.guests_present
         state: "off"
+      - condition: state
+        entity_id: input_boolean.vacation_mode
+        state: "off"
     action:
       - variables:
           action_home: "{{ 'HOME_' ~ context.id }}"
