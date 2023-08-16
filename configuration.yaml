@@ -5,7 +5,10 @@ homeassistant:
   customize: !include customize.yaml
 
 http:
-  server_port: 80
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 172.16.0.0/24 # Local LAN Subnet
+    - 172.18.0.0/24 # Docker Subnet
 
 default_config:
 bluetooth:
