@@ -69,6 +69,7 @@
                       title: "Ding Dong"
                       message: "Someone is at the front door"
                       data:
+                        entity_id: camera.g4_doorbell_high
                         tag: "doorbell-notification"
                         group: "doorbell-group"
     - service: media_player.media_pause
