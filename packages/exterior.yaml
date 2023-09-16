@@ -153,7 +153,7 @@ automation:
         zone: zone.home
         event: enter
       - platform: state
-        entity_id: binary_sensor.doorbell_button
+        entity_id: binary_sensor.front_door_doorbell
         from: "off"
         to: "on"
     condition:
@@ -210,3 +210,34 @@ automation:
       - service: lock.unlock
         entity_id:
           - lock.front_door
+
+  - alias: Set Doorbell Chime State
+    id: exterior_set_doorbell_chime_state
+    trigger:
+      - platform: state
+        entity_id:
+          - input_boolean.nap_mode
+          - input_boolean.quite_mode
+          - switch.master_white_noise
+        to: ~
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id:
+                  - input_boolean.nap_mode
+                  - input_boolean.quite_mode
+                  - switch.master_white_noise
+                state: "off"
+            sequence:
+              - service: select.select_option
+                target:
+                  entity_id: select.front_door_chime_type
+                data:
+                  option: Mechanical
+        default:
+          - service: select.select_option
+            target:
+              entity_id: select.front_door_chime_type
+            data:
+              option: None

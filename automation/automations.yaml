@@ -46,7 +46,7 @@
   id: doorbell_activated
   trigger:
     platform: state
-    entity_id: binary_sensor.doorbell_button
+    entity_id: binary_sensor.front_door_doorbell
     from: "off"
     to: "on"
   condition:
