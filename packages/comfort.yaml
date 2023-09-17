@@ -52,9 +52,15 @@ automation:
         entity_id: climate.my_ecobee
         state:
           - "off"
-      - condition: template
-        value_template: "{{ state_attr('weather.tomorrow_io_home_nowcast', 'forecast') | map(attribute='temperature')| list | min < 10 }}"
     action:
+      - service: weather.get_forecast
+        target:
+          entity_id: weather.tomorrow_io_home_nowcast
+        data:
+          type: hourly
+        response_variable: forecast
+      - condition: template
+        value_template: "{{ forecast.forecast | map(attribute='temperature')| list | min < 10 }}"
       - service: notify.mobile_app_michaels_iphone
         data:
           message: "Furnace enabled, cold weather forecast"
