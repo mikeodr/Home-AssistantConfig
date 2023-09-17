@@ -245,13 +245,6 @@ mqtt:
       state_topic: "teslamate/cars/1/shift_state"
       icon: mdi:car-shift-pattern
 
-proximity:
-  garage:
-    zone: garage
-    devices:
-      - device_tracker.tesla_location
-    unit_of_measurement: m
-
 automation:
   - alias: Update Tesla location as MQTT location updates
     id: tesla_location_update_automation
@@ -297,66 +290,6 @@ automation:
           data:
             tag: "tesla-turn-on-sentry-mode"
             group: "tesla-notification"
-
-  - alias: Close Garage daycare days
-    id: tesla_close_garage_daycare_days
-    trigger:
-      - platform: numeric_state
-        entity_id: proximity.garage
-        above: 50
-    condition:
-      - condition: time
-        after: "07:00:00"
-        before: "09:00:00"
-      - condition: state
-        entity_id: binary_sensor.workday_sensor
-        state: "on"
-      - condition: state
-        entity_id: cover.garage
-        state: "open"
-    action:
-      - service: notify.mobile_app_michaels_iphone
-        data:
-          message: "️⬇️ Closing Garage Door ⬇️"
-          data:
-            group: "tesla-notification"
-            tag: "tesla-close-garage-door"
-            push:
-              interruption-level: time-sensitive
-      - service: cover.close_cover
-        entity_id: cover.garage
-
-  - alias: Open garage Daycare Days
-    id: tesla_open_garage_daycare_days
-    trigger:
-      - platform: numeric_state
-        entity_id: proximity.garage
-        below: 50
-    condition:
-      - condition: state
-        entity_id: binary_sensor.workday_sensor
-        state: "on"
-      - condition: state
-        entity_id: cover.garage
-        state: "closed"
-      - condition: time
-        after: "16:00:00"
-        before: "17:00:00"
-      - not: # Garbage day, don't pull the car in
-          - condition: time
-            weekday:
-              - "thu"
-    action:
-      - service: notify.mobile_app_michaels_iphone
-        data:
-          message: "⬆️ Opening Garage Door ⬆️"
-          data:
-            tag: "tesla-open-garage-door"
-            group: "tesla-notification"
-            push:
-              interruption-level: time-sensitive
-      - service: cover.open_cover
-        entity_id: cover.garage
 
   - alias: Disable Tesla Wifi in Driveway
     id: tesla_disable_wifi_in_driveway
