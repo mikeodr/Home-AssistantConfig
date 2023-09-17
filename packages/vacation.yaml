@@ -15,13 +15,25 @@ automation:
         entity_id: device_tracker.faux_girls_home
         state: "not_home"
     action:
+      - service: select.select_option
+        entity_id: select.my_ecobee_current_mode
+        data:
+          option: away
       - service: homeassistant.turn_off
+        continue_on_error: true
         target:
-          area_id:
-            - 490ec53ba1bc411a96655d0e3492e7d7 # Basement
-            - 591640619ece45269ce3c6a8c71f4b7e # Nursery
-            - e153ba2916a6441a8e5dbc47d58b9a73 # Living Room
-            - a5cdd949b6a34fccbefe6e6b2d1d61db # Main Bedroom
+          entity_id:
+            - light.basement_room_light_dimmer
+            - switch.basement_hall
+            - light.living_room
+            - light.kitchen_island
+            - light.kitchen_light
+            - light.nursery_light
+            - switch.nursery_fan
+            - light.nursery_led_strip
+            - switch.nursery_white_noise
+            - switch.master_white_noise
+            - switch.spare_bedroom_fan
       - service: cover.close_cover
         entity_id: cover.garage
       - service: lock.lock
@@ -31,10 +43,6 @@ automation:
       - service: homeassistant.turn_on
         entity_id:
           - input_boolean.vacation_mode
-      - service: select.select_option
-        entity_id: select.my_ecobee_current_mode
-        data:
-          option: away
 
   - alias: Returning from vacation
     id: vacation_mode_return
@@ -70,7 +78,7 @@ automation:
         below: 1.0
         id: light_on
       - platform: time
-        at: "21:30:00"
+        at: "22:00:00"
         id: light_off
     condition:
       - condition: state
@@ -80,27 +88,27 @@ automation:
       - delay:
           minutes: "{{ (range(0, 25)|random|int) }}"
       - choose:
-        - conditions:
-            - condition: trigger
-              id: light_on
-          sequence:
-            - service: homeassistant.turn_on
-              entity_id: switch.kitchen_island
-            - delay:
-                minutes: "{{ (range(0, 10)|random|int) }}"
-            - service: homeassistant.turn_on
-              entity_id:
-                - switch.basement_hall
-                - light.basement_room_light_dimmer
-        - conditions:
-            - condition: trigger
-              id: light_off
-          sequence:
-            - service: homeassistant.turn_off
-              entity_id:
-                - switch.basement_hall
-                - light.basement_room_light_dimmer
-            - delay:
-                minutes: "{{ (range(0, 15)|random|int) }}"
-            - service: homeassistant.turn_off
-              entity_id: switch.kitchen_island
+          - conditions:
+              - condition: trigger
+                id: light_on
+            sequence:
+              - service: homeassistant.turn_on
+                entity_id: switch.kitchen_island
+              - delay:
+                  minutes: "{{ (range(0, 10)|random|int) }}"
+              - service: homeassistant.turn_on
+                entity_id:
+                  - switch.basement_hall
+                  - light.basement_room_light_dimmer
+          - conditions:
+              - condition: trigger
+                id: light_off
+            sequence:
+              - service: homeassistant.turn_off
+                entity_id:
+                  - switch.basement_hall
+                  - light.basement_room_light_dimmer
+              - delay:
+                  minutes: "{{ (range(0, 35)|random|int) }}"
+              - service: homeassistant.turn_off
+                entity_id: switch.kitchen_island
