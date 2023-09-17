@@ -225,8 +225,6 @@ automation:
         entity_id: input_boolean.nap_mode
         to: "on"
       - platform: time
-        at: "11:00:00"
-      - platform: time
         at: "15:00:00"
       - platform: time
         at: "17:00:00"
@@ -255,7 +253,7 @@ automation:
             sequence:
               service: homeassistant.turn_on
               entity_id: fan.nursery
-          # If not a workday or override is turn on
+          # If not a workday or override is set on
           - conditions:
               - or:
                   - condition: state
