@@ -40,7 +40,7 @@ switch:
             entity_id: input_boolean.nap_mode
 
 homekit:
-  - name: Camera Accessories Bridge
+  - name: Nursery Camera Bridge
     mode: accessory
     port: 21065
     filter:
@@ -51,6 +51,18 @@ homekit:
         video_codec: copy
         support_audio: false
         linked_doorbell_sensor: binary_sensor.faux_nursery_homekit_bell
+
+  - name: Doorbell Camera Bridge
+    mode: accessory
+    port: 21069
+    filter:
+      include_entities:
+        - camera.g4_doorbell_high
+    entity_config:
+      camera.g4_doorbell_high:
+        video_codec: copy
+        support_audio: false
+        linked_doorbell_sensor: binary_sensor.front_door_doorbell
 
   - name: Front Door Lock
     mode: accessory
