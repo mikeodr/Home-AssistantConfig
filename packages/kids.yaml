@@ -13,8 +13,8 @@ automation:
       - platform: zone
         entity_id:
           - device_tracker.michaels_iphone
-          - device_tracker.tesla_location
-        zone: zone.daycare
+          - device_tracker.tiffanys_iphone
+        zone: zone.school
         event: enter
         id: enter_pickup_zone
       - platform: time
