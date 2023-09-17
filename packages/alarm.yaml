@@ -31,6 +31,25 @@ automation:
           entity_id: alarm_control_panel.alarmo
     mode: single
 
+  - alias: Auto Arm Alarm Night
+    id: alarm_auto_arm_night_mode
+    trigger:
+      - platform: time
+        at: "00:00:00"
+    condition:
+      - condition: state
+        entity_id:
+          - person.mike
+          - person.tiff
+        state: "home"
+      - condition: state
+        entity_id: alarm_control_panel.alarmo
+        state: "disarmed"
+    action:
+      - service: alarm_control_panel.alarm_arm_night
+        target:
+          entity_id: alarm_control_panel.alarmo
+
   - alias: Disable Armed Night on iOS alarm wakeup
     id: alarm_disable_armed_night_ios_wakeup
     trigger:
