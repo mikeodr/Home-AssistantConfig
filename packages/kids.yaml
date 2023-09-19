@@ -55,3 +55,33 @@ automation:
                       name: "default"
                       critical: 1
                       volume: 0.5
+
+  - alias: School Absence Notification
+    id: kids_school_absence
+    trigger:
+      - platform: state
+        entity_id: input_button.both_absent
+        id: both_absent
+        variables:
+          name: "Meredith and Vivian O'Driscoll"
+      - platform: state
+        entity_id: input_button.vivian_absent
+        id: vivian_absent
+        variables:
+          name: "Vivian O'Driscoll"
+      - platform: state
+        entity_id: input_button.meredith_absent
+        id: meredith_absent
+        variables:
+          name: "Meredith O'Driscoll"
+    condition:
+      - condition: state
+        entity_id: binary_sensor.workday_sensor
+        state: "on"
+      - condition: template
+        value_template: "{{ (trigger.from_state.state | as_datetime).day != utcnow().day }}"
+    action:
+      - service: notify.school_absence
+        data:
+          title: "Absence {{ now().strftime('%h %d, %Y') }} - {{name}}"
+          message: "{{ name }} will be absent today. {{trigger.from_state.state}} / {{trigger.to_state.state}} / {{utcnow().day}}"
