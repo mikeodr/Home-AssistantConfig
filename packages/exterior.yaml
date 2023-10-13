@@ -47,18 +47,36 @@ automation:
         attribute: elevation
         below: 0.25
       - platform: state
+        entity_id: binary_sensor.front_door_person_detected
+        to: "on"
+        for:
+          minutes: 2
+    condition:
+      - condition: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        below: 0.25
+    action:
+      service: homeassistant.turn_on
+      entity_id: group.exterior_lights
+
+  - alias: Keep Exterior Lights on Evenings
+    id: exterior_keep_lights_on_evenings
+    trigger:
+      - platform: state
         entity_id:
           - switch.front_porch
           - switch.side_door
         to: "off"
         for:
-          seconds: 5
+          minutes: 2
     condition:
       - condition: numeric_state
         entity_id: sun.sun
         attribute: elevation
         below: 0.25
       - condition: time
+        after: "15:00:00"
         before: "23:30:00"
     action:
       service: homeassistant.turn_on
@@ -84,15 +102,18 @@ automation:
         entity_id: group.exterior_lights
         to: "on"
         for:
-          hours: 1
+          minutes: 30
     condition:
       - and:
           - condition: time
             after: "23:30:00"
             before: "09:00:00" # Time condition to span midnight reset
-          - condition: sun
-            before: sunrise
+          - condition: numeric_state
+            entity_id: sun.sun
+            attribute: elevation
+            below: 0.25
     action:
+      - wait_template: '{{ is_state("binary_sensor.front_door_person_detected", "off") }}'
       - service: homeassistant.turn_off
         entity_id: group.exterior_lights
 
@@ -103,7 +124,7 @@ automation:
         entity_id: group.exterior_lights
         to: "on"
         for:
-          minutes: 30
+          minutes: 10
       - platform: numeric_state
         entity_id: sun.sun
         attribute: elevation
@@ -160,7 +181,7 @@ automation:
       - condition: numeric_state
         entity_id: sun.sun
         attribute: elevation
-        below: 0.5
+        below: 0.25
     action:
       - service: homeassistant.turn_on
         entity_id: group.exterior_lights
@@ -186,58 +207,3 @@ automation:
     action:
       service: homeassistant.turn_off
       entity_id: alert.garage_open
-
-  - alias: Unlock door on return home
-    id: exterior_unlock_door_return_home
-    trigger:
-      - platform: zone
-        entity_id:
-          - device_tracker.tesla_location
-          - person.mike
-        zone: zone.home
-        event: enter
-    condition:
-      - condition: state
-        entity_id: binary_sensor.workday_sensor
-        state: "on"
-      - condition: state
-        entity_id: input_boolean.nap_mode
-        state: "off"
-      - condition: state
-        entity_id: lock.front_door
-        state: "locked"
-    action:
-      - service: lock.unlock
-        entity_id:
-          - lock.front_door
-
-  - alias: Set Doorbell Chime State
-    id: exterior_set_doorbell_chime_state
-    trigger:
-      - platform: state
-        entity_id:
-          - input_boolean.nap_mode
-          - input_boolean.quite_mode
-          - switch.master_white_noise
-        to: ~
-    action:
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id:
-                  - input_boolean.nap_mode
-                  - input_boolean.quite_mode
-                  - switch.master_white_noise
-                state: "off"
-            sequence:
-              - service: select.select_option
-                target:
-                  entity_id: select.front_door_chime_type
-                data:
-                  option: Mechanical
-        default:
-          - service: select.select_option
-            target:
-              entity_id: select.front_door_chime_type
-            data:
-              option: None
