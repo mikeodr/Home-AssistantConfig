@@ -103,8 +103,6 @@ automation:
       after: "22:25:00"
       before: "07:00:00"
     action:
-      - service: cover.close_cover
-        entity_id: cover.garage
       - service: lock.lock
         entity_id:
           - lock.front_door
