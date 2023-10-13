@@ -144,7 +144,6 @@ automation:
       event_type: ios.action_fired
       event_data:
         actionID: toggle_garage
-        sourceDeviceID: michaels_iphone
     action:
       service: cover.toggle
       entity_id:
@@ -157,7 +156,6 @@ automation:
       event_type: ios.action_fired
       event_data:
         actionID: lock_door
-        sourceDeviceID: michaels_iphone
     action:
       service: lock.lock
       entity_id:
@@ -170,7 +168,6 @@ automation:
       event_type: ios.action_fired
       event_data:
         actionID: unlock_door
-        sourceDeviceID: michaels_iphone
     action:
       service: lock.unlock
       entity_id:
