@@ -42,64 +42,13 @@
       message: >
         {{ trigger.to_state.attributes['alert detail'] }}
 
-- alias: Doorbell activated
-  id: doorbell_activated
-  trigger:
-    platform: state
-    entity_id: binary_sensor.front_door_doorbell
-    from: "off"
-    to: "on"
-  condition:
-    - condition: state
-      entity_id: group.adults
-      state: "home"
-  action:
-    - choose:
-        - conditions:
-            - condition: state
-              state: "home"
-              entity_id: group.adults
-          sequence:
-            - repeat:
-                for_each: >
-                  {{ states.person | selectattr('state', 'eq', 'home') | map(attribute='attributes.notifier') | list}}
-                sequence:
-                  - service: "{{ repeat.item }}"
-                    data:
-                      title: "Ding Dong"
-                      message: "Someone is at the front door"
-                      data:
-                        entity_id: camera.g4_doorbell_high
-                        tag: "doorbell-notification"
-                        group: "doorbell-group"
-    - service: media_player.media_pause
-      entity_id: media_player.living_room_tv
-    - choose:
-        # Halloween Condition
-        - conditions:
-            - condition: template
-              value_template: "{{ now().month == 10 and now().day == 31 }}"
-            - condition: state
-              entity_id: input_boolean.nap_mode
-              state: "off"
-          sequence:
-            - service: script.sonos_say
-              data:
-                sonos_entity: media_player.sonos_living_room
-                volume: 0.25
-                message: "Trick or treat!"
-                delay:
-                  seconds: 4
-    - delay:
-        # Debounce this from happening
-        # again quickly.
-        seconds: 30
-
 - alias: Return Home Annoucement
   id: return_home_annoucement
   trigger:
     platform: zone
-    entity_id: device_tracker.tesla_location
+    entity_id:
+     - device_tracker.tesla_location
+     - device_tracker.michaels_iphone
     zone: zone.home
     event: enter
   condition:
@@ -114,6 +63,9 @@
       data:
         title: "Mike is almost home"
         message: "Keep Stella Quiet"
+    - delay:
+        minutes: 15
+  mode: single
 
 - alias: Tiff Returning Home Notification
   id: tiff_return_home_notification
