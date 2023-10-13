@@ -144,6 +144,9 @@ automation:
                 message: "Setting cleaners lock code"
                 data:
                   tag: "cleaners-code"
+            - service: alarm_control_panel.alarm_disarm
+              target:
+                entity_id: alarm_control_panel.alarmo
         - conditions:
             - condition: trigger
               id: clear_lock
@@ -157,3 +160,12 @@ automation:
                 message: "Clearing cleaners lock code"
                 data:
                   tag: "cleaners-code"
+            - choose:
+              - conditions:
+                - condition: state
+                  entity_id: group.presence_home
+                  state: "not_home"
+                sequence:
+                  - service: alarm_control_panel.alarm_arm_away
+                    target:
+                      entity_id: alarm_control_panel.alarmo
