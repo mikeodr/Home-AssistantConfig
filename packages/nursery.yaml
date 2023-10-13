@@ -40,6 +40,8 @@ scene:
         state: "off"
       fan.nursery_humidifier:
         state: "on"
+      switch.nursery_detections_motion:
+        state: "on"
 
   - name: baby_nap_off
     entities:
@@ -51,6 +53,8 @@ scene:
         state: "off"
       switch.nursery_power_loss_gate:
         state: "on"
+      switch.nursery_detections_motion:
+        state: "off"
 
 script:
   tv_baby_monitor:
@@ -414,6 +418,10 @@ automation:
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "on"
+      - not:
+          - condition: time
+            after: "01:30:00"
+            before: "07:00:00"
     action:
       - repeat:
           for_each: >
@@ -510,6 +518,10 @@ automation:
       - condition: state
         entity_id: group.adults
         state: "home"
+      - not:
+          - condition: time
+            after: "01:30:00"
+            before: "07:00:00"
     action:
       - repeat:
           for_each: >
@@ -540,7 +552,7 @@ automation:
     id: nursery_let_girls_get_up_weekday
     trigger:
       - platform: time
-        at: "07:10:00"
+        at: "07:00:00"
     condition:
       - condition: state
         entity_id: input_boolean.nap_mode
