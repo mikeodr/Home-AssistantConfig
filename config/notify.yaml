@@ -15,4 +15,5 @@
   password: !secret smtp_password
   recipient:
     - !secret school_attendence
+    - !secret school_sender
   sender_name: "Mike O'Driscoll"
