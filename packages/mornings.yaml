@@ -4,24 +4,34 @@ automation:
     trigger:
       - platform: event
         event_type: "ios_wakeup_event"
-    action:
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: person.mike
-                state: "home"
-              - condition: numeric_state
-                entity_id: sun.sun
-                attribute: elevation
-                below: 1.5
-            sequence:
-              - service: homeassistant.turn_on
-                entity_id:
-                  - switch.kitchen_island
-                  - switch.christmas_tree
+      - platform: time
+        at: "07:30:00"
+    condition:
+      - condition: state
+        entity_id: group.adults
+        state: "home"
       - condition: numeric_state
         entity_id: sun.sun
         attribute: elevation
-        below: 1.0
+        below: 1.5
+    action:
       - service: homeassistant.turn_on
-        entity_id: group.exterior_lights
+        entity_id:
+          - switch.kitchen_island
+          - switch.christmas_tree
+      - wait_template: "{{ is_state('binary_sensor.living_room_occupancy', 'on') }}"
+        timeout:
+          hours: 1
+        continue_on_timeout: false
+      - condition: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        below: 1.5
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.kitchen_light
+            - light.living_room_light
+        data:
+          brightness_pct: 30
+          transition: 90
