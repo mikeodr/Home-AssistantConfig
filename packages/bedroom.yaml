@@ -127,7 +127,7 @@ automation:
       service: homeassistant.turn_off
       entity_id: input_boolean.sleeping_in
 
-  - alias: Morning Wake Up Sequence
+  - alias: Front Bedroom Morning Wake Up Sequence
     id: bedroom_morning_wake_up_sequence
     trigger:
       - platform: event
