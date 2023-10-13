@@ -1,0 +1,171 @@
+schedule:
+  doorbell_do_not_distrub:
+    name: "Doorbell do not disturb schedule"
+    monday:
+      # Dinner
+      - from: "16:45"
+        to: "18:00"
+    tuesday:
+      # Dinner
+      - from: "16:45"
+        to: "18:00"
+    wednesday:
+      # Dinner
+      - from: "16:45"
+        to: "18:00"
+    thursday:
+      # Dinner
+      - from: "16:45"
+        to: "18:00"
+    friday:
+      # Dinner
+      - from: "16:45"
+        to: "18:00"
+    saturday:
+      # Dinner
+      - from: "16:45"
+        to: "18:00"
+    sunday:
+      # Dinner
+      - from: "16:45"
+        to: "18:00"
+
+automation:
+  - alias: Set Doorbell Chime State
+    id: doorbell_set_doorbell_chime_state
+    trigger:
+      - platform: state
+        entity_id:
+          - input_boolean.nap_mode
+          - input_boolean.quite_mode
+          - switch.master_white_noise
+        to: ~
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id:
+                  - input_boolean.nap_mode
+                  - input_boolean.quite_mode
+                  - switch.master_white_noise
+                state: "off"
+            sequence:
+              - service: select.select_option
+                target:
+                  entity_id: select.front_door_chime_type
+                data:
+                  option: Mechanical
+        default:
+          - service: select.select_option
+            target:
+              entity_id: select.front_door_chime_type
+            data:
+              option: None
+
+  - alias: Doorbell notification Message
+    id: doorbell_notification_message
+    mode: single
+    trigger:
+      platform: state
+      entity_id: binary_sensor.front_door_doorbell
+      from: "off"
+      to: "on"
+    action:
+      - delay:
+          seconds: 1
+      # Snapshot the camera
+      - service: camera.snapshot
+        target:
+          entity_id: camera.g4_doorbell_high
+        data:
+          filename: "/media/doorbell/snapshot.jpg"
+      # Notify Everyone
+      - service: notify.adults
+        data:
+          title: "Ding Dong"
+          message: "Someone is at the front door"
+          data:
+            image: "/media/local/doorbell/snapshot.jpg"
+            tag: "doorbell-notification"
+            group: "doorbell-group"
+
+  - alias: Doorbell activated
+    id: doorbell_activated
+    trigger:
+      platform: state
+      entity_id: binary_sensor.front_door_doorbell
+      from: "off"
+      to: "on"
+    condition:
+      - condition: state
+        entity_id: group.adults
+        state: "home"
+    action:
+      # Pause the TV
+      - service: media_player.media_pause
+        entity_id: media_player.living_room_tv
+      # If it's halloween do fun things
+      - choose:
+          # Halloween Condition
+          - conditions:
+              - condition: template
+                value_template: "{{ now().month == 10 and now().day == 31 }}"
+              - condition: state
+                entity_id: input_boolean.nap_mode
+                state: "off"
+            sequence:
+              - service: script.sonos_say
+                data:
+                  sonos_entity: media_player.sonos_living_room
+                  volume: 0.25
+                  message: "Trick or treat!"
+                  delay:
+                    seconds: 4
+      - delay:
+          # Debounce this from happening
+          # again quickly.
+          seconds: 30
+    mode: single
+
+  - alias: Set doorbell message
+    id: doorbell_set_message
+    trigger:
+      - platform: state
+        entity_id:
+          - switch.nap_mode
+          - input_boolean.quite_mode
+          - switch.master_white_noise
+          - schedule.doorbell_do_not_distrub
+        to: ~
+    action:
+      - choose:
+          - conditions:
+              or:
+                - condition: state
+                  entity_id:
+                    - switch.nap_mode
+                  state: "on"
+                - condition: state
+                  entity_id:
+                    - input_boolean.quite_mode
+                  state: "on"
+                - condition: state
+                  entity_id:
+                    - switch.master_white_noise
+                  state: "on"
+                - condition: state
+                  entity_id:
+                    - schedule.doorbell_do_not_distrub
+                  state: "on"
+            sequence:
+              - service: select.select_option
+                data:
+                  option: DO NOT DISTURB
+                target:
+                  entity_id: select.front_door_doorbell_text
+        default:
+          - service: select.select_option
+            data:
+              option: Default Message (WELCOME)
+            target:
+              entity_id: select.front_door_doorbell_text
