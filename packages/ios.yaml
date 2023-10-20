@@ -59,9 +59,20 @@ sensor:
           {%- if states("lock.front_door") == "locked" and states("lock.side_door") == "locked" -%}
           🔒
           {%- else -%}
+          {%- if states("lock.front_door") == "locked" -%}
+          🔒
+          {%- else -%}
           🔓
+          {%- endif -%}
+          {%- if states("lock.side_door") == "locked" -%}
+          🔒
+          {%- else -%}
+          🔓
+          {%- endif -%}
           {%- endif -%} 
-          {%- if states("cover.garage") == "closed" -%}
+          {%- if states("binary_sensor.garage_myq_gateway") != "on" -%}
+          |⛔️
+          {%- elif states("cover.garage") == "closed" -%}
           |⬇
           {%- else -%}
           |⬆
@@ -77,9 +88,6 @@ sensor:
           {%- endif -%}
           {%- if states("alarm_control_panel.alarmo") not in ['disarmed', 'pending', 'arming', 'unknown', 'unavailable'] -%}
           |🛡️
-          {%- endif -%}
-          {%- if is_state('binary_sensor.washer_status', 'on') -%}
-          |🧺
           {%- endif -%}
           {%- if states('sensor.waste_current_pickup') != "unknown" -%}
           {% set garbage_day=states('sensor.waste_current_pickup') | as_datetime -%}
@@ -114,13 +122,10 @@ sensor:
         friendly_name: "iOS Watch Complication Body 2"
         unique_id: ios_main_status_body2
         value_template: >-
-          📺{{ states('sensor.plex_mikeflix') }}|{%- if states('sun.sun') == 'above_horizon' -%}
-          🌛{% set sec = (states.sun.sun.attributes.next_setting |as_timestamp - now() |as_timestamp) |int %}
-          {%- else -%}
-          ☀️{% set sec = (states.sun.sun.attributes.next_rising | as_timestamp - now()| as_timestamp) |int %}
+          📺{{ states('sensor.plex_mikeflix') }}
+          {%- if is_state('binary_sensor.washer_status', 'on') -%}
+          |🧺
           {%- endif -%}
-          {{ sec//3600 }}h{{ sec%3600//60 }}m
-
 automation:
   - alias: Update Complications On Specific State changes
     id: update_complications_state_changes
