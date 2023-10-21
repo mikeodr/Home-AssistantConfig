@@ -3,4 +3,13 @@ binary_sensor:
     sensors:
       guests_present:
         friendly_name: "Guests Home"
-        value_template: "{{ states.device_tracker | rejectattr('attributes.host_name', '==', 'Tiffanys-Air') |  selectattr('attributes.essid', '==', 'CoreGuest')| list | count}}"
+        value_template: "{{ (states('sensor.coreguest') | int) > 0 }}"
+      waste_dashboard:
+        value_template: >-
+          {% set garbage_day=states('sensor.waste_current_pickup') | as_datetime -%}
+          {%- if now().day == (garbage_day - timedelta(days=1)).day or
+          now().day == garbage_day.day and now().hour < 10 -%}
+          on
+          {%- else -%}
+          off
+          {%-endif-%}
