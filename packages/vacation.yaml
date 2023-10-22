@@ -14,6 +14,9 @@ automation:
       - condition: state
         entity_id: device_tracker.faux_girls_home
         state: "not_home"
+      - condition: state
+        entity_id: binary_sensor.guests_present
+        state: "off"
     action:
       - service: select.select_option
         entity_id: select.my_ecobee_current_mode
