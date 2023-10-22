@@ -23,8 +23,11 @@ automation:
           - group.presence_home
         to: ~
     condition:
-      condition: template
-      value_template: "{{ trigger.to_state.state in ['home', 'not_home'] }}"
+      - condition: template
+        value_template: "{{ trigger.to_state.state in ['home', 'not_home'] }}"
+      - condition: state
+        entity_id: binary_sensor.guests_present
+        state: "off"
     action:
       - service: alarm_control_panel.alarm_{{ 'disarm' if 'home' == trigger.to_state.state else 'arm_away' }}
         target:
