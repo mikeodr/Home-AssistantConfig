@@ -127,6 +127,27 @@ automation:
           seconds: 30
     mode: single
 
+  - alias: Doorbell package detected
+    id: doorbell_package_detected
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.front_door_package_detected
+        to: "on"
+    action:
+      - service: camera.snapshot
+        target:
+          entity_id: camera.g4_doorbell_high
+        data:
+          filename: "/media/doorbell/package.jpg"
+      - service: notify.adults
+        data:
+          title: "Package Detected"
+          message: "Check the front porch"
+          data:
+            image: "/media/local/doorbell/package.jpg"
+            tag: "doorbell-package-notification"
+            group: "doorbell-package"
+
   - alias: Set doorbell message
     id: doorbell_set_message
     trigger:
