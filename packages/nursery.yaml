@@ -566,7 +566,7 @@ automation:
             state: "home"
           - condition: state
             entity_id: binary_sensor.guests_present
-            state: "home"
+            state: "on"
     action:
       - wait_template: '{{ not is_state("light.nursery_led_strip", "unavailable") }}'
       - repeat:
@@ -598,7 +598,7 @@ automation:
             state: "home"
           - condition: state
             entity_id: binary_sensor.guests_present
-            state: "home"
+            state: "on"
     action:
       - wait_template: '{{ not is_state("light.nursery_led_strip", "unavailable") }}'
       - repeat:
