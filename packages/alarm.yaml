@@ -137,38 +137,3 @@ automation:
                 name: "default"
                 critical: 1
                 volume: 1.0
-
-  - alias: Save power when not home
-    id: alarm_energy_saver_not_home
-    trigger:
-      - platform: state
-        entity_id: alarm_control_panel.alarmo
-        to:
-          - armed_night
-          - armed_vacation
-        id: alarm_armed
-      - platform: state
-        entity_id: alarm_control_panel.alarmo
-        to:
-          - armed_away
-        for:
-          minutes: 30
-        id: alarm_armed
-      - platform: state
-        entity_id: alarm_control_panel.alarmo
-        to: disarmed
-        id: alarm_disarmed
-    action:
-      choose:
-        - conditions:
-            - condition: trigger
-              id: alarm_armed
-          sequence:
-            - service: homeassistant.turn_off
-              entity_id: switch.entertainment_switch_relay
-        - conditions:
-            - condition: trigger
-              id: alarm_disarmed
-          sequence:
-            - service: homeassistant.turn_on
-              entity_id: switch.entertainment_switch_relay

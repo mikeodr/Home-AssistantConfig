@@ -15,7 +15,7 @@ automation:
     action:
       - choose:
           - conditions:
-              - condition: trigger 
+              - condition: trigger
                 id: to_playing
             sequence:
               - service: media_player.volume_set
@@ -30,3 +30,38 @@ automation:
                 data:
                   volume_level: 0.10
                 entity_id: media_player.sonos_living_room
+
+  - alias: Save power when not home
+    id: media_energy_saver_not_home
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.alarmo
+        to:
+          - armed_night
+          - armed_vacation
+        id: power_off
+      - platform: state
+        entity_id: alarm_control_panel.alarmo
+        to:
+          - armed_away
+        for:
+          minutes: 30
+        id: power_off
+      - platform: state
+        entity_id: alarm_control_panel.alarmo
+        to: disarmed
+        id: power_on
+    action:
+      choose:
+        - conditions:
+            - condition: trigger
+              id: power_off
+          sequence:
+            - service: homeassistant.turn_off
+              entity_id: switch.entertainment_switch_relay
+        - conditions:
+            - condition: trigger
+              id: power_on
+          sequence:
+            - service: homeassistant.turn_on
+              entity_id: switch.entertainment_switch_relay
