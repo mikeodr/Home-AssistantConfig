@@ -20,8 +20,8 @@ alert:
     repeat: 15
     skip_first: true
     data:
-      uri: /lovelace/leak-sensors
       tag: "garage-open-alert"
+      entity_id: camera.garage
       actions:
         - action: "CLOSE_GARAGE"
           title: "Close Garage"
@@ -107,7 +107,7 @@ automation:
       - and:
           - condition: time
             after: "23:30:00"
-            before: "09:00:00" # Time condition to span midnight reset
+            before: "06:00:00" # Time condition to span midnight reset
           - condition: numeric_state
             entity_id: sun.sun
             attribute: elevation
