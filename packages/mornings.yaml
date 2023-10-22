@@ -1,11 +1,16 @@
 automation:
   - alias: Morning Wake Up Sequence
     id: morning_wake_up_sequence
+    mode: single
     trigger:
       - platform: event
         event_type: "ios_wakeup_event"
-      - platform: time
-        at: "07:30:00"
+      - platform: state
+        entity_id: input_boolean.nap_mode
+        to: "off"
+      - platform: state
+        entity_id: binary_sensor.living_room_occupancy
+        to: "on"
     condition:
       - condition: state
         entity_id: group.adults
@@ -14,6 +19,9 @@ automation:
         entity_id: sun.sun
         attribute: elevation
         below: 1.5
+      - condition: time
+        after: "05:00:00"
+        before: "09:00:00"
     action:
       - service: homeassistant.turn_on
         entity_id:
@@ -33,5 +41,5 @@ automation:
             - light.kitchen_light
             - light.living_room_light
         data:
-          brightness_pct: 30
+          brightness_pct: 28
           transition: 90
