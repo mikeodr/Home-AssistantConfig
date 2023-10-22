@@ -28,20 +28,43 @@ automation:
         to: "off"
     action:
       - wait_template: "{{ is_state('group.adults', 'home') }}"
-      - choose:
-          - conditions:
+      - repeat:
+          until:
+            or:
               - condition: state
-                state: "home"
-                entity_id: group.adults
-            sequence:
-              - repeat:
-                  for_each: >
-                    {{ states.person | selectattr('state', 'eq', 'home') | map(attribute='attributes.notifier') | list}}
-                  sequence:
-                    - service: "{{ repeat.item }}"
+                entity_id: binary_sensor.dryer_running
+                state: "on"
+                for:
+                  minutes: 5
+              - condition: template
+                value_template: "{{ wait.trigger is not none }}"
+          sequence:
+            - repeat:
+                for_each: >
+                  {{ states.person | selectattr('state', 'eq', 'home') | map(attribute='attributes.notifier') | list}}
+                sequence:
+                  - service: "{{ repeat.item }}"
+                    data:
+                      title: Laundry is done!
+                      message: Laundry cycle complete
                       data:
-                        title: Laundry is done!
-                        message: Laundry cycle complete
-                        data:
-                          tag: "laundry-done-notification"
-                          group: "laundry-notification-group"
+                        tag: "laundry-done-notification"
+                        group: "laundry-notification-group"
+                        actions:
+                          - action: "laundry_moved"
+                            title: "Laundry Moved"
+                            authenticationRequired: true
+                            destructive: true
+                            behavior: "default"
+            - wait_for_trigger:
+                - platform: event
+                  event_type: mobile_app_notification_action
+                  event_data:
+                    action: "laundry_moved"
+                - platform: state
+                  entity_id: binary_sensor.dryer_running
+                  to: "on"
+                  for:
+                    minutes: 5
+              timeout:
+                minutes: 30
