@@ -65,6 +65,7 @@ automation:
   - alias: Doorbell notification Message
     id: doorbell_notification_message
     mode: single
+    max_exceeded: silent
     trigger:
       platform: state
       entity_id: binary_sensor.front_door_doorbell
@@ -126,6 +127,35 @@ automation:
           # again quickly.
           seconds: 30
     mode: single
+    max_exceeded: silent
+
+  - alias: Halloween Doorbell Audio
+    id: doorbell_halloween_audio_message
+    mode: single
+    max_exceeded: silent
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.front_door_doorbell
+        from: "off"
+        to: "on"
+    condition:
+      - alias: "condition alias (name)"
+        condition: time
+        after: "17:00:00"
+        before: "21:00:00"
+      - condition: template
+        value_template: "{{ now().month == 10 and now().day == 31 }}"
+      - condition: numeric_state
+        entity_id: proximity.home
+        below: 500
+    action:
+      - service: tts.cloud_say
+        data:
+          entity_id: media_player.front_door_speaker
+          message: "Boo! Happy Halloween!"
+          cache: true
+      - delay:
+          seconds: 60
 
   - alias: Doorbell package detected
     id: doorbell_package_detected
@@ -158,26 +188,46 @@ automation:
           - switch.master_white_noise
           - schedule.doorbell_do_not_distrub
         to: ~
+        id: standard
+      - platform: time
+        at: "17:00:00"
     action:
       - choose:
           - conditions:
-              or:
-                - condition: state
-                  entity_id:
-                    - switch.nap_mode
-                  state: "on"
-                - condition: state
-                  entity_id:
-                    - input_boolean.quite_mode
-                  state: "on"
-                - condition: state
-                  entity_id:
-                    - switch.master_white_noise
-                  state: "on"
-                - condition: state
-                  entity_id:
-                    - schedule.doorbell_do_not_distrub
-                  state: "on"
+              - condition: template
+                value_template: "{{ now().month == 10 and now().day == 31 }}"
+              - condition: numeric_state
+                entity_id: proximity.home
+                below: 500
+              - condition: time
+                after: "17:00:00"
+                before: "21:00:00"
+            sequence:
+              - service: text.set_value
+                target:
+                  entity_id: text.front_door_doorbell
+                data:
+                  value: "Trick or Treat!"
+          - conditions:
+              - condition: trigger
+                id: standard
+              - or:
+                  - condition: state
+                    entity_id:
+                      - switch.nap_mode
+                    state: "on"
+                  - condition: state
+                    entity_id:
+                      - input_boolean.quite_mode
+                    state: "on"
+                  - condition: state
+                    entity_id:
+                      - switch.master_white_noise
+                    state: "on"
+                  - condition: state
+                    entity_id:
+                      - schedule.doorbell_do_not_distrub
+                    state: "on"
             sequence:
               - service: select.select_option
                 data:
