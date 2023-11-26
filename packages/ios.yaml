@@ -70,9 +70,7 @@ sensor:
           🔓
           {%- endif -%}
           {%- endif -%} 
-          {%- if states("binary_sensor.garage_myq_gateway") != "on" -%}
-          |⛔️
-          {%- elif states("cover.garage") == "closed" -%}
+          {%- if states("cover.garage") == "closed" -%}
           |⬇
           {%- else -%}
           |⬆
