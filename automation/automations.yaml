@@ -66,6 +66,7 @@
     - delay:
         minutes: 15
   mode: single
+  max_exceeded: silent
 
 - alias: Tiff Returning Home Notification
   id: tiff_return_home_notification

@@ -11,3 +11,4 @@
     target:
       entity_id: switch.tesla
   mode: single
+  max_exceeded: silent

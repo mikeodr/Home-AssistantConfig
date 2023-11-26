@@ -14,6 +14,7 @@ automation:
           dev_id: faux_girls_home
           location_name: "{{ 'home' if 'on' == trigger.to_state.state else 'not_home' }}"
     mode: single
+    max_exceeded: silent
 
   - alias: Auto Arm and Disarm System
     id: alarm_arm_based_on_presence
@@ -33,6 +34,7 @@ automation:
         target:
           entity_id: alarm_control_panel.alarmo
     mode: single
+    max_exceeded: silent
 
   - alias: Auto Arm Alarm Night
     id: alarm_auto_arm_night_mode

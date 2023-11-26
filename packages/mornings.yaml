@@ -2,6 +2,7 @@ automation:
   - alias: Morning Wake Up Sequence
     id: morning_wake_up_sequence
     mode: single
+    max_exceeded: silent
     trigger:
       - platform: event
         event_type: "ios_wakeup_event"

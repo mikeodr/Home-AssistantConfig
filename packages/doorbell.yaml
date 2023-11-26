@@ -180,6 +180,7 @@ automation:
 
   - alias: Set doorbell message
     id: doorbell_set_message
+    max_exceeded: silent
     trigger:
       - platform: state
         entity_id:
