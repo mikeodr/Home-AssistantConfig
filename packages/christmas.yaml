@@ -9,8 +9,10 @@ automation:
   - alias: Exterior Christmas Lights On
     id: xmas_exteior_lights_on
     trigger:
-      platform: sun
-      event: sunset
+      - platform: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        below: 0.25
     action:
       service: homeassistant.turn_on
       entity_id: group.exterior_christmas_lights
@@ -92,7 +94,7 @@ automation:
         attribute: elevation
         below: 3.35
       - condition: time
-        after: '14:00:00'
+        after: '15:30:00'
     action:
       service: homeassistant.turn_on
       entity_id: group.exterior_christmas_lights
