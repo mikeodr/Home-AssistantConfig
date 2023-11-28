@@ -5,16 +5,11 @@ automation:
       - platform: state
         entity_id: binary_sensor.basement_presence
         to: "on"
-      - platform: event
-        event_type: zha_event
-        event_data:
-          device_id: 5fe497358dad962cba14901506e49bc8
-          command: Approach
-      - platform: event
-        event_type: zha_event
-        event_data:
-          device_id: 5fe497358dad962cba14901506e49bc8
-          command: Enter
+      - platform: state
+        entity_id: sensor.basement_fp1_presence_event
+        to:
+          - "enter"
+          - "approach"
     condition:
       - condition: state
         entity_id: binary_sensor.workday_sensor
