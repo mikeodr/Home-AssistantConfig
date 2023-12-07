@@ -733,3 +733,78 @@ automation:
         data:
           brightness: 254
           color_temp_kelvin: 2000
+
+  - alias: Turn on LED strip for bedtime routine
+    id: nursery_led_strip_on_bedtime_routine
+    trigger:
+      - platform: state
+        entity_id: light.nursery_light
+        to: "on"
+    condition:
+      - condition: time
+        after: "18:00:00"
+    action:
+      - service: light.turn_on
+        data:
+          entity_id:
+            - light.nursery_led_strip
+      - service: scene.turn_on
+        entity_id: scene.nursery_led_on
+      - delay:
+          seconds: 1
+
+  - alias: Girls Bathroom Night Light
+    id: nursery_bathroom_night_light
+    trigger:
+      - platform: sun
+        event: sunset
+        id: turn_on
+      - platform: state
+        entity_id: group.adults
+        from: "not_home"
+        to: "home"
+        id: turn_on
+      - platform: state
+        entity_id: binary_sensor.nursery_door
+        to: "on"
+        id: force_on
+      - platform: state
+        entity_id: input_boolean.nap_mode
+        to: "on"
+        id: force_on
+      - platform: sun
+        event: sunrise
+        id: turn_off
+    action:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: force_on
+            sequence:
+              - service: light.turn_on
+                target:
+                  entity_id: light.bathroom_night_light
+                data:
+                  brightness_pct: 20
+                  rgb_color: [255, 164, 8]
+          - conditions:
+              - condition: trigger
+                id: turn_on
+              - or:
+                  - condition: state
+                    entity_id: group.adults
+                    state: "home"
+                  - condition: state
+                    entity_id: device_tracker.faux_girls_home
+                    state: "home"
+            sequence:
+              - service: light.turn_on
+                target:
+                  entity_id: light.bathroom_night_light
+                data:
+                  brightness_pct: 20
+                  rgb_color: [255, 164, 8]
+        default:
+          - service: light.turn_off
+            target:
+              entity_id: light.bathroom_night_light
