@@ -84,8 +84,11 @@ sensor:
           {%- else -%}
           |🙅
           {%- endif -%}
-          {%- if states("alarm_control_panel.alarmo") not in ['disarmed', 'pending', 'arming', 'unknown', 'unavailable'] -%}
+          {%- if states("alarm_control_panel.alarmo") not in ['triggered', 'disarmed', 'pending', 'arming', 'unknown', 'unavailable'] -%}
           |🛡️
+          {%- endif -%}
+          {%- if states("alarm_control_panel.alarmo") in ['triggered'] -%}
+          |🚨
           {%- endif -%}
           {%- if states('sensor.waste_current_pickup') != "unknown" -%}
           {% set garbage_day=states('sensor.waste_current_pickup') | as_datetime -%}
