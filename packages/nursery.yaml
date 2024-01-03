@@ -18,14 +18,14 @@ homeassistant:
 scene:
   - name: nursery_led_on
     entities:
-      light.nursery_led_strip:
+      light.nursery_led:
         state: "on"
         brightness: 254
         color_temp: 311
 
   - name: nursery_led_on_low
     entities:
-      light.nursery_led_strip:
+      light.nursery_led:
         state: "on"
         brightness: 203
         rgb_color: [255, 127, 0]
@@ -34,7 +34,7 @@ scene:
     entities:
       switch.nursery_white_noise:
         state: "on"
-      light.nursery_led_strip:
+      light.nursery_led:
         state: "off"
       light.nursery_light:
         state: "off"
@@ -57,11 +57,16 @@ scene:
         state: "off"
 
 script:
-  tv_baby_monitor:
-    alias: TV Baby Monitor
+  led_strip_on:
+    alias: Turn on LED Strip
+    mode: restart
     sequence:
-      - service: automation.trigger
-        entity_id: automation.toggle_tv_monitor
+      - service: light.turn_on
+        entity_id: light.nursery_led
+      - wait_template: '{{ is_state("light.nursery_led", "on") }}'
+      - service: scene.turn_on
+        data:
+          entity_id: "{{ scene_id }}"
 
 automation:
   - alias: Nap Mode Button Toggle
@@ -71,7 +76,7 @@ automation:
     trigger:
       - platform: state
         entity_id: sensor.nap_mode_control_action
-        to: 'single'
+        to: "single"
     action:
       - service: homeassistant.toggle
         entity_id:
@@ -90,38 +95,24 @@ automation:
     action:
       - service: homeassistant.turn_on
         entity_id: switch.nursery_power_loss_gate
-      - wait_template: '{{ not is_state("light.nursery_led_strip", "unavailable") }}'
+      - wait_template: '{{ not is_state("light.nursery_led", "unavailable") }}'
       - choose:
           - conditions:
               - condition: state
                 entity_id: input_boolean.nap_mode
                 state: "off"
             sequence:
-              - repeat:
-                  sequence:
-                    - service: scene.turn_on
-                      entity_id: scene.nursery_led_on
-                    - delay:
-                        seconds: 1
-                  until:
-                    - condition: state
-                      entity_id: light.nursery_led_strip
-                      state: "on"
+              - service: script.led_strip_on
+                data:
+                  scene_id: scene.nursery_led_on
           - conditions:
               - condition: state
                 entity_id: input_boolean.nap_mode
                 state: "on"
             sequence:
-              - repeat:
-                  sequence:
-                    - service: scene.turn_on
-                      entity_id: scene.nursery_led_on_low
-                    - delay:
-                        seconds: 1
-                  until:
-                    - condition: state
-                      entity_id: light.nursery_led_strip
-                      state: "on"
+              - service: script.led_strip_on
+                data:
+                  scene_id: scene.nursery_led_on_low
 
   - alias: Nursery LED Off
     id: nursery_led_off
@@ -133,11 +124,11 @@ automation:
         event: sunrise
         offset: "+02:00:00"
     action:
-      - wait_template: '{{ not is_state("light.nursery_led_strip", "unavailable") }}'
+      - wait_template: '{{ not is_state("light.nursery_led", "unavailable") }}'
       - service: light.turn_off
         data:
           entity_id:
-            - light.nursery_led_strip
+            - light.nursery_led
 
   - alias: Set Nap Accessories
     id: nursery_set_nap_accessories
@@ -172,17 +163,9 @@ automation:
                     sequence:
                       - service: scene.turn_on
                         entity_id: scene.baby_nap_off
-                      - wait_template: '{{ not is_state("light.nursery_led_strip", "unavailable") }}'
-                      - repeat:
-                          sequence:
-                            - service: scene.turn_on
-                              entity_id: scene.nursery_led_on
-                            - delay:
-                                seconds: 1
-                          until:
-                            - condition: state
-                              entity_id: light.nursery_led_strip
-                              state: "on"
+                      - service: script.led_strip_on
+                        data:
+                          scene_id: scene.nursery_led_on
                 default:
                   - service: scene.turn_on
                     entity_id: scene.baby_nap_off
@@ -296,7 +279,7 @@ automation:
     trigger:
       - platform: numeric_state
         entity_id: sensor.kid_s_room_temperature
-        below: 18
+        below: 17
         for:
           minutes: 30
       - platform: numeric_state
@@ -326,7 +309,7 @@ automation:
     id: nursery_off_if_forgotten
     trigger:
       - platform: state
-        entity_id: binary_sensor.kid_s_room
+        entity_id: binary_sensor.kid_s_room_occupancy
         to: "off"
         for:
           minutes: 30
@@ -334,7 +317,7 @@ automation:
         at: "08:00:00"
     condition:
       - condition: time
-        after: "07:30:00"
+        after: "06:50:00"
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "off"
@@ -343,21 +326,21 @@ automation:
             entity_id: light.nursery_light
             state: "on"
           - condition: state
-            entity_id: light.nursery_led_strip
+            entity_id: light.nursery_led
             state: "on"
     action:
       - service: homeassistant.turn_off
         entity_id: input_boolean.nap_mode
         # Leave some light for 30 sec
         # if someone is in the room
-      - service: homeassistant.turn_on
-        entity_id: light.nursery_led_strip
+      - service: light.turn_on
+        entity_id: light.nursery_led
       - delay: 10
-      - service: homeassistant.turn_off
+      - service: light.turn_off
         entity_id: light.nursery_light
       - delay: 90
-      - service: homeassistant.turn_off
-        entity_id: light.nursery_led_strip
+      - service: light.turn_off
+        entity_id: light.nursery_led
       - service: homeassistant.turn_off
         entity_id: switch.nursery_white_noise
 
@@ -445,7 +428,7 @@ automation:
         to: "off"
         id: quite_off
       - platform: state
-        entity_id: light.nursery_led_strip
+        entity_id: light.nursery_led
         to: ~
         id: led_control
     action:
@@ -560,16 +543,20 @@ automation:
             entity_id: binary_sensor.guests_present
             state: "on"
     action:
-      - wait_template: '{{ not is_state("light.nursery_led_strip", "unavailable") }}'
+      - wait_template: '{{ not is_state("light.nursery_led", "unavailable") }}'
       - repeat:
           sequence:
+            - service: light.turn_on
+              data:
+                entity_id:
+                  - light.nursery_led
             - service: scene.turn_on
               entity_id: scene.nursery_led_on
             - delay:
                 seconds: 1
           until:
             - condition: state
-              entity_id: light.nursery_led_strip
+              entity_id: light.nursery_led
               state: "on"
 
   - alias: Let the girls get out of bed weekends and holiday
@@ -592,16 +579,20 @@ automation:
             entity_id: binary_sensor.guests_present
             state: "on"
     action:
-      - wait_template: '{{ not is_state("light.nursery_led_strip", "unavailable") }}'
+      - wait_template: '{{ not is_state("light.nursery_led", "unavailable") }}'
       - repeat:
           sequence:
+            - service: light.turn_on
+              data:
+                entity_id:
+                  - light.nursery_led
             - service: scene.turn_on
               entity_id: scene.nursery_led_on
             - delay:
                 seconds: 1
           until:
             - condition: state
-              entity_id: light.nursery_led_strip
+              entity_id: light.nursery_led
               state: "on"
 
   - alias: Reenable nursery light on power loss
@@ -670,7 +661,7 @@ automation:
         data:
           command: "home"
 
-  - alias: Turn on kitchen lighting when bedtime starts
+  - alias: Set living room lighting when bedtime starts
     id: nursery_turn_on_kitchen_lighting
     trigger:
       - platform: state
@@ -682,16 +673,23 @@ automation:
         attribute: elevation
         below: 1.5
     action:
-      - service: homeassistant.turn_on
+      - service: light.turn_on
         entity_id:
-          - switch.kitchen_island
+          - light.kitchen_island
+      - service: light.turn_off
+        target:
+          entity_id:
+            - light.living_room_light
+            - light.kitchen_light
+        data:
+          transition: 10
 
   - alias: Girls Light Control
     id: nursery_girls_light_control
     trigger:
       - platform: state
-        entity_id: sensor.nursery_led_control_action
-        to: 'single'
+        entity_id: sensor.nursery_light_control_action
+        to: "single"
     action:
       - choose:
           - conditions:
@@ -703,11 +701,15 @@ automation:
             sequence:
               - service: homeassistant.toggle
                 entity_id: light.nursery_light
-              - service: homeassistant.turn_off
-                entity_id: light.nursery_led_strip
+              - service: light.turn_off
+                data:
+                  entity_id:
+                    - light.nursery_led
         default:
-          - service: homeassistant.toggle
-            entity_id: light.nursery_led_strip
+          - service: light.toggle
+            data:
+              entity_id:
+                - light.nursery_led
           - service: homeassistant.turn_off
             entity_id: light.nursery_light
 
@@ -717,25 +719,25 @@ automation:
       - platform: time
         at: "19:00:00"
       - platform: state
-        entity_id: light.nursery_led_strip
+        entity_id: light.nursery_led
         to: "on"
     condition:
       - condition: time
         after: "18:00:00"
         before: "21:00:00"
       - condition: state
-        entity_id: light.nursery_led_strip
+        entity_id: light.nursery_led
         state: "on"
     action:
       - service: light.turn_on
         target:
-          entity_id: light.nursery_led_strip
+          entity_id: light.nursery_led
         data:
           brightness: 254
           color_temp_kelvin: 2000
 
   - alias: Turn on LED strip for bedtime routine
-    id: nursery_led_strip_on_bedtime_routine
+    id: nursery_led_on_bedtime_routine
     trigger:
       - platform: state
         entity_id: light.nursery_light
@@ -747,7 +749,7 @@ automation:
       - service: light.turn_on
         data:
           entity_id:
-            - light.nursery_led_strip
+            - light.nursery_led
       - service: scene.turn_on
         entity_id: scene.nursery_led_on
       - delay:
@@ -778,8 +780,15 @@ automation:
     action:
       - choose:
           - conditions:
+              - condition: state
+                entity_id: light.bathroom_night_light
+                state: "off"
               - condition: trigger
                 id: force_on
+              - condition: numeric_state
+                entity_id: sun.sun
+                attribute: elevation
+                below: 2.0
             sequence:
               - service: light.turn_on
                 target:
@@ -790,6 +799,13 @@ automation:
           - conditions:
               - condition: trigger
                 id: turn_on
+              - condition: state
+                entity_id: light.bathroom_night_light
+                state: "off"
+              - condition: numeric_state
+                entity_id: sun.sun
+                attribute: elevation
+                below: 2.0
               - or:
                   - condition: state
                     entity_id: group.adults
@@ -804,7 +820,10 @@ automation:
                 data:
                   brightness_pct: 20
                   rgb_color: [255, 164, 8]
-        default:
-          - service: light.turn_off
-            target:
-              entity_id: light.bathroom_night_light
+          - conditions:
+              - condition: trigger
+                id: turn_off
+            sequence:
+              - service: light.turn_off
+                target:
+                  entity_id: light.bathroom_night_light
