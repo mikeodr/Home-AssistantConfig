@@ -13,7 +13,8 @@ automation:
           climate_restore_state: "{{ states('climate.my_ecobee') }}"
       - service: notify.adults
         data:
-          message: "Front Door Left Open"
+          title: "Front Door Left Open"
+          message: "Disabling thermostat"
           data:
             tag: "front-door-open-warning"
             push:
@@ -50,14 +51,14 @@ automation:
         state:
           - "off"
     action:
-      - service: weather.get_forecast
+      - service: weather.get_forecasts
         target:
           entity_id: weather.tomorrow_io_home_nowcast
         data:
           type: hourly
         response_variable: forecast
       - condition: template
-        value_template: "{{ forecast.forecast | map(attribute='temperature')| list | min < 10 }}"
+        value_template: "{{ forecast['weather.tomorrow_io_home_nowcast'].forecast | map(attribute='temperature')| list | min < 10 }}"
       - service: notify.mobile_app_michaels_iphone
         data:
           message: "Furnace enabled, cold weather forecast"
