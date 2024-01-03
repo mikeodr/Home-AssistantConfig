@@ -99,8 +99,6 @@ homekit:
         - switch.master_humidifier
         # Basement
         - switch.basement_hall
-        # Living Room
-        - switch.kitchen_island
         - sensor.living_room_temperature
       exclude_entities:
         - light.tagreader_led
