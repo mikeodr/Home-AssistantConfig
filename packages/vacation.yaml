@@ -22,13 +22,14 @@ automation:
         entity_id: select.my_ecobee_current_mode
         data:
           option: away
-      - service: homeassistant.turn_off
+      - service: light.turn_off
         continue_on_error: true
         target:
+          area_id:
+            - 490ec53ba1bc411a96655d0e3492e7d7 # Basement
+            - e153ba2916a6441a8e5dbc47d58b9a73 # living room
           entity_id:
-            - light.basement_room_light_dimmer
-            - switch.basement_hall
-            - light.living_room
+            - light.living_room_light
             - light.kitchen_island
             - light.kitchen_light
             - light.nursery_light
@@ -96,7 +97,7 @@ automation:
                 id: light_on
             sequence:
               - service: homeassistant.turn_on
-                entity_id: switch.kitchen_island
+                entity_id: light.kitchen_island
               - delay:
                   minutes: "{{ (range(0, 10)|random|int) }}"
               - service: homeassistant.turn_on
@@ -114,4 +115,4 @@ automation:
               - delay:
                   minutes: "{{ (range(0, 35)|random|int) }}"
               - service: homeassistant.turn_off
-                entity_id: switch.kitchen_island
+                entity_id: light.kitchen_island
