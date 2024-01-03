@@ -82,4 +82,4 @@ automation:
         state: "on"
     action:
       - service: homeassistant.turn_on
-        entity_id: switch.kitchen_island
+        entity_id: light.kitchen_island
