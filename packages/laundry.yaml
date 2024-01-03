@@ -66,5 +66,16 @@ automation:
                   to: "on"
                   for:
                     minutes: 5
+                - platform: state
+                  entity_id: binary_sensor.washer_status
+                  from: "on"
+                  to: "off"
+                  for:
+                    minutes: 15
               timeout:
                 minutes: 30
+      - service: notify.adults
+        data:
+          message: "clear_notification"
+          data:
+            tag: "laundry-done-notification"
