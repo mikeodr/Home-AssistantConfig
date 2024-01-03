@@ -13,8 +13,8 @@ automation:
     action:
       - choose:
           - conditions:
-            - condition: trigger
-              id: "doors_unlocked"
+              - condition: trigger
+                id: "doors_unlocked"
             sequence:
               # Set red LED
               - service: script.lzw30_set_led
@@ -23,8 +23,8 @@ automation:
                   led_colour: 0
                   led_brightness: 10
           - conditions:
-            - condition: trigger
-              id: "doors_locked"
+              - condition: trigger
+                id: "doors_locked"
             sequence:
               # Set blue LED
               - service: script.lzw30_set_led
@@ -36,18 +36,14 @@ automation:
   - alias: Garage Control with Kitchen Switch
     id: living_garage_control_kitchen_switch
     trigger:
-      - platform: event
+      - platform: state
+        entity_id: sensor.kitchen_light_action
+        to: "up_double"
         id: garage_up_trigger
-        event_type: zha_event
-        event_data:
-          device_id: acf54e514580d88c801347c10c5355ee
-          command: button_2_double
-      - platform: event
+      - platform: state
+        entity_id: sensor.kitchen_light_action
+        to: "down_double"
         id: garage_down_trigger
-        event_type: zha_event
-        event_data:
-          device_id: acf54e514580d88c801347c10c5355ee
-          command: button_1_double
     action:
       - choose:
           - conditions:
@@ -66,18 +62,14 @@ automation:
   - alias: Lock Control with Living Switch
     id: living_front_lock_control_living_switch
     trigger:
-      - platform: event
+      - platform: state
+        entity_id: sensor.living_room_action
+        to: "up_double"
         id: door_unlock_trigger
-        event_type: zha_event
-        event_data:
-          device_id: b2e1fe5291c815d4f340372d29d4cd55
-          command: button_2_double
-      - platform: event
+      - platform: state
+        entity_id: sensor.living_room_action
+        to: "down_double"
         id: door_lock_trigger
-        event_type: zha_event
-        event_data:
-          device_id: b2e1fe5291c815d4f340372d29d4cd55
-          command: button_1_double
     action:
       - choose:
           - conditions:
