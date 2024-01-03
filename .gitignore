@@ -18,4 +18,5 @@ known_devices.yaml
 backups/
 custom_components/
 zigbee.db*
+zigbee2mqtt/
 tmp/
