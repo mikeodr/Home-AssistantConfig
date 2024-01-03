@@ -34,11 +34,13 @@ automation:
       - platform: state
         entity_id: binary_sensor.living_room
         to: "on"
+        id: turn_on
       - platform: state
-        entity_id: binary_sensor.living_room
+        entity_id: binary_sensor.living_room_occupancy
         to: "off"
         for:
-          minutes: 60
+          minutes: 30
+        id: turn_off
       - platform: event
         event_type: "ios_wakeup_event"
         id: turn_on
@@ -50,6 +52,13 @@ automation:
         zone: zone.home
         event: enter
         id: turn_on
+      - platform: state
+        entity_id: alarm_control_panel.alarmo
+        to:
+          - armed_night
+          - armed_vacation
+          - armed_away
+        id: turn_off
     condition:
       - condition: time
         after: "06:00:00"
@@ -63,10 +72,10 @@ automation:
             - service: homeassistant.turn_on
               entity_id: light.christmas_tree
         - conditions:
-            - condition: template
-              value_template: "{{ trigger.to_state.state in ['off', 'on'] }}"
+            - condition: trigger
+              id: turn_off
           sequence:
-            - service: homeassistant.turn_{{ 'on' if 'home' == trigger.to_state.state else trigger.to_state.state }}
+            - service: homeassistant.turn_off
               entity_id: light.christmas_tree
 
   - alias: Christmas Tree off at bedtime
