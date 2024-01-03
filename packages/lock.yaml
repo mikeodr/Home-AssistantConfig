@@ -103,10 +103,16 @@ automation:
       after: "22:25:00"
       before: "07:00:00"
     action:
-      - service: lock.lock
-        entity_id:
-          - lock.front_door
-          - lock.side_door
+      - parallel:
+        - sequence:
+          - wait_template: "{{ is_state('binary_sensor.front_door', 'off') }}"
+          - service: lock.lock
+            entity_id: lock.front_door
+        - delay:
+            seconds: 30
+        - sequence:
+          - service: lock.lock
+            entity_id: lock.side_door
 
   - alias: Enable Cleaners Lock Code
     id: lock_enable_cleaner_code
