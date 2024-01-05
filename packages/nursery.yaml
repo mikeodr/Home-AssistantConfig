@@ -544,20 +544,9 @@ automation:
             state: "on"
     action:
       - wait_template: '{{ not is_state("light.nursery_led", "unavailable") }}'
-      - repeat:
-          sequence:
-            - service: light.turn_on
-              data:
-                entity_id:
-                  - light.nursery_led
-            - service: scene.turn_on
-              entity_id: scene.nursery_led_on
-            - delay:
-                seconds: 1
-          until:
-            - condition: state
-              entity_id: light.nursery_led
-              state: "on"
+      - service: script.led_strip_on
+        data:
+          scene_id: scene.nursery_led_on
 
   - alias: Let the girls get out of bed weekends and holiday
     id: nursery_let_girls_get_up_holiday
@@ -580,20 +569,9 @@ automation:
             state: "on"
     action:
       - wait_template: '{{ not is_state("light.nursery_led", "unavailable") }}'
-      - repeat:
-          sequence:
-            - service: light.turn_on
-              data:
-                entity_id:
-                  - light.nursery_led
-            - service: scene.turn_on
-              entity_id: scene.nursery_led_on
-            - delay:
-                seconds: 1
-          until:
-            - condition: state
-              entity_id: light.nursery_led
-              state: "on"
+      - service: script.led_strip_on
+        data:
+          scene_id: scene.nursery_led_on
 
   - alias: Reenable nursery light on power loss
     id: nusery_led_strip_reenable
