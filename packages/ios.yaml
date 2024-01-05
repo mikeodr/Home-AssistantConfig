@@ -56,49 +56,45 @@ sensor:
         friendly_name: "iOS Watch Complication Summary Line"
         unique_id: ios_main_status_summary_line
         value_template: >-
-          {%- if states("lock.front_door") == "locked" and states("lock.side_door") == "locked" -%}
+          {%- if is_state("lock.front_door", "locked") and is_state("lock.side_door", "locked") -%}
           🔒
           {%- else -%}
-          {%- if states("lock.front_door") == "locked" -%}
+          {%- if is_state("lock.front_door", "locked") -%}
           🔒
           {%- else -%}
           🔓
           {%- endif -%}
-          {%- if states("lock.side_door") == "locked" -%}
+          {%- if is_state("lock.side_door", "locked") -%}
           🔒
           {%- else -%}
           🔓
           {%- endif -%}
           {%- endif -%} 
-          {%- if states("cover.garage") == "closed" -%}
+          {%- if is_state("cover.garage", "closed") -%}
           |⬇
           {%- else -%}
           |⬆
           {%- endif -%}
-          {%- if states("person.mike") == 'home' and states("person.tiff") == 'home' -%}
+          {%- if is_state("person.mike", 'home') and is_state("person.tiff", 'home') -%}
           |👫
-          {%- elif states("person.mike") == 'home' -%}
+          {%- elif is_state("person.mike", "home") -%}
           |🧍‍♂️
-          {%- elif states("person.tiff") == 'home' -%}
+          {%- elif is_state("person.tiff", "home") -%}
           |🧍‍♀️
           {%- else -%}
           |🙅
           {%- endif -%}
-          {%- if states("alarm_control_panel.alarmo") not in ['triggered', 'disarmed', 'pending', 'arming', 'unknown', 'unavailable'] -%}
+          {%- if states("alarm_control_panel.alarmo") in ['armed_away', 'armed_home', 'armed_night', 'armed_vacation', 'armed_custom_bypass'] -%}
           |🛡️
           {%- endif -%}
-          {%- if states("alarm_control_panel.alarmo") in ['triggered'] -%}
+          {%- if is_state("alarm_control_panel.alarmo", "triggered") -%}
           |🚨
           {%- endif -%}
-          {%- if states('sensor.waste_current_pickup') != "unknown" -%}
-          {% set garbage_day=states('sensor.waste_current_pickup') | as_datetime -%}
-          {%- if now().day == (garbage_day - timedelta(days=1)).day or 
-          now().day == garbage_day.day and now().hour < 10 -%}
+          {%- if is_state('binary_sensor.waste_dashboard', 'on')  -%}
           {% if 'Garbage' in state_attr('sensor.waste_current_pickup', 'pickup_types') -%}
           |🗑
           {%- else -%}
           |♻
-          {%- endif -%}
           {%- endif -%}
           {%- endif -%}
       ios_main_status_body1:
@@ -110,11 +106,11 @@ sensor:
           {%- else -%}
           👶
           {%- endif %} {{ states("sensor.kid_s_room_temperature")}}
-          {%- if states("climate.my_ecobee") == "heat" -%}
+          {%- if is_state("climate.my_ecobee", "heat") -%}
           |🔥
-          {%- elif states("climate.my_ecobee") == "cool" -%}
+          {%- elif is_state("climate.my_ecobee", "cool") -%}
           |❄️
-          {%- elif states("climate.my_ecobee") == "heat_cool" -%}
+          {%- elif is_state("climate.my_ecobee", "heat_cool") -%}
           |🔄
           {%- else -%}
           |⏹️
