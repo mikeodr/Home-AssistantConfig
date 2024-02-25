@@ -14,13 +14,14 @@ template:
         state: "{{ states('sensor.washing_machine_power_average') | float(0) | default(0) > 4 }}"
         device_class: running
         delay_on:
-          seconds: 60
+          minutes: 5
         delay_off:
-          seconds: 120
+          minutes: 2
 
 automation:
   - alias: Laundry Notification
     id: laundry_simple_laundry_notification
+    mode: restart
     trigger:
       - platform: state
         entity_id: binary_sensor.washer_status
@@ -39,6 +40,11 @@ automation:
               - condition: template
                 value_template: "{{ wait.trigger is not none }}"
           sequence:
+            - service: notify.adults
+              data:
+                message: "clear_notification"
+                data:
+                  tag: "laundry-done-notification"
             - repeat:
                 for_each: >
                   {{ states.person | selectattr('state', 'eq', 'home') | map(attribute='attributes.notifier') | list}}
