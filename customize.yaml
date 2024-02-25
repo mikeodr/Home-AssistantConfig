@@ -1,6 +1,3 @@
-zone.home:
-  radius: 65
-
 person.mike:
   notifier: notify.mobile_app_michaels_iphone
 
