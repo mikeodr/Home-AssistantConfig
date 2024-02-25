@@ -103,6 +103,9 @@ automation:
           - condition: state
             entity_id: media_player.plex_plex_for_apple_tv_living_room
             state: "playing"
+      - condition: state
+        entity_id: binary_sensor.guests_present
+        state: "off"
     action:
       - wait_for_trigger:
           - platform: state
@@ -113,7 +116,7 @@ automation:
         continue_on_timeout: false
       - service: light.turn_on
         target:
-          entity_id: group.living_room_lights
+          entity_id: light.living_room_lights
         data:
           brightness_pct: 70
           transition: 10
