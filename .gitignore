@@ -20,3 +20,5 @@ custom_components/
 zigbee.db*
 zigbee2mqtt/
 tmp/
+image/
+esphome/
