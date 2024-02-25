@@ -1,0 +1,14 @@
+rest_command:
+  healthcheck:
+    url: !secret healthchecks_url
+
+automation:
+  - id: monitoring_healthcheck
+    alias: Healthchecks monitoring outbound call
+    description: Send a ping to Healthcheck every minute
+    mode: single
+    trigger:
+      platform: time_pattern
+      minutes: /5
+    action:
+      - service: rest_command.healthcheck
