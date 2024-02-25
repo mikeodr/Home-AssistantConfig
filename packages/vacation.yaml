@@ -8,7 +8,7 @@ automation:
     id: vacation_mode_depart
     trigger:
       - platform: numeric_state
-        entity_id: proximity.home
+        entity_id: sensor.home_nearest_distance
         above: 55000
     condition:
       - condition: state
@@ -52,11 +52,10 @@ automation:
     id: vacation_mode_return
     trigger:
       - platform: numeric_state
-        entity_id: proximity.home
+        entity_id: sensor.home_nearest_distance
         below: 50000
       - platform: state
-        entity_id: proximity.home
-        attribute: dir_of_travel
+        entity_id: sensor.home_nearest_direction_of_travel
         to: "arrived"
     condition:
       - condition: state

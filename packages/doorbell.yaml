@@ -146,7 +146,7 @@ automation:
       - condition: template
         value_template: "{{ now().month == 10 and now().day == 31 }}"
       - condition: numeric_state
-        entity_id: proximity.home
+        entity_id: sensor.home_nearest_distance
         below: 500
     action:
       - service: tts.cloud_say
@@ -198,7 +198,7 @@ automation:
               - condition: template
                 value_template: "{{ now().month == 10 and now().day == 31 }}"
               - condition: numeric_state
-                entity_id: proximity.home
+                entity_id: sensor.home_nearest_distance
                 below: 500
               - condition: time
                 after: "17:00:00"
