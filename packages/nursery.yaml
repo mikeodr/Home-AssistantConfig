@@ -747,11 +747,11 @@ automation:
       - platform: state
         entity_id: binary_sensor.nursery_door
         to: "on"
-        id: force_on
+        id: turn_on
       - platform: state
         entity_id: input_boolean.nap_mode
         to: "on"
-        id: force_on
+        id: turn_on
       - platform: sun
         event: sunrise
         id: turn_off
@@ -761,36 +761,11 @@ automation:
               - condition: state
                 entity_id: light.bathroom_night_light
                 state: "off"
-              - condition: trigger
-                id: force_on
-              - condition: numeric_state
+              - condition: state
                 entity_id: sun.sun
-                attribute: elevation
-                below: 2.0
-            sequence:
-              - service: light.turn_on
-                target:
-                  entity_id: light.bathroom_night_light
-                data:
-                  brightness_pct: 20
-                  rgb_color: [255, 164, 8]
-          - conditions:
+                state: "below_horizon"
               - condition: trigger
                 id: turn_on
-              - condition: state
-                entity_id: light.bathroom_night_light
-                state: "off"
-              - condition: numeric_state
-                entity_id: sun.sun
-                attribute: elevation
-                below: 2.0
-              - or:
-                  - condition: state
-                    entity_id: group.adults
-                    state: "home"
-                  - condition: state
-                    entity_id: device_tracker.faux_girls_home
-                    state: "home"
             sequence:
               - service: light.turn_on
                 target:
@@ -802,6 +777,7 @@ automation:
               - condition: trigger
                 id: turn_off
             sequence:
+              - wait_template: '{{ is_state("binary_sensor.bathroom_night_light_occupancy", "off") }}'
               - service: light.turn_off
                 target:
                   entity_id: light.bathroom_night_light
