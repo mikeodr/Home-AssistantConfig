@@ -91,9 +91,6 @@ automation:
       - platform: state
         entity_id: group.adults
         to: "home"
-      - platform: state
-        entity_id: lock.front_door
-        to: "unlocked"
     condition:
       - condition: numeric_state
         entity_id: sun.sun
