@@ -19,7 +19,7 @@ automation:
       - condition: numeric_state
         entity_id: sun.sun
         attribute: elevation
-        below: 1.5
+        below: 3.0
       - condition: time
         after: "05:00:00"
         before: "09:00:00"
