@@ -207,3 +207,23 @@ automation:
     action:
       service: homeassistant.turn_off
       entity_id: alert.garage_open
+
+  - alias: Lock the side door when forgotten feeding the dog
+    id: exterior_lock_side_door_dog
+    trigger:
+      - platform: state
+        entity_id: lock.side_door
+        to: "unlocked"
+        for:
+          minutes: 5
+    condition:
+      or:
+        - condition: time
+          after: "06:30:00"
+          before: "08:00:00"
+        - condition: time
+          after: "15:30:00"
+          before: "17:30:00"
+    action:
+      - service: lock.lock
+        entity_id: lock.side_door
