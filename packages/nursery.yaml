@@ -407,6 +407,8 @@ automation:
                 title: "Nursery Door Left Open"
                 message: "Door is Open"
                 data:
+                  url: /lovelace/nursery
+                  clickAction: /lovelace/nursery
                   tag: "nursery-door-open-warning"
                   group: "nursery-notification"
 
@@ -508,6 +510,8 @@ automation:
                 message: >
                   Someone has left the nursery
                 data:
+                  url: /lovelace/nursery
+                  clickAction: /lovelace/nursery
                   tag: "nursery-escape-warning"
                   group: "nursery-notification"
       - choose:
