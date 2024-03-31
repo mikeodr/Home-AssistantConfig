@@ -55,6 +55,8 @@ automation:
                       message: Laundry cycle complete
                       data:
                         tag: "laundry-done-notification"
+                        url: /dashboard-laundry/home
+                        clickAction: /dashboard-laundry/home
                         group: "laundry-notification-group"
                         actions:
                           - action: "laundry_moved"
