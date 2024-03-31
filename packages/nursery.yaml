@@ -15,6 +15,12 @@ homeassistant:
     input_boolean.girls_home_override:
       device_class: presence
 
+timer:
+  girls_lights_off:
+    name: Turn off Girls lights
+    duration: 00:10:00
+    restore: true
+
 scene:
   - name: nursery_led_on
     entities:
@@ -40,8 +46,6 @@ scene:
         state: "off"
       fan.nursery_humidifier:
         state: "on"
-      switch.nursery_detections_motion:
-        state: "on"
 
   - name: baby_nap_off
     entities:
@@ -53,8 +57,6 @@ scene:
         state: "off"
       switch.nursery_power_loss_gate:
         state: "on"
-      switch.nursery_detections_motion:
-        state: "off"
 
 script:
   led_strip_on:
@@ -302,47 +304,46 @@ automation:
                 message: >
                   Temperature {% if trigger.below != None %}Low{% else %}High{% endif %}: {{ trigger.to_state.state }}
                 data:
+                  url: /lovelace/nursery
+                  clickAction: /lovelace/nursery
                   tag: "nursery-temp-warning"
                   group: "nursery-notification"
 
   - alias: Turn nursery off if forgotten
     id: nursery_off_if_forgotten
     trigger:
-      - platform: state
-        entity_id: binary_sensor.kid_s_room_occupancy
-        to: "off"
-        for:
-          minutes: 30
-      - platform: time
-        at: "08:00:00"
+      - platform: template
+        value_template: "{{ is_state('binary_sensor.nursery_motion', 'off') and is_state('binary_sensor.kid_s_room_motion', 'off') }}"
+        id: timer_start
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.girls_lights_off
+        id: timer_finished
     condition:
-      - condition: time
-        after: "06:50:00"
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "off"
-      - or:
-          - condition: state
-            entity_id: light.nursery_light
-            state: "on"
-          - condition: state
-            entity_id: light.nursery_led
-            state: "on"
     action:
-      - service: homeassistant.turn_off
-        entity_id: input_boolean.nap_mode
-        # Leave some light for 30 sec
-        # if someone is in the room
-      - service: light.turn_on
-        entity_id: light.nursery_led
-      - delay: 10
-      - service: light.turn_off
-        entity_id: light.nursery_light
-      - delay: 90
-      - service: light.turn_off
-        entity_id: light.nursery_led
-      - service: homeassistant.turn_off
-        entity_id: switch.nursery_white_noise
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: timer_start
+            sequence:
+              - service: timer.start
+                entity_id: timer.girls_lights_off
+          - conditions:
+              - condition: trigger
+                id: timer_finished
+            sequence:
+              - service: light.turn_on
+                entity_id: light.nursery_led
+              - delay: 10
+              - service: light.turn_off
+                entity_id: light.nursery_light
+              - delay: 30
+              - service: light.turn_off
+                entity_id: light.nursery_led
 
   - alias: Turn off nursery accessories if forgotten
     id: nursery_turn_off_white_noise_forgotten
