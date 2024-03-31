@@ -29,29 +29,29 @@ automation:
         before: "16:00:00"
     action:
       - choose:
-        - conditions:
-            - condition: trigger
-              id: enter_pickup_zone
-          sequence:
-            - service: input_datetime.set_datetime
-              target:
-                entity_id: input_datetime.pickup_girls_reminder
-              data:
-                date: "{{ now().strftime('%Y-%m-%d') }}"
-                time: '15:45:00'
-        - conditions:
-            - condition: trigger
-              id: pickup_reminder
-          sequence:
-            - service: notify.mobile_app_michaels_iphone
-              data:
-                title: "Pickup Reminder"
-                message: "Pickup the twins!"
+          - conditions:
+              - condition: trigger
+                id: enter_pickup_zone
+            sequence:
+              - service: input_datetime.set_datetime
+                target:
+                  entity_id: input_datetime.pickup_girls_reminder
                 data:
-                  tag: "pickup-reminder"
-                  group: "pickup-notification"
-                  push:
-                    sound:
-                      name: "default"
-                      critical: 1
-                      volume: 0.5
+                  date: "{{ now().strftime('%Y-%m-%d') }}"
+                  time: "15:45:00"
+          - conditions:
+              - condition: trigger
+                id: pickup_reminder
+            sequence:
+              - service: notify.mobile_app_michaels_iphone
+                data:
+                  title: "Pickup Reminder"
+                  message: "Pickup the twins!"
+                  data:
+                    tag: "pickup-reminder"
+                    group: "pickup-notification"
+                    push:
+                      sound:
+                        name: "default"
+                        critical: 1
+                        volume: 0.5
