@@ -451,8 +451,7 @@ automation:
               - condition: trigger
                 id: led_control
               - condition: time
-                after: "08:00:00"
-                before: "19:00:00"
+                after: "18:30:00"
               - condition: template
                 value_template: "{{ trigger.to_state.state in ['off', 'on'] }}"
             sequence:
