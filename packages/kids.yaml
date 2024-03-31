@@ -17,6 +17,13 @@ automation:
         zone: zone.school
         event: enter
         id: enter_pickup_zone
+      - platform: zone
+        entity_id:
+          - device_tracker.michaels_iphone
+          - device_tracker.tiffanys_iphone
+        zone: zone.camp
+        event: enter
+        id: enter_pickup_zone
       - platform: time
         at: input_datetime.pickup_girls_reminder
         id: pickup_reminder
