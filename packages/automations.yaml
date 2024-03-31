@@ -1,0 +1,126 @@
+automation:
+  - alias: Presence Notifications Home
+    id: presence_notification_home
+    trigger:
+      - platform: state
+        entity_id: person.tiff
+        to: ~
+    condition:
+      - condition: state
+        entity_id: person.mike
+        state: "not_home"
+        for:
+          minutes: 10
+    action:
+      service: notify.mobile_app_michaels_iphone
+      data:
+        title: "HASS Presence Notification"
+        message: >
+          {{ trigger.to_state.attributes.friendly_name }} is {% if trigger.to_state.state == 'home' %}back{% else %}away{% endif %}.
+        data:
+          tag: "tiff-presence-notification"
+          group: "presence-notification"
+
+  - alias: Weather Alert
+    id: weather_alert
+    trigger:
+      platform: state
+      entity_id:
+        - sensor.warnings
+        - sensor.watches
+        - sensor.advisories
+        - sensor.statements
+        - sensor.endings
+      from: ""
+    condition:
+      and:
+        - "{{ trigger.to_state.state != '' }}"
+        - "{{ trigger.to_state.state != trigger.from_state.state }}"
+    action:
+      service: notify.mobile_app_michaels_iphone
+      data:
+        title: "Weather Alert: {{ trigger.to_state.state }}"
+        message: >
+          {{ trigger.to_state.attributes['alert detail'] }}
+
+  - alias: Return Home Annoucement
+    id: return_home_annoucement
+    trigger:
+      platform: zone
+      entity_id:
+        - device_tracker.tesla_location
+        - device_tracker.michaels_iphone
+      zone: zone.home
+      event: enter
+    condition:
+      - condition: state
+        entity_id: person.tiff
+        state: "home"
+      - condition: state
+        entity_id: input_boolean.nap_mode
+        state: "on"
+    action:
+      - service: notify.mobile_app_tiffanys_iphone
+        data:
+          title: "Mike is almost home"
+          message: "Keep Stella Quiet"
+      - delay:
+          minutes: 15
+    mode: single
+    max_exceeded: silent
+
+  - alias: Tiff Returning Home Notification
+    id: tiff_return_home_notification
+    trigger:
+      platform: zone
+      entity_id: person.tiff
+      zone: zone.home
+      event: enter
+    condition:
+      - condition: state
+        entity_id: person.mike
+        state: "home"
+        for:
+          minutes: 10
+    action:
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          title: "Tiff is returning home"
+          message: "Tiff has entered the home zone"
+          data:
+            tag: "tiff-return-home"
+            group: "presence-notification"
+
+  - alias: Update notification
+    id: update_notification
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.docker_hub_update_available
+        to: "on"
+    action:
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          message: "There is a new Home Assistant release available."
+
+  - alias: Presence Arriving
+    id: general_presence_notification_home
+    trigger:
+      - platform: state
+        entity_id:
+          - person.bumpa
+          - person.lisa
+        from: "not_home"
+        to: "home"
+    condition:
+      - condition: state
+        entity_id: person.mike
+        state: "home"
+    action:
+      service: notify.mobile_app_michaels_iphone
+      data:
+        title: "HASS Presence Notification"
+        message: >
+          {{ trigger.to_state.attributes.friendly_name }} is arriving
+        data:
+          tag: "person-presence-notification"
+          group: "presence-notification"
