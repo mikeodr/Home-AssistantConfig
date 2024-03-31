@@ -8,6 +8,7 @@ http:
   use_x_forwarded_for: true
   trusted_proxies:
     - 172.30.33.0/24 # Addon Subnet
+    - 127.0.0.1 # Addon proxy
 
 default_config:
 bluetooth:
