@@ -22,7 +22,6 @@ logbook:
 prometheus:
   namespace: hass
 
-automation config: !include_dir_merge_list automation
 automation ui: !include automations.yaml
 group: !include config/groups.yaml
 input_boolean: !include config/input_boolean.yaml
