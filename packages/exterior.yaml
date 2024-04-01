@@ -10,35 +10,93 @@ group:
       - switch.front_porch
       - switch.side_door
 
-alert:
-  garage_open:
-    name: Garage Door left open
-    done_message: "clear_notification"
-    entity_id: cover.garage
-    state: "open"
-    can_acknowledge: true
-    repeat: 15
-    skip_first: true
-    data:
-      tag: "garage-open-alert"
-      entity_id: camera.garage
-      actions:
-        - action: "CLOSE_GARAGE"
-          title: "Close Garage"
-          activationMode: "background"
-          authenticationRequired: true
-          destructive: false
-          behavior: "default"
-        - action: "ACK_GARAGE"
-          title: "Acknowledge Garage"
-          activationMode: "background"
-          authenticationRequired: true
-          destructive: true
-          behavior: "default"
-    notifiers:
-      - mobile_app_michaels_iphone
+timer:
+  garage_left_open:
+    name: Garage Left Open
+    duration: 00:15:00
+    restore: true
 
 automation:
+  - alias: Garage Left Open Notification
+    id: exterior_garage_left_open_notification
+    trigger:
+      - platform: state
+        entity_id: cover.garage
+        to: "open"
+        id: garage_open
+      - platform: state
+        entity_id: cover.garage
+        to: "closed"
+        id: garage_closed
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.garage_left_open
+        id: timer_fired
+      - platform: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: "ACK_GARAGE"
+        id: ack_garage
+      - platform: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: "CLOSE_GARAGE"
+        id: close_garage
+    action:
+      choose:
+        - conditions:
+            - condition: trigger
+              id: garage_open
+          sequence:
+            - service: timer.start
+              entity_id: timer.garage_left_open
+        - conditions:
+            - condition: trigger
+              id: timer_fired
+            - condition: state
+              entity_id: cover.garage
+              state: "open"
+          sequence:
+            - service: timer.start
+              entity_id: timer.garage_left_open
+            - service: notify.mobile_app_michaels_iphone
+              data:
+                message: Garage Door Left Open
+                data:
+                  tag: "garage-door-open-alert"
+                  entity_id: camera.garage
+                  actions:
+                    - action: "CLOSE_GARAGE"
+                      title: "Close Garage"
+                      activationMode: "background"
+                      authenticationRequired: true
+                      destructive: false
+                      behavior: "default"
+                    - action: "ACK_GARAGE"
+                      title: "Acknowledge Garage"
+                      activationMode: "background"
+                      authenticationRequired: true
+                      destructive: true
+                      behavior: "default"
+        - conditions:
+            - or:
+                - condition: trigger
+                  id: ack_garage
+                - condition: trigger
+                  id: garage_closed
+          sequence:
+            - service: timer.cancel
+              entity_id: timer.garage_left_open
+        - conditions:
+            - condition: trigger
+              id: close_garage
+          sequence:
+            - service: timer.cancel
+              entity_id: timer.garage_left_open
+            - service: cover.close_cover
+              entity_id: cover.garage
+
   - alias: Exterior Lights on Evenings
     id: exterior_lights_on_evenings
     trigger:
@@ -185,28 +243,6 @@ automation:
     action:
       - service: homeassistant.turn_on
         entity_id: group.exterior_lights
-
-  - alias: Close Garage Door Alert
-    id: exterior_close_garage_alert
-    trigger:
-      platform: event
-      event_type: mobile_app_notification_action
-      event_data:
-        action: "CLOSE_GARAGE"
-    action:
-      service: cover.close_cover
-      entity_id: cover.garage
-
-  - alias: Acknowledge Garage Door Alert
-    id: exterior_ack_garage_alert
-    trigger:
-      platform: event
-      event_type: mobile_app_notification_action
-      event_data:
-        action: "ACK_GARAGE"
-    action:
-      service: homeassistant.turn_off
-      entity_id: alert.garage_open
 
   - alias: Lock the side door when forgotten feeding the dog
     id: exterior_lock_side_door_dog
