@@ -1,3 +1,9 @@
+timer:
+  basement_lights_off:
+    name: Turn off basement lights
+    duration: 00:15:00
+    restore: true
+
 automation:
   - alias: Basement Light Presence Control On
     id: basement_light_presence_controls_on
@@ -5,40 +11,60 @@ automation:
       - platform: state
         entity_id: binary_sensor.basement_presence
         to: "on"
+        id: lights_on
       - platform: state
         entity_id: sensor.basement_fp1_presence_event
         to:
           - "enter"
           - "approach"
-    condition:
-      - condition: state
-        entity_id: binary_sensor.workday_sensor
-        state: "on"
-      - condition: state
-        state: "off"
-        entity_id:
-          - input_boolean.nap_mode
-          - binary_sensor.basement_presence
-
-    action:
-      - service: homeassistant.turn_on
-        entity_id:
-          - switch.basement_hall
-          - light.basement_room_light_dimmer
-
-  - alias: Basement Light Presence Control Off
-    id: basement_light_presence_controls_off
-    trigger:
+        id: lights_on
       - platform: state
         entity_id: binary_sensor.basement_presence
         to: "off"
-        for:
-          minutes: 30
+        id: timer_start
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.basement_lights_off
+        id: lights_off
     action:
-      - service: homeassistant.turn_off
-        entity_id:
-          - switch.basement_hall
-          - light.basement_room_light_dimmer
+      choose:
+        - conditions:
+            - condition: trigger
+              id: lights_on
+          sequence:
+            - service: timer.cancel
+              target:
+                entity_id: timer.basement_lights_off
+        - conditions:
+            - condition: trigger
+              id: lights_on
+            - condition: state
+              entity_id: binary_sensor.workday_sensor
+              state: "on"
+            - condition: state
+              state: "off"
+              entity_id:
+                - input_boolean.nap_mode
+          sequence:
+            - service: light.turn_on
+              entity_id:
+                - switch.basement_hall
+                - light.basement_room_light_dimmer
+        - conditions:
+            - condition: trigger
+              id: timer_start
+          sequence:
+            - service: timer.start
+              entity_id: timer.basement_lights_off
+        - conditions:
+            - condition: trigger
+              id: lights_off
+          sequence:
+            - service: light.turn_off
+              entity_id:
+                - switch.basement_hall
+                - light.basement_room_light_dimmer
 
   - alias: Dim Light Over 30 Minutes at sundown
     id: basement_dim_light_at_sundown
