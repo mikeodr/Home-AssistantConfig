@@ -1,0 +1,45 @@
+automation:
+  - alias: Set Main Bath Default Local Level for Light
+    id: main_bath_set_default_local_level
+    trigger:
+      - platform: sun
+        event: sunset
+        variables:
+          default_level: 60
+      - platform: sun
+        event: sunset
+        variables:
+          default_level: 254
+    action:
+      - service: mqtt.publish
+        data:
+          topic: zigbee2mqtt/Main Bath Light/set
+          payload: >-
+            {"defaultLevelLocal": "{{ default_level | default(100) }}"}
+      - service: mqtt.publish
+        data:
+          topic: zigbee2mqtt/Main Bath Light/set
+          payload: >-
+            {"defaultLevelRemote": "{{ default_level | default(100) }}"}
+
+  - alias: Dim Main Bath Light for Shower
+    id: main_bath_time_light_shower
+    trigger:
+      - platform: state
+        entity_id: light.main_bath_light
+        to: "on"
+      - platform: time
+        at: "21:30:30"
+    condition:
+      - condition: state
+        entity_id: light.main_bath_light
+        state: "on"
+      - condition: time
+        after: "21:30:00"
+    action:
+      - service: light.turn_on
+        target:
+          entity_id: light.main_bath_light
+        data:
+          brightness_pct: 3
+          transition: 10
