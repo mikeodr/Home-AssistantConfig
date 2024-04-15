@@ -1,3 +1,8 @@
+input_datetime:
+  girls_wakeup_time:
+    name: Girls Wakeup Time
+    has_time: true
+
 input_boolean:
   nap_mode:
     name: Nap Mode
@@ -534,43 +539,38 @@ automation:
           # again quickly.
           minutes: 3
 
-  - alias: Let the girls get out of bed weekday
-    id: nursery_let_girls_get_up_weekday
+  - alias: Set the girls wakeup time
+    id: nursery_set_girls_wakeup_time
     trigger:
       - platform: time
-        at: "07:00:00"
-    condition:
-      - condition: state
-        entity_id: input_boolean.nap_mode
-        state: "on"
-      - condition: state
-        entity_id: binary_sensor.workday_sensor
-        state: "on"
-      - or:
-          - condition: state
-            entity_id: group.adults
-            state: "home"
-          - condition: state
-            entity_id: binary_sensor.guests_present
-            state: "on"
+        at: "09:00:00"
     action:
-      - wait_template: '{{ not is_state("light.nursery_led", "unavailable") }}'
-      - service: script.led_strip_on
+      - service: calendar.get_events
+        target:
+          entity_id: calendar.ontario_holidays
         data:
-          scene_id: scene.nursery_led_on
+          duration:
+            hours: 24
+        response_variable: holidays
+      - service: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.girls_wakeup_time
+        data:
+          time: >
+            {%- if holidays["calendar.ontario_holidays"]["events"]| count > 0 -%}
+              07:30:00
+            {%- elif (now() + timedelta(hours=24)).weekday() in [6, 7] -%}
+              07:30:00
+            {%- else -%}
+              07:00:00
+            {%- endif -%}
 
-  - alias: Let the girls get out of bed weekends and holiday
-    id: nursery_let_girls_get_up_holiday
+  - alias: Let the girls out of bed
+    id: nursery_let_girls_out_of_bed_time_trigger
     trigger:
       - platform: time
-        at: "07:30:00"
+        at: input_datetime.girls_wakeup_time
     condition:
-      - condition: state
-        entity_id: input_boolean.nap_mode
-        state: "on"
-      - condition: state
-        entity_id: binary_sensor.workday_sensor
-        state: "off"
       - or:
           - condition: state
             entity_id: group.adults
