@@ -268,3 +268,37 @@ automation:
     action:
       - service: lock.lock
         entity_id: lock.side_door
+
+  - alias: Garage below freezeing warning
+    id: exterior_garage_below_freezing
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.garage_temperature
+        below: 0.5
+    action:
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          message: 🚨 Garage temperature low! 🚨
+
+  - alias: Unlock front door when arriving home and opening garage
+    id: exterior_auto_unlock_front_door_if_garage_opened
+    mode: single
+    max_exceeded: silent
+    trigger:
+      - platform: zone
+        entity_id:
+          - person.mike
+          - person.tiff
+          - device_tracker.tesla_location
+        zone: zone.home
+        event: enter
+    action:
+      - wait_for_trigger:
+          - platform: state
+            entity_id: cover.garage
+            to: "open"
+        timeout:
+          minutes: 15
+        continue_on_timeout: false
+      - service: lock.unlock
+        entity_id: lock.front_door
