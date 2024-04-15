@@ -16,13 +16,17 @@ automation:
       - condition: state
         entity_id: group.adults
         state: "home"
-      - condition: numeric_state
-        entity_id: sun.sun
-        attribute: elevation
-        below: 3.0
       - condition: time
         after: "05:00:00"
         before: "09:00:00"
+      - or:
+          - condition: numeric_state
+            entity_id: sun.sun
+            attribute: elevation
+            below: 3.0
+          - condition: numeric_state
+            entity_id: sensor.tomorrow_io_home_cloud_cover
+            above: 65
     action:
       - service: homeassistant.turn_on
         entity_id:
@@ -32,10 +36,6 @@ automation:
         timeout:
           hours: 1
         continue_on_timeout: false
-      - condition: numeric_state
-        entity_id: sun.sun
-        attribute: elevation
-        below: 1.5
       - service: light.turn_on
         target:
           entity_id:
