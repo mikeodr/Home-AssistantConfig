@@ -65,7 +65,7 @@ automation:
                 message: Garage Door Left Open
                 data:
                   tag: "garage-door-open-alert"
-                  entity_id: camera.garage
+                  entity_id: camera.garage_low
                   actions:
                     - action: "CLOSE_GARAGE"
                       title: "Close Garage"
@@ -88,6 +88,11 @@ automation:
           sequence:
             - service: timer.cancel
               entity_id: timer.garage_left_open
+            - service: notify.mobile_app_michaels_iphone
+              data:
+                message: "clear_notification"
+                data:
+                  tag: "garage-door-open-alert"
         - conditions:
             - condition: trigger
               id: close_garage
