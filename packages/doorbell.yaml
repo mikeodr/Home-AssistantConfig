@@ -77,7 +77,7 @@ automation:
       # Snapshot the camera
       - service: camera.snapshot
         target:
-          entity_id: camera.g4_doorbell_high
+          entity_id: camera.front_door_low
         data:
           filename: "/media/doorbell/snapshot.jpg"
       # Notify Everyone
