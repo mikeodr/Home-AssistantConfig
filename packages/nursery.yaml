@@ -316,9 +316,11 @@ automation:
 
   - alias: Turn nursery off if forgotten
     id: nursery_off_if_forgotten
+    mode: queued
+    max: 15
     trigger:
       - platform: template
-        value_template: "{{ is_state('binary_sensor.nursery_motion', 'off') and is_state('binary_sensor.kid_s_room_motion', 'off') }}"
+        value_template: "{{ is_state('binary_sensor.nursery_motion', 'off') and is_state('binary_sensor.girls_room_occupancy', 'off') }}"
         id: timer_start
       - platform: event
         event_type: timer.finished
@@ -329,6 +331,8 @@ automation:
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "off"
+      - condition: time
+        before: "18:00:00"
     action:
       - choose:
           - conditions:
@@ -657,10 +661,8 @@ automation:
         entity_id: input_boolean.nap_mode
         to: "on"
     condition:
-      - condition: numeric_state
-        entity_id: sun.sun
-        attribute: elevation
-        below: 1.5
+      - condition: time
+        after: "18:00:00"
     action:
       - service: light.turn_on
         entity_id:
@@ -671,7 +673,7 @@ automation:
             - light.living_room_light
             - light.kitchen_light
         data:
-          transition: 10
+          transition: 90
 
   - alias: Girls Light Control
     id: nursery_girls_light_control
@@ -765,6 +767,10 @@ automation:
         id: turn_on
       - platform: sun
         event: sunrise
+        id: turn_off
+      - platform: state
+        entity_id: sun.sun
+        to: "above_horizon"
         id: turn_off
     action:
       - choose:
