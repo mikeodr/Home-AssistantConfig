@@ -139,3 +139,46 @@ automation:
                 name: "default"
                 critical: 1
                 volume: 1.0
+
+  - alias: Turn on indoor lights when triggered at night
+    id: alarm_lights_on_triggered_night
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.alarmo
+        from: armed_night
+        to: triggered
+    action:
+      - service: light.turn_on
+        target:
+          floor_id:
+            - basement
+            - main_floor
+
+  - alias: Turn off all indoor lights when armed
+    id: alarm_turn_off_all_lights
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.alarmo
+        to:
+          - armed_vacation
+          - armed_away
+    action:
+      - service: light.turn_off
+        target:
+          floor_id:
+            - basement
+            - main_floor
+            - top_floor
+
+  - alias: Turn off lights at bedtime
+    id: alarm_turn_off_lights_bedtime
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.alarmo
+        to: armed_night
+    action:
+      - service: light.turn_off
+        target:
+          floor_id:
+            - basement
+            - main_floor
