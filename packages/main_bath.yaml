@@ -10,6 +10,10 @@ automation:
         event: sunset
         variables:
           default_level: 254
+      - platform: state
+        entity_id: alarm_control_panel.alarmo
+        variables:
+          default_level: 20
     action:
       - service: mqtt.publish
         data:
