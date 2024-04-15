@@ -32,7 +32,7 @@ automation:
     id: xmas_lights_room_occupied
     trigger:
       - platform: state
-        entity_id: binary_sensor.living_room
+        entity_id: binary_sensor.living_room_occupancy
         to: "on"
         id: turn_on
       - platform: state
@@ -103,7 +103,7 @@ automation:
         attribute: elevation
         below: 3.35
       - condition: time
-        after: '15:30:00'
+        after: "15:30:00"
     action:
       service: homeassistant.turn_on
       entity_id: group.exterior_christmas_lights
