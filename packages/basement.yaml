@@ -7,6 +7,8 @@ timer:
 automation:
   - alias: Basement Light Presence Control On
     id: basement_light_presence_controls_on
+    mode: queued
+    max: 25
     trigger:
       - platform: state
         entity_id: binary_sensor.basement_presence
@@ -32,13 +34,6 @@ automation:
         - conditions:
             - condition: trigger
               id: lights_on
-          sequence:
-            - service: timer.cancel
-              target:
-                entity_id: timer.basement_lights_off
-        - conditions:
-            - condition: trigger
-              id: lights_on
             - condition: state
               entity_id: binary_sensor.workday_sensor
               state: "on"
@@ -47,9 +42,12 @@ automation:
               entity_id:
                 - input_boolean.nap_mode
           sequence:
+            - service: timer.cancel
+              target:
+                entity_id: timer.basement_lights_off
             - service: light.turn_on
               entity_id:
-                - switch.basement_hall
+                - light.basement_hall
                 - light.basement_room_light_dimmer
         - conditions:
             - condition: trigger
@@ -63,7 +61,7 @@ automation:
           sequence:
             - service: light.turn_off
               entity_id:
-                - switch.basement_hall
+                - light.basement_hall
                 - light.basement_room_light_dimmer
 
   - alias: Dim Light Over 30 Minutes at sundown
@@ -76,7 +74,7 @@ automation:
     variables:
       duration: 1800 # 30 minutes in seconds
       steps: 60 # Number of steps to dim the light
-      current_brightness: "{{ state_attr('light.basement_room_light_dimmer', 'brightness')|default(255)|int }}"
+      current_brightness: "{{ state_attr('light.basement_room_light_dimmer', 'brightness')|int(255) }}"
       target_brightness: 153 # The final brightness level (60% of 255)
       brightness_difference: "{{ current_brightness - target_brightness }}"
     action:
