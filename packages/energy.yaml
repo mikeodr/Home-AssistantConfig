@@ -6,28 +6,28 @@ template:
         state: >-
           {# Holidays and weekends #}
           {% if states('binary_sensor.workday_sensor') == 'off' %}
-            off_peak
+            Off Peak
           {% else %}
           {# Everything else #}
             {% if now().hour < 7 or now().hour >= 19 %}
-              off_peak
+              Off Peak
             {% elif now().hour >= 7 and now().hour < 11 %}
               {% if now().month >= 5 and now().month <= 10 %}
-                mid_peak
+                Mid Peak
               {% else %}
-                on_peak
+                On Peak
               {% endif %}
             {% elif now().hour >= 11 and now().hour < 17 %}
               {% if now().month >= 5 and now().month <= 10 %}
-                on_peak
+                On Peak
               {% else %}
-                mid_peak
+                Mid Peak
               {% endif %}
             {% elif now().hour >= 17 and now().hour < 19 %}
               {% if now().month >= 5 and now().month <= 10 %}
-                mid_peak
+                Mid Peak
               {% else %}
-                on_peak
+                On Peak
               {% endif %}
             {% endif %}
           {% endif %}
@@ -37,11 +37,11 @@ template:
         icon: mdi:currency-usd
         unit_of_measurement: CAD/kWh
         state: >-
-          {% if states('sensor.current_hydro_time_of_use_state') == 'off_peak' %}
+          {% if states('sensor.current_hydro_time_of_use_state') == 'Off Peak' %}
             {{ states('sensor.enova_hydro_off_peak_rate') }}
-          {% elif states('sensor.current_hydro_time_of_use_state') == 'mid_peak' %}
+          {% elif states('sensor.current_hydro_time_of_use_state') == 'Mid Peak' %}
             {{ states('sensor.enova_hydro_mid_peak_rate') }}
-          {% elif states('sensor.current_hydro_time_of_use_state') == 'on_peak' %}
+          {% elif states('sensor.current_hydro_time_of_use_state') == 'On Peak' %}
             {{ states('sensor.enova_hydro_on_peak_rate') }}
           {% endif %}
 
