@@ -7,7 +7,7 @@ automation:
         variables:
           default_level: 60
       - platform: sun
-        event: sunset
+        event: sunrise
         variables:
           default_level: 254
       - platform: state
