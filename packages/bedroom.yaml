@@ -79,7 +79,9 @@ automation:
     id: bedroom_off_mornings_nursery_active
     trigger:
       - platform: state
-        entity_id: binary_sensor.bedroom
+        entity_id:
+          - binary_sensor.bedroom_ecobee_motion
+          - binary_sensor.bedroom_ecobee_occupancy
         to: "on"
       - platform: time
         at: "07:30:00"
