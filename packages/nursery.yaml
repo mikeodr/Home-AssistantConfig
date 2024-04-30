@@ -210,15 +210,17 @@ automation:
       - platform: state
         entity_id: input_boolean.nap_mode
         to: "on"
+        id: force_on
       - platform: time
         at: "15:00:00"
       - platform: time
         at: "17:00:00"
     condition:
       - or:
-          - condition: state
-            entity_id: input_boolean.vacation_mode
-            state: "off"
+          - not:
+              - condition: state
+                entity_id: alarm_control_panel.alarmo
+                state: "armed_vacation"
           - condition: state
             entity_id: device_tracker.faux_girls_home
             state: "home"
@@ -233,9 +235,9 @@ automation:
     action:
       - choose:
           # Manual trigger always turns on.
-          - conditions: >
-              {{ trigger.to_state.state == 'on' and
-                 is_state('input_boolean.nap_mode', 'on') }}
+          - conditions:
+              - condition: trigger
+                id: force_on
             sequence:
               service: homeassistant.turn_on
               entity_id: fan.nursery
