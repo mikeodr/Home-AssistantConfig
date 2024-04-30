@@ -84,7 +84,7 @@ sensor:
           {%- else -%}
           |🙅
           {%- endif -%}
-          {%- if states("alarm_control_panel.alarmo") in ['armed_away', 'armed_home', 'armed_night', 'armed_vacation', 'armed_custom_bypass'] -%}
+          {%- if states("alarm_control_panel.alarmo") not in ['disarmed'] -%}
           |🛡️
           {%- endif -%}
           {%- if is_state("alarm_control_panel.alarmo", "triggered") -%}
