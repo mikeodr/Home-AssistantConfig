@@ -14,31 +14,6 @@ group:
       - lock.front_door
       - lock.side_door
 
-alert:
-  lock_jammed:
-    name: Front lock jammed
-    done_message: "clear_notification"
-    entity_id: binary_sensor.lock_jammed
-    state: "Lock Jammed"
-    can_acknowledge: true
-    repeat: 5
-    data:
-      tag: "lock-jammed-alert"
-      actions:
-        - action: "ACK_LOCK_JAMMED"
-          title: "Acknowledge Lock Jammed"
-          activationMode: "background"
-          authenticationRequired: true
-          destructive: true
-          behavior: "default"
-      push:
-        sound:
-          name: "default"
-          critical: 1
-          volume: 1.0
-    notifiers:
-      - mobile_app_michaels_iphone
-
 automation:
   - alias: Lock Jammed Acknowledge
     id: lock_jammed_acknowledged
