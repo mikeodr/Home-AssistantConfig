@@ -3,17 +3,3 @@
   services:
     - service: mobile_app_michaels_iphone
     - service: mobile_app_tiffanys_iphone
-
-- name: school_absence
-  platform: smtp
-  server: !secret smtp_server
-  port: 587
-  timeout: 15
-  sender: !secret school_sender
-  encryption: starttls
-  username: !secret smtp_username
-  password: !secret smtp_password
-  recipient:
-    - !secret school_attendence
-    - !secret school_sender
-  sender_name: "Mike O'Driscoll"
