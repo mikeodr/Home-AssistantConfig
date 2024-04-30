@@ -33,6 +33,8 @@ schedule:
 automation:
   - alias: Set Doorbell Chime State
     id: doorbell_set_doorbell_chime_state
+    mode: single
+    max_exceeded: silent
     trigger:
       - platform: state
         entity_id:
