@@ -1,6 +1,8 @@
 automation:
   - alias: Set Switch Status LEDs
     id: living_set_switch_status_leds
+    mode: queued
+    max: 10
     trigger:
       - platform: state
         entity_id: group.locks
@@ -117,3 +119,39 @@ automation:
         data:
           brightness_pct: 70
           transition: 10
+
+  - alias: Set Living Room Lights default local level
+    id: living_room_light_default_local_level
+    mode: single
+    max_exceeded: silent
+    trigger:
+      - platform: sun
+        event: sunset
+        variables:
+          default_level: 80
+      - platform: state
+        entity_id: input_boolean.nap_mode
+        to: "on"
+        variables:
+          default_level: 80
+      - platform: sun
+        event: sunrise
+        variables:
+          default_level: 200
+      - platform: state
+        entity_id: alarm_control_panel.alarmo
+        to: "armed_night"
+        variables:
+          default_level: 60
+    action:
+      parallel:
+        - service: mqtt.publish
+          data:
+            topic: zigbee2mqtt/Living Room Light/set
+            payload: >-
+              {"defaultLevelLocal": "{{ default_level | default(100) }}"}
+        - service: mqtt.publish
+          data:
+            topic: zigbee2mqtt/Kitchen Light/set
+            payload: >-
+              {"defaultLevelLocal": "{{ default_level | default(100) }}"}
