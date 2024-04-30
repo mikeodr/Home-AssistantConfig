@@ -1,0 +1,15 @@
+automation:
+  - alias: Lets Encrypt Cert Refresh
+    id: infra_le_cert_refresh
+    trigger:
+      - platform: time
+        at: "03:12:00"
+    action:
+      - service: hassio.addon_restart
+        data:
+          addon: core_letsencrypt
+      - delay:
+          minutes: 5
+      - service: hassio.addon_restart
+        data:
+          addon: core_nginx_proxy
