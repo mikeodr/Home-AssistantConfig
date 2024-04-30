@@ -751,8 +751,14 @@ automation:
   - alias: Girls Bathroom Night Light
     id: nursery_bathroom_night_light
     trigger:
+      # turn on triggers
       - platform: sun
         event: sunset
+        id: turn_on
+      - platform: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        below: 2.0
         id: turn_on
       - platform: state
         entity_id: group.adults
@@ -760,29 +766,29 @@ automation:
         to: "home"
         id: turn_on
       - platform: state
-        entity_id: binary_sensor.nursery_door
+        entity_id:
+          - binary_sensor.nursery_door
+          - binary_sensor.bathroom_night_light_occupancy
+          - input_boolean.nap_mode
         to: "on"
         id: turn_on
       - platform: state
         entity_id: input_boolean.nap_mode
         to: "on"
         id: turn_on
-      - platform: sun
-        event: sunrise
-        id: turn_off
-      - platform: state
+      # turn off triggers
+      - platform: numeric_state
         entity_id: sun.sun
-        to: "above_horizon"
+        attribute: elevation
+        above: 2.0
         id: turn_off
     action:
       - choose:
           - conditions:
-              - condition: state
-                entity_id: light.bathroom_night_light
-                state: "off"
-              - condition: state
+              - condition: numeric_state
                 entity_id: sun.sun
-                state: "below_horizon"
+                attribute: elevation
+                below: 2.0
               - condition: trigger
                 id: turn_on
             sequence:
