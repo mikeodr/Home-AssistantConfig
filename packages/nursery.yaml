@@ -228,7 +228,7 @@ automation:
             attribute: temperature
             above: 20
           - condition: numeric_state
-            entity_id: sensor.kid_s_room_temperature #Acutal Room Temp
+            entity_id: sensor.girls_room_temperature #Acutal Room Temp
             above: 22
     action:
       - choose:
@@ -258,7 +258,7 @@ automation:
     id: nursery_fan_temperature_rise_conditional
     trigger:
       platform: numeric_state
-      entity_id: sensor.kid_s_room_temperature
+      entity_id: sensor.girls_room_temperature
       above: 23
     condition:
       - condition: state
@@ -275,7 +275,7 @@ automation:
     id: nursery_low_temp_fan_off
     trigger:
       - platform: numeric_state
-        entity_id: sensor.kid_s_room_temperature
+        entity_id: sensor.girls_room_temperature
         below: 21
     action:
       - service: homeassistant.turn_off
@@ -285,12 +285,12 @@ automation:
     id: nursery_temp_warning
     trigger:
       - platform: numeric_state
-        entity_id: sensor.kid_s_room_temperature
+        entity_id: sensor.girls_room_temperature
         below: 17
         for:
           minutes: 30
       - platform: numeric_state
-        entity_id: sensor.kid_s_room_temperature
+        entity_id: sensor.girls_room_temperature
         above: 25
         for:
           minutes: 10
@@ -309,8 +309,8 @@ automation:
                 message: >
                   Temperature {% if trigger.below != None %}Low{% else %}High{% endif %}: {{ trigger.to_state.state }}
                 data:
-                  url: /lovelace/nursery
-                  clickAction: /lovelace/nursery
+                  url: /lovelace/girls-room
+                  clickAction: /lovelace/girls-room
                   tag: "nursery-temp-warning"
                   group: "nursery-notification"
 
@@ -424,8 +424,8 @@ automation:
                 title: "Nursery Door Left Open"
                 message: "Door is Open"
                 data:
-                  url: /lovelace/nursery
-                  clickAction: /lovelace/nursery
+                  url: /lovelace/girls-room
+                  clickAction: /lovelace/girls-room
                   tag: "nursery-door-open-warning"
                   group: "nursery-notification"
 
@@ -526,8 +526,8 @@ automation:
                 message: >
                   Someone has left the nursery
                 data:
-                  url: /lovelace/nursery
-                  clickAction: /lovelace/nursery
+                  url: /lovelace/girls-room
+                  clickAction: /lovelace/girls-room
                   tag: "nursery-escape-warning"
                   group: "nursery-notification"
       - choose:
