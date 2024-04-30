@@ -68,7 +68,7 @@ automation:
       - platform: numeric_state
         entity_id: sun.sun
         attribute: elevation
-        below: 1.0
+        below: 2.0
         id: light_on
       - platform: time
         at: "22:00:00"
@@ -85,23 +85,28 @@ automation:
               - condition: trigger
                 id: light_on
             sequence:
-              - service: homeassistant.turn_on
+              - service: light.turn_on
                 entity_id: light.kitchen_island
               - delay:
-                  minutes: "{{ (range(0, 10)|random|int) }}"
-              - service: homeassistant.turn_on
+                  minutes: "{{ (range(5, 15)|random|int) }}"
+              - service: light.turn_on
                 entity_id:
-                  - switch.basement_hall
-                  - light.basement_room_light_dimmer
+                  - light.main_stairs
+                  - light.main_bath_light
           - conditions:
               - condition: trigger
                 id: light_off
             sequence:
-              - service: homeassistant.turn_off
-                entity_id:
-                  - switch.basement_hall
-                  - light.basement_room_light_dimmer
+              - service: light.turn_off
+                continue_on_error: true
+                target:
+                  floor_id:
+                    - main_floor
+                    - basement
               - delay:
-                  minutes: "{{ (range(0, 35)|random|int) }}"
-              - service: homeassistant.turn_off
-                entity_id: light.kitchen_island
+                  minutes: "{{ (range(10, 35)|random|int) }}"
+              - service: light.turn_off
+                continue_on_error: true
+                target:
+                  floor_id:
+                    - top_floor
