@@ -806,3 +806,61 @@ automation:
               - service: light.turn_off
                 target:
                   entity_id: light.bathroom_night_light
+
+  - alias: Control hall lights at bedtime
+    id: girls_control_hall_lights_bedtime
+    mode: single
+    max_exceeded: silent
+    trigger:
+      - platform: state
+        entity_id: input_boolean.nap_mode
+        to: "on"
+    action:
+      - service: light.turn_off
+        entity_id: light.upstairs_hall
+      - service: light.turn_on
+        entity_id: light.main_stairs
+
+  - alias: Turn off hall lights door open
+    id: girls_hall_lights_off_door_open
+    mode: single
+    max_exceeded: silent
+    trigger:
+      # Stair Light off
+      - platform: state
+        entity_id: binary_sensor.nursery_door
+        to: "on" # Door Open
+        id: lights_off
+      - platform: time
+        at: "21:00:00"
+        id: lights_off
+      # Stair Light on, door closed
+      - platform: state
+        entity_id: binary_sensor.nursery_door
+        to: "off" # Door closed
+        id: lights_on
+    condition:
+      - condition: state
+        entity_id: input_boolean.nap_mode
+        state: "on"
+    action:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: lights_off
+            sequence:
+              - service: light.turn_off
+                entity_id:
+                  - light.main_stairs
+                  - light.upstairs_hall
+          - conditions:
+              - condition: trigger
+                id: lights_on
+              - condition: time
+                after: "18:30:00"
+                before: "21:00:00"
+            sequence:
+              - delay:
+                  seconds: 5
+              - service: light.turn_on
+                entity_id: light.main_stairs
