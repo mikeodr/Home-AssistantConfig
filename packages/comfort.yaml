@@ -42,9 +42,9 @@ automation:
     id: furnace_on_if_left_off_cold_forecast
     trigger:
       - platform: time
-        at: "21:00:00"
+        at: "22:00:00"
       - platform: time
-        at: "23:00:00"
+        at: "00:00:00"
     condition:
       - condition: state
         entity_id: climate.my_ecobee
