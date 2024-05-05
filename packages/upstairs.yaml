@@ -1,0 +1,37 @@
+automation:
+  - alias: Evening Convenience Control
+    id: upstairs_evening_convenience_control
+    mode: single
+    max_exceeded: silent
+    trigger:
+      - platform: state
+        to: "down_double"
+        entity_id:
+          - sensor.main_bath_light_action
+          - sensor.main_stairs_action
+          - sensor.upstairs_hall_action
+    condition:
+      - alias: "condition alias (name)"
+        condition: time
+        after: "21:00:00"
+    action:
+      - parallel:
+          - service: light.turn_off
+            target:
+              floor_id:
+                - basement
+                - main_floor
+          - service: cover.close_cover
+            entity_id: cover.garage
+          - service: lock.lock
+            entity_id:
+              - lock.front_door
+              - lock.side_door
+      - wait_template: "{{ is_state('cover.garage', 'closed') }}"
+      - service: homeassistant.turn_off
+        entity_id: media_player.living_room_tv
+      - delay:
+          seconds: 30
+      - service: alarm_control_panel.alarm_arm_night
+        target:
+          entity_id: alarm_control_panel.alarmo
