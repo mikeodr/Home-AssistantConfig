@@ -1,0 +1,40 @@
+script:
+  lzw30_set_led:
+    alias: "Inovelli LZW30 LED Status"
+    mode: restart
+    sequence:
+      - service: zwave_js.set_config_parameter
+        target:
+          entity_id: "{{ entity }}"
+        data:
+          # Set LED Colouro, value 0-255
+          value: "{{ led_colour }}"
+          parameter: "5"
+      - service: zwave_js.set_config_parameter
+        target:
+          entity_id: "{{ entity }}"
+        data:
+          # Set LED brightness to 100%
+          # Value from 0 to 10
+          value: "{{ led_brightness }}"
+          parameter: "6"
+
+  lzw31_set_led:
+    alias: "Inovelli LZW31 LED Status"
+    mode: restart
+    sequence:
+      - service: zwave_js.set_config_parameter
+        target:
+          entity_id: "{{ entity }}"
+        data:
+          # Set LED Colouro, value 0-255
+          value: "{{ led_colour }}"
+          parameter: "13"
+      - service: zwave_js.set_config_parameter
+        target:
+          entity_id: "{{ entity }}"
+        data:
+          # Set LED brightness to 100%
+          # Value from 0 to 10
+          value: "{{ led_brightness }}"
+          parameter: "14"
