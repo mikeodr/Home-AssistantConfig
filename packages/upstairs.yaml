@@ -11,8 +11,7 @@ automation:
           - sensor.main_stairs_action
           - sensor.upstairs_hall_action
     condition:
-      - alias: "condition alias (name)"
-        condition: time
+      - condition: time
         after: "21:00:00"
     action:
       - parallel:
