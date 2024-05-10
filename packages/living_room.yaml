@@ -40,11 +40,11 @@ automation:
     trigger:
       - platform: state
         entity_id: sensor.kitchen_light_action
-        to: "up_double"
+        to: "up_triple"
         id: garage_up_trigger
       - platform: state
         entity_id: sensor.kitchen_light_action
-        to: "down_double"
+        to: "down_triple"
         id: garage_down_trigger
     action:
       - choose:
@@ -66,11 +66,11 @@ automation:
     trigger:
       - platform: state
         entity_id: sensor.living_room_action
-        to: "up_double"
+        to: "up_triple"
         id: door_unlock_trigger
       - platform: state
         entity_id: sensor.living_room_action
-        to: "down_double"
+        to: "down_triple"
         id: door_lock_trigger
     action:
       - choose:
@@ -87,7 +87,39 @@ automation:
               - service: lock.lock
                 entity_id: lock.front_door
 
-  - alias: Turn on living room lights when arriving home
+  - alias: Living room light group multitap control
+    id: living_room_light_group_multitap_control
+    mode: single
+    max_exceeded: silent
+    trigger:
+      - platform: state
+        entity_id:
+          - sensor.living_room_action
+          - sensor.kitchen_light_action
+        to: "up_double"
+        id: turn_on
+      - platform: state
+        entity_id:
+          - sensor.living_room_action
+          - sensor.kitchen_light_action
+        to: "down_double"
+        id: turn_off
+    action:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: turn_on
+            sequence:
+              - service: light.turn_on
+                entity_id: light.living_room_light_group
+          - conditions:
+              - condition: trigger
+                id: turn_off
+            sequence:
+              - service: light.turn_off
+                entity_id: light.living_room_light_group
+
+  - alias: Turn on lights when arriving home
     id: living_room_turn_on_lights_arrival_dark
     trigger:
       - platform: state
