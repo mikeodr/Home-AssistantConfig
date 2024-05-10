@@ -21,28 +21,6 @@ automation:
           tag: "tiff-presence-notification"
           group: "presence-notification"
 
-  - alias: Weather Alert
-    id: weather_alert
-    trigger:
-      platform: state
-      entity_id:
-        - sensor.warnings
-        - sensor.watches
-        - sensor.advisories
-        - sensor.statements
-        - sensor.endings
-      from: ""
-    condition:
-      and:
-        - "{{ trigger.to_state.state != '' }}"
-        - "{{ trigger.to_state.state != trigger.from_state.state }}"
-    action:
-      service: notify.mobile_app_michaels_iphone
-      data:
-        title: "Weather Alert: {{ trigger.to_state.state }}"
-        message: >
-          {{ trigger.to_state.attributes['alert detail'] }}
-
   - alias: Return Home Annoucement
     id: return_home_annoucement
     trigger:
