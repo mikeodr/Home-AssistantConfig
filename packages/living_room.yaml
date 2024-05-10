@@ -152,8 +152,8 @@ automation:
           brightness_pct: 70
           transition: 10
 
-  - alias: Set Living Room Lights default local level
-    id: living_room_light_default_local_level
+  - alias: Set Main floor Lights default local level
+    id: main_floor_light_default_local_level
     mode: single
     max_exceeded: silent
     trigger:
@@ -181,9 +181,17 @@ automation:
           data:
             topic: zigbee2mqtt/Living Room Light/set
             payload: >-
-              {"defaultLevelLocal": "{{ default_level | default(100) }}"}
+              {"defaultLevelLocal": "{{ default_level | default(100) }}",
+               "defaultLevelRemote": "{{ default_level | default(100) }}"}
         - service: mqtt.publish
           data:
             topic: zigbee2mqtt/Kitchen Light/set
             payload: >-
-              {"defaultLevelLocal": "{{ default_level | default(100) }}"}
+              {"defaultLevelLocal": "{{ default_level | default(100) }}",
+               "defaultLevelRemote": "{{ default_level | default(100) }}"}
+        - service: mqtt.publish
+          data:
+            topic: zigbee2mqtt/Front Hall/set
+            payload: >-
+              {"defaultLevelLocal": "{{ default_level | default(100) }}",
+               "defaultLevelRemote": "{{ default_level | default(100) }}"}
