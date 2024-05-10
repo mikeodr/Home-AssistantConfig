@@ -45,9 +45,9 @@ homekit:
     port: 21065
     filter:
       include_entities:
-        - camera.baby_high
+        - camera.girls_room_high
     entity_config:
-      camera.baby_high:
+      camera.girls_room_high:
         video_codec: copy
         support_audio: false
         linked_doorbell_sensor: binary_sensor.faux_nursery_homekit_bell
