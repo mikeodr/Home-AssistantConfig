@@ -81,8 +81,6 @@ sensor:
           |🧍‍♂️
           {%- elif is_state("person.tiff", "home") -%}
           |🧍‍♀️
-          {%- else -%}
-          |🙅
           {%- endif -%}
           {%- if states("alarm_control_panel.alarmo") not in ['disarmed'] -%}
           |🛡️
