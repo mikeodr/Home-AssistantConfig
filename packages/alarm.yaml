@@ -33,6 +33,14 @@ automation:
       - service: alarm_control_panel.alarm_{{ 'disarm' if 'home' == trigger.to_state.state else 'arm_away' }}
         target:
           entity_id: alarm_control_panel.alarmo
+      - if:
+          - condition: template
+            value_template: "{{ trigger.to_state.state  == 'home' }}"
+        then:
+          - service: select.select_option
+            entity_id: select.my_ecobee_current_mode
+            data:
+              option: home
     mode: single
     max_exceeded: silent
 
@@ -41,6 +49,8 @@ automation:
     trigger:
       - platform: time
         at: "00:00:00"
+      - platform: time
+        at: "01:00:00"
     condition:
       - condition: state
         entity_id:
@@ -50,6 +60,9 @@ automation:
       - condition: state
         entity_id: alarm_control_panel.alarmo
         state: "disarmed"
+      - condition: state
+        entity_id: media_player.living_room_tv
+        state: "off"
     action:
       - service: alarm_control_panel.alarm_arm_night
         target:
