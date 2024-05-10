@@ -130,10 +130,6 @@ automation:
         entity_id: sun.sun
         attribute: elevation
         below: 2.0
-      - not:
-          - condition: state
-            entity_id: media_player.plex_plex_for_apple_tv_living_room
-            state: "playing"
       - condition: state
         entity_id: binary_sensor.guests_present
         state: "off"
@@ -143,14 +139,25 @@ automation:
             entity_id: binary_sensor.front_door
             to: "on"
         timeout:
-          minutes: 10
+          minutes: 30
         continue_on_timeout: false
-      - service: light.turn_on
-        target:
-          entity_id: light.living_room_lights
-        data:
-          brightness_pct: 70
-          transition: 10
+      - parallel:
+          - if:
+              - not:
+                  - condition: state
+                    entity_id: media_player.plex_plex_for_apple_tv_living_room
+                    state: "playing"
+            then:
+              - service: light.turn_on
+                entity_id: light.living_room_light_group
+                data:
+                  brightness_pct: 65
+                  transition: 20
+          - service: light.turn_on
+            entity_id: light.front_hall
+            data:
+              brightness_pct: 65
+              transition: 5
 
   - alias: Set Main floor Lights default local level
     id: main_floor_light_default_local_level
