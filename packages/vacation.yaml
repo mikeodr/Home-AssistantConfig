@@ -43,14 +43,12 @@ automation:
     trigger:
       - platform: numeric_state
         entity_id: sensor.home_nearest_distance
-        below: 50000
-      - platform: state
-        entity_id: sensor.home_nearest_direction_of_travel
-        to: "arrived"
+        below: 55000
     condition:
-      - condition: state
-        entity_id: alarm_control_panel.alarmo
-        state: "armed_vacation"
+      - not:
+          - condition: state
+            entity_id: alarm_control_panel.alarmo
+            state: "disarmed"
     action:
       - service: select.select_option
         entity_id: select.my_ecobee_current_mode
