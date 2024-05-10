@@ -820,8 +820,17 @@ automation:
     action:
       - service: light.turn_off
         entity_id: light.upstairs_hall
-      - service: light.turn_on
-        entity_id: light.main_stairs
+      - if:
+          - condition: numeric_state
+            entity_id: sun.sun
+            attribute: elevation
+            below: 4.0
+        then:
+          - service: light.turn_on
+            entity_id: light.main_stairs
+        else:
+          - service: light.turn_off
+            entity_id: light.main_stairs
 
   - alias: Turn off hall lights door open
     id: girls_hall_lights_off_door_open
