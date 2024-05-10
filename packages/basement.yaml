@@ -200,3 +200,33 @@ automation:
                   entity: switch.basement_hall
                   led_colour: 170
                   led_brightness: 5
+
+  - alias: Top of basement stairs action control
+    id: basement_top_of_stairs_action_control
+    trigger:
+      - platform: state
+        entity_id: sensor.basement_light_action
+        to: "up_double"
+        id: turn_on
+      - platform: state
+        entity_id: sensor.basement_light_action
+        to: "down_double"
+        id: turn_off
+    action:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: turn_on
+            sequence:
+              - service: light.turn_on
+                target:
+                  floor_id:
+                    - basement
+          - conditions:
+              - condition: trigger
+                id: turn_off
+            sequence:
+              - service: light.turn_off
+                target:
+                  floor_id:
+                    - basement
