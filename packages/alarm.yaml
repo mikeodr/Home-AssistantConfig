@@ -137,7 +137,7 @@ automation:
     action:
       - service: notify.mobile_app_michaels_iphone
         data:
-          message: "Garage Door Left Open"
+          message: "🚪 Garage Door Left Open 🚪"
           data:
             tag: "alarmo-garage-open-alert"
             actions:
