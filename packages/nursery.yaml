@@ -617,9 +617,9 @@ automation:
         to: "off"
         from: "on"
       - platform: time
-        at: "07:09:30"
-      - platform: time # On for bedtime
-        at: "18:30:00"
+        at:
+          - input_datetime.girls_wakeup_time
+          - "18:30:00" # On for bedtime
     action:
       # Wait for the switch we want to turn on to be available
       - wait_template: '{{ not is_state("switch.nursery_power_loss_gate", "unavailable") }}'
