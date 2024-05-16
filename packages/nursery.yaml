@@ -408,6 +408,12 @@ automation:
         to: "on"
         for:
           minutes: 5
+        id: left_open
+      - platform: state
+        entity_id: binary_sensor.nursery_door
+        to: "off"
+        for:
+          minutes: 5
     condition:
       - condition: state
         entity_id: input_boolean.nap_mode
@@ -417,19 +423,29 @@ automation:
             after: "01:30:00"
             before: "07:00:00"
     action:
-      - repeat:
-          for_each: >
-            {{ states.person | selectattr('state', 'eq', 'home') | map(attribute='attributes.notifier') | list}}
-          sequence:
-            - service: "{{ repeat.item }}"
+      - if:
+          - condition: trigger
+            id: left_open
+        then:
+          - repeat:
+              for_each: >
+                {{ states.person | selectattr('state', 'eq', 'home') | map(attribute='attributes.notifier') | list}}
+              sequence:
+                - service: "{{ repeat.item }}"
+                  data:
+                    title: "Nursery Door Left Open"
+                    message: "Door is Open"
+                    data:
+                      url: /lovelace/girls-room
+                      clickAction: /lovelace/girls-room
+                      tag: "nursery-door-open-warning"
+                      group: "nursery-notification"
+        else:
+          - service: notify.adults
+            data:
+              message: "clear_notification"
               data:
-                title: "Nursery Door Left Open"
-                message: "Door is Open"
-                data:
-                  url: /lovelace/girls-room
-                  clickAction: /lovelace/girls-room
-                  tag: "nursery-door-open-warning"
-                  group: "nursery-notification"
+                tag: "nursery-door-open-warning"
 
   - alias: Quiet mode control
     id: nursery_quite_mode_control
