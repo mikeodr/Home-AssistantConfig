@@ -73,3 +73,58 @@ sensor:
     value_template: >-
       {% set data = value_json['BillDataTable']['BillDataRow'] %}
       {{ data | selectattr('Dist', 'eq', 'Enova Power Corp.-Kitchener-Wilmot Hydro Rate Zone') | map(attribute='RPPOnP') | first }}
+
+automation:
+  - alias: Save power when not home
+    id: media_energy_saver_not_home
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.alarmo
+        to:
+          - armed_night
+          - armed_vacation
+        id: power_off
+      - platform: state
+        entity_id: sensor.current_hydro_time_of_use_state
+        to:
+          - Mid Peak
+          - On Peak
+        id: power_off
+      - platform: state
+        entity_id: alarm_control_panel.alarmo
+        to:
+          - armed_away
+        for:
+          minutes: 30
+        id: power_off
+      - platform: state
+        entity_id: alarm_control_panel.alarmo
+        to: disarmed
+        id: power_on
+      - platform: state
+        entity_id: sensor.current_hydro_time_of_use_state
+        to: Off Peak
+        id: power_on
+    action:
+      choose:
+        - conditions:
+            - condition: trigger
+              id: power_off
+            - not:
+                - condition: state
+                  entity_id: media_player.apple_tv_living_room
+                  state: "playing"
+                - condition: state
+                  entity_id: media_player.living_room_tv
+                  state: "on"
+          sequence:
+            - service: homeassistant.turn_off
+              entity_id: switch.entertainment_switch_relay
+        - conditions:
+            - condition: trigger
+              id: power_on
+            - condition: template
+              value_template: '{{ "Off Peak" in states("sensor.current_hydro_time_of_use_state") }}'
+          sequence:
+            - service: homeassistant.turn_on
+              entity_id: switch.entertainment_switch_relay
