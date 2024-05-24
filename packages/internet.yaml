@@ -39,3 +39,44 @@ automation:
           data:
             tag: "internet-up-notification"
             group: "internet-notification"
+
+  - alias: Internet down notify Inovelli LEDs
+    id: internet_notify_leds
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.internet_state
+        from: "on"
+        to: "off"
+        id: internet_down
+      - platform: state
+        entity_id: binary_sensor.internet_state
+        from: "off"
+        to: "on"
+        id: internet_up
+    condition:
+      - condition: state
+        entity_id: group.adults
+        state: "home"
+      - condition: state
+        entity_id: alarm_control_panel.alarmo
+        state: "disarmed"
+    action:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: internet_down
+            sequence:
+              - service: mqtt.publish
+                data:
+                  topic: zigbee2mqtt/Living Room Light/set
+                  payload: >-
+                    {"led_effect": {"effect": "pulse", "color": "225", "level": "100", "duration": "255"}}
+          - conditions:
+              - condition: trigger
+                id: internet_up
+            sequence:
+              - service: mqtt.publish
+                data:
+                  topic: zigbee2mqtt/Living Room Light/set
+                  payload: >-
+                    {"led_effect": {"effect": "clear_effect"}}
