@@ -195,3 +195,44 @@ automation:
           floor_id:
             - basement
             - main_floor
+
+  - alias: Set Switch Status LEDs
+    id: alarm_set_switch_status_leds
+    mode: queued
+    max: 10
+    trigger:
+      - platform: state
+        entity_id:
+          - group.locks
+          - cover.garage
+        to: ~
+    action:
+      - variables:
+          duration: >-
+            {% if is_state('cover.garage', 'closed') and is_state('group.locks', 'locked') %}
+              60
+            {% else %}
+              255
+            {% endif %}
+          color: >-
+            {# red 0, orange 5, green 85 #}
+            {% if is_state('cover.garage', 'closed') and is_state('group.locks', 'locked') %}
+              85
+            {% elif is_state('cover.garage', 'closed') and is_state('group.locks', 'unlocked') %}
+              5
+            {% else %}
+              0
+            {% endif %}
+      - service: script.blue_set_led
+        data:
+          color: "{{ color }}"
+          effect: "solid"
+          level: 40
+          duration: "{{ duration }}"
+          entity_id:
+            - light.front_hall
+            - light.kitchen_light
+            - light.back_deck_light
+            - light.main_stairs
+            - light.upstairs_hall
+            - light.basement_stairs
