@@ -4,7 +4,7 @@ automation:
     trigger:
       - platform: numeric_state
         entity_id: sensor.salt_sensor_weight
-        below: 10
+        below: 7
         for:
           hours: 24
     action:
