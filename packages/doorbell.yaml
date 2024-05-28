@@ -78,6 +78,7 @@ automation:
           seconds: 1
       # Snapshot the camera
       - service: camera.snapshot
+        continue_on_error: true
         target:
           entity_id: camera.front_door_low
         data:
@@ -95,10 +96,10 @@ automation:
   - alias: Doorbell activated
     id: doorbell_activated
     trigger:
-      platform: state
-      entity_id: binary_sensor.front_door_doorbell
-      from: "off"
-      to: "on"
+      - platform: state
+        entity_id: binary_sensor.front_door_doorbell
+        from: "off"
+        to: "on"
     condition:
       - condition: state
         entity_id: group.adults
