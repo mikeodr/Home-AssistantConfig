@@ -30,8 +30,7 @@ automation:
         entity_id: cover.garage
       - service: lock.lock
         entity_id:
-          - lock.front_door
-          - lock.side_door
+          - group.locks
       - service: alarm_control_panel.alarm_arm_vacation
         target:
           entity_id: alarm_control_panel.alarmo
