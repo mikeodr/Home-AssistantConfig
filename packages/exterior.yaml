@@ -277,7 +277,7 @@ automation:
     trigger:
       - platform: numeric_state
         entity_id: sensor.garage_temperature
-        below: 0.5
+        below: 2.0
     action:
       - service: notify.mobile_app_michaels_iphone
         data:
