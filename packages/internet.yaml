@@ -66,17 +66,33 @@ automation:
               - condition: trigger
                 id: internet_down
             sequence:
-              - service: mqtt.publish
+              - service: script.blue_set_led
                 data:
-                  topic: zigbee2mqtt/Living Room Light/set
-                  payload: >-
-                    {"led_effect": {"effect": "pulse", "color": "225", "level": "100", "duration": "255"}}
+                  color: 225
+                  effect: "pulse"
+                  level: 100
+                  duration: 255
+                  entity_id:
+                    - light.front_hall
+                    - light.living_room_light
+                    - light.back_deck_light
+                    - light.main_stairs
+                    - light.upstairs_hall
+                    - light.basement_stairs
           - conditions:
               - condition: trigger
                 id: internet_up
             sequence:
-              - service: mqtt.publish
+              - service: script.blue_set_led
                 data:
-                  topic: zigbee2mqtt/Living Room Light/set
-                  payload: >-
-                    {"led_effect": {"effect": "clear_effect"}}
+                  color: 225
+                  effect: "clear_effect"
+                  level: 100
+                  duration: 255
+                  entity_id:
+                    - light.front_hall
+                    - light.living_room_light
+                    - light.back_deck_light
+                    - light.main_stairs
+                    - light.upstairs_hall
+                    - light.basement_stairs
