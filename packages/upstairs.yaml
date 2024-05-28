@@ -24,8 +24,7 @@ automation:
             entity_id: cover.garage
           - service: lock.lock
             entity_id:
-              - lock.front_door
-              - lock.side_door
+              - group.locks
       - wait_template: "{{ is_state('cover.garage', 'closed') }}"
       - service: homeassistant.turn_off
         entity_id: media_player.living_room_tv
