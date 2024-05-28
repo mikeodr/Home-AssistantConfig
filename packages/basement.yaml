@@ -241,3 +241,25 @@ automation:
                 target:
                   floor_id:
                     - basement
+
+  - alias: Doorbell notification when working
+    id: basement_doorbell_notification_working
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.front_door_doorbell
+        to: "on"
+    condition:
+      - condition: state
+        entity_id: binary_sensor.workday_sensor
+        state: "on"
+      - condition: numeric_state
+        entity_id: sensor.mike_apple_watch_estimated_distance
+        below: 1.0
+    action:
+      - service: script.sonos_say
+        data:
+          sonos_entity: media_player.sonos_basement
+          volume: 0.25
+          message: "Someone is at the door"
+          delay:
+            seconds: 4
