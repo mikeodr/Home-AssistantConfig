@@ -18,72 +18,119 @@ template:
         delay_off:
           minutes: 2
 
+timer:
+  laundry_done:
+    name: Laundry Done Notification
+    duration: 00:30:00
+    restore: true
+
 automation:
   - alias: Laundry Notification
     id: laundry_simple_laundry_notification
     mode: restart
     trigger:
+      # Notify events
       - platform: state
         entity_id: binary_sensor.washer_status
         from: "on"
         to: "off"
+        id: notify_to_move
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.laundry_done
+        id: notify_to_move
+      # Stop timer events
+      - platform: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: "laundry_moved"
+        id: laundry_moved
+      - platform: state
+        entity_id: binary_sensor.dryer_running
+        to: "on"
+        for:
+          minutes: 5
+        id: laundry_moved
+      - platform: state
+        entity_id: binary_sensor.washer_status
+        from: "off"
+        to: "on"
+        for:
+          minutes: 15
+        id: laundry_moved
     action:
-      - wait_template: "{{ is_state('group.adults', 'home') }}"
-      - repeat:
-          until:
-            or:
-              - condition: state
-                entity_id: binary_sensor.dryer_running
-                state: "on"
-                for:
-                  minutes: 5
-              - condition: template
-                value_template: "{{ wait.trigger is not none }}"
-          sequence:
-            - service: notify.adults
-              data:
-                message: "clear_notification"
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: notify_to_move
+            sequence:
+              - service: timer.start
+                entity_id: timer.laundry_done
+              - service: notify.adults
                 data:
-                  tag: "laundry-done-notification"
-            - repeat:
-                for_each: >
-                  {{ states.person | selectattr('state', 'eq', 'home') | map(attribute='attributes.notifier') | list}}
-                sequence:
-                  - service: "{{ repeat.item }}"
-                    data:
-                      title: Laundry is done!
-                      message: Laundry cycle complete
+                  message: "clear_notification"
+                  data:
+                    tag: "laundry-done-notification"
+              - repeat:
+                  for_each: >
+                    {{ states.person | selectattr('state', 'eq', 'home') | map(attribute='attributes.notifier') | list}}
+                  sequence:
+                    - service: "{{ repeat.item }}"
                       data:
-                        tag: "laundry-done-notification"
-                        url: /dashboard-laundry/home
-                        clickAction: /dashboard-laundry/home
-                        group: "laundry-notification-group"
-                        actions:
-                          - action: "laundry_moved"
-                            title: "Laundry Moved"
-                            authenticationRequired: true
-                            destructive: true
-                            behavior: "default"
-            - wait_for_trigger:
-                - platform: event
-                  event_type: mobile_app_notification_action
-                  event_data:
-                    action: "laundry_moved"
-                - platform: state
-                  entity_id: binary_sensor.dryer_running
-                  to: "on"
-                  for:
-                    minutes: 5
-                - platform: state
-                  entity_id: binary_sensor.washer_status
-                  from: "on"
-                  to: "off"
-                  for:
-                    minutes: 15
-              timeout:
-                minutes: 30
-      - service: notify.adults
-        data:
-          message: "clear_notification"
-          data:
-            tag: "laundry-done-notification"
+                        title: Laundry is done!
+                        message: Laundry cycle complete
+                        data:
+                          tag: "laundry-done-notification"
+                          url: /dashboard-laundry/home
+                          clickAction: /dashboard-laundry/home
+                          group: "laundry-notification-group"
+                          actions:
+                            - action: "laundry_moved"
+                              title: "Laundry Moved"
+                              authenticationRequired: true
+                              destructive: true
+                              behavior: "default"
+              - if:
+                  - condition: state
+                    entity_id: group.adults
+                    state: "home"
+                then:
+                  - service: script.blue_set_led
+                    data:
+                      color: "255" # White
+                      effect: "slow_chase"
+                      level: 70
+                      duration: 65 # 5 minutes
+                      entity_id:
+                        - light.front_hall
+                        - light.living_room_light
+                        - light.back_deck_light
+                        - light.main_stairs
+                        - light.upstairs_hall
+                        - light.basement_stairs
+          - conditions:
+              - condition: trigger
+                id: laundry_moved
+            sequence:
+              parallel:
+                - service: timer.cancel
+                  entity_id: timer.laundry_done
+                - service: notify.adults
+                  data:
+                    message: "clear_notification"
+                    data:
+                      tag: "laundry-done-notification"
+                - service: script.blue_set_led
+                  data:
+                    color: "255" # White
+                    effect: "clear_effect"
+                    level: 70
+                    duration: 65 # 5 minutes
+                    entity_id:
+                      - light.front_hall
+                      - light.living_room_light
+                      - light.back_deck_light
+                      - light.main_stairs
+                      - light.upstairs_hall
+                      - light.basement_stairs
