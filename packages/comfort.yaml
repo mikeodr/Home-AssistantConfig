@@ -4,7 +4,7 @@ automation:
     trigger:
       - platform: state
         id: "notification_door_open"
-        entity_id: binary_sensor.front_door
+        entity_id: binary_sensor.doors
         to: "on"
         for:
           minutes: 5
@@ -13,7 +13,7 @@ automation:
           climate_restore_state: "{{ states('climate.my_ecobee') }}"
       - service: notify.adults
         data:
-          title: "Front Door Left Open"
+          title: "A Door has been left open"
           message: "Disabling thermostat"
           data:
             tag: "front-door-open-warning"
@@ -25,7 +25,7 @@ automation:
           entity_id: climate.my_ecobee
       - wait_for_trigger:
           - platform: state
-            entity_id: binary_sensor.front_door
+            entity_id: binary_sensor.doors
             to: "off"
       - service: climate.set_hvac_mode
         target:
