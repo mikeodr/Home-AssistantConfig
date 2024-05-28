@@ -206,6 +206,9 @@ automation:
           - group.locks
           - cover.garage
         to: ~
+    condition:
+      - condition: template
+        value_template: "{{ has_value('cover.garage') and has_value('group.locks') }}"
     action:
       - variables:
           duration: >-
