@@ -3,13 +3,6 @@ homeassistant:
     binary_sensor.front_door:
       device_class: door
 
-group:
-  exterior_lights:
-    name: Exterior Lights
-    entities:
-      - switch.front_porch
-      - switch.side_door
-
 timer:
   garage_left_open:
     name: Garage Left Open
@@ -120,8 +113,8 @@ automation:
         attribute: elevation
         below: 0.25
     action:
-      service: homeassistant.turn_on
-      entity_id: group.exterior_lights
+      service: light.turn_on
+      entity_id: light.exterior_lights
 
   - alias: Keep Exterior Lights on Evenings
     id: exterior_keep_lights_on_evenings
@@ -144,8 +137,8 @@ automation:
         after: "15:00:00"
         before: "23:30:00"
     action:
-      service: homeassistant.turn_on
-      entity_id: group.exterior_lights
+      service: light.turn_on
+      entity_id: light.exterior_lights
 
   - alias: Exterior Lights off Night, or sunrise
     id: exterior_lights_off_overnight
@@ -157,14 +150,14 @@ automation:
         attribute: elevation
         above: 0.25
     action:
-      - service: homeassistant.turn_off
-        entity_id: group.exterior_lights
+      - service: light.turn_off
+        entity_id: light.exterior_lights
 
   - alias: Keep Exterior Lights off overnight if turned on outside normal hours
     id: exterior_lights_off_outside_normal_hours
     trigger:
       - platform: state
-        entity_id: group.exterior_lights
+        entity_id: light.exterior_lights
         to: "on"
         for:
           minutes: 30
@@ -179,14 +172,14 @@ automation:
             below: 0.25
     action:
       - wait_template: '{{ is_state("binary_sensor.front_door_person_detected", "off") }}'
-      - service: homeassistant.turn_off
-        entity_id: group.exterior_lights
+      - service: light.turn_off
+        entity_id: light.exterior_lights
 
   - alias: Keep Exterior Lights off during daylight
     id: exterior_lights_off_daylight
     trigger:
       - platform: state
-        entity_id: group.exterior_lights
+        entity_id: light.exterior_lights
         to: "on"
         for:
           minutes: 10
@@ -200,8 +193,8 @@ automation:
         attribute: elevation
         above: 0.25
     action:
-      - service: homeassistant.turn_off
-        entity_id: group.exterior_lights
+      - service: light.turn_off
+        entity_id: light.exterior_lights
 
   - alias: Sync Exterior Lights
     id: exterior_sync_exterior_lights
@@ -211,14 +204,14 @@ automation:
       - platform: state
         to: ~
         entity_id:
-          - switch.front_porch
-          - switch.side_door
+          - light.front_porch
+          - light.side_door
     condition:
       - condition: template
         value_template: '{{ trigger.to_state.state in ["off", "on"] }}'
     action:
-      service: homeassistant.turn_{{ trigger.to_state.state }}
-      entity_id: group.exterior_lights
+      service: light.turn_{{ trigger.to_state.state }}
+      entity_id: light.exterior_lights
 
   - alias: Turn on external lights, multiple triggers
     id: exterior_exterior_lights_on_triggers
@@ -250,8 +243,8 @@ automation:
         attribute: elevation
         below: 0.25
     action:
-      - service: homeassistant.turn_on
-        entity_id: group.exterior_lights
+      - service: light.turn_on
+        entity_id: light.exterior_lights
 
   - alias: Lock the side door when forgotten feeding the dog
     id: exterior_lock_side_door_dog
