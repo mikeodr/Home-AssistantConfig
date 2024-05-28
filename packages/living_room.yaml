@@ -1,39 +1,28 @@
 automation:
-  - alias: Set Switch Status LEDs
-    id: living_set_switch_status_leds
-    mode: queued
-    max: 10
+  - alias: Turn living room lights on when dark
+    id: living_room_lights_on_when_dark
     trigger:
       - platform: state
-        entity_id: group.locks
-        to: "locked"
-        id: "doors_locked"
-      - platform: state
-        entity_id: group.locks
-        to: "unlocked"
-        id: "doors_unlocked"
+        entity_id: binary_sensor.living_room_occupancy
+        to: "on"
+    condition:
+      - condition: state
+        entity_id: light.kitchen_island
+        state: "off"
+        for:
+          minutes: 15
+      - condition: numeric_state
+        entity_id: sensor.living_room_illuminance_lux
+        below: 50
+      - condition: state
+        entity_id: group.adults
+        state: "home"
+      - condition: state
+        entity_id: alarm_control_panel.alarmo
+        state: "disarmed"
     action:
-      - choose:
-          - conditions:
-              - condition: trigger
-                id: "doors_unlocked"
-            sequence:
-              # Set red LED
-              - service: script.lzw30_set_led
-                data:
-                  entity: switch.kitchen_island
-                  led_colour: 0
-                  led_brightness: 10
-          - conditions:
-              - condition: trigger
-                id: "doors_locked"
-            sequence:
-              # Set blue LED
-              - service: script.lzw30_set_led
-                data:
-                  entity: switch.kitchen_island
-                  led_colour: 170
-                  led_brightness: 5
+      - service: light.turn_on
+        entity_id: light.kitchen_island
 
   - alias: Garage Control with Kitchen Switch
     id: living_garage_control_kitchen_switch
