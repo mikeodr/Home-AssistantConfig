@@ -253,7 +253,12 @@ automation:
         entity_id: lock.side_door
         to: "unlocked"
         for:
-          minutes: 5
+          minutes: 1
+      - platform: state
+        entity_id: binary_sensor.side_door_open
+        to: "off"
+        for:
+          seconds: 15
     condition:
       or:
         - condition: time
@@ -263,6 +268,7 @@ automation:
           after: "15:30:00"
           before: "17:30:00"
     action:
+      - wait_template: "{{ is_state('binary_sensor.side_door_open', 'off') }}"
       - service: lock.lock
         entity_id: lock.side_door
 
