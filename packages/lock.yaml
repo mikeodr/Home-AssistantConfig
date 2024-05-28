@@ -68,8 +68,7 @@ automation:
         at: "22:30:00"
       - platform: state
         entity_id:
-          - lock.front_door
-          - lock.side_door
+          - group.locks
         to: "unlocked"
         for:
           minutes: 5
@@ -84,6 +83,7 @@ automation:
               - service: lock.lock
                 entity_id: lock.front_door
           - sequence:
+              - wait_template: "{{ is_state('binary_sensor.side_door_open', 'off') }}"
               - service: lock.lock
                 entity_id: lock.side_door
 
