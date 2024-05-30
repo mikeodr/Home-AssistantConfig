@@ -205,6 +205,9 @@ automation:
         entity_id:
           - group.locks
           - cover.garage
+        not_from:
+          - "unknown"
+          - "unavailable"
         to: ~
     condition:
       - condition: template
