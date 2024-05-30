@@ -216,7 +216,7 @@ automation:
       - variables:
           duration: >-
             {% if is_state('cover.garage', 'closed') and is_state('group.locks', 'locked') %}
-              60
+              30
             {% else %}
               255
             {% endif %}
@@ -241,4 +241,5 @@ automation:
             - light.back_deck_light
             - light.main_stairs
             - light.upstairs_hall
+            - light.main_bath_light
             - light.basement_stairs
