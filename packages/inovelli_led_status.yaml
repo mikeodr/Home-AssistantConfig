@@ -33,6 +33,33 @@ script:
                    "level": "{{ level }}",
                    "duration": "{{ duration }}"}}
 
+  blue_set_default_level:
+    alias: "Inovelli Blue Set Default Dimmer Level"
+    fields:
+      default_level:
+        description: "Default Level 0-255Default level for the load when it is turned on at the switch. A setting of 255 means that the switch will return to the level that it was on before it was turned off."
+        example: "255"
+      entity_id:
+        description: "Entities to set default level for"
+    sequence:
+      - repeat:
+          for_each: "{{ entity_id }}"
+          sequence:
+            - variables:
+                z2m_id: >-
+                  {% set identifiers = device_attr(repeat.item, "identifiers") | first %}
+                  {{ identifiers[1].split('_') | last }}
+            - service: mqtt.publish
+              data:
+                topic_template: "zigbee2mqtt/{{ z2m_id }}/set"
+                payload: >-
+                  {"defaultLevelLocal": "{{ default_level | default(200) }}"}
+            - service: mqtt.publish
+              data:
+                topic_template: "zigbee2mqtt/{{ z2m_id }}/set"
+                payload_template: >-
+                  {"defaultLevelRemote": "{{ default_level | default(200) }}"}
+
   lzw30_set_led:
     alias: "Inovelli LZW30 LED Status"
     mode: restart
