@@ -25,6 +25,10 @@ timer:
     name: Turn off Girls lights
     duration: 00:10:00
     restore: true
+  bedtime_stairs_light_off:
+    name: Turn off Stairs Lights
+    duration: 01:00:00
+    restore: true
 
 scene:
   - name: nursery_led_on
@@ -850,21 +854,30 @@ automation:
 
   - alias: Turn off hall lights door open
     id: girls_hall_lights_off_door_open
-    mode: single
+    mode: queued
+    max: 5
     max_exceeded: silent
     trigger:
       # Stair Light off
       - platform: state
         entity_id: binary_sensor.nursery_door
         to: "on" # Door Open
+        not_from:
+          - "unknown"
+          - "unavailable"
         id: lights_off
-      - platform: time
-        at: "21:00:00"
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.bedtime_stairs_light_off
         id: lights_off
       # Stair Light on, door closed
       - platform: state
         entity_id: binary_sensor.nursery_door
         to: "off" # Door closed
+        not_from:
+          - "unknown"
+          - "unavailable"
         id: lights_on
     condition:
       - condition: state
@@ -880,6 +893,8 @@ automation:
                 entity_id:
                   - light.main_stairs
                   - light.upstairs_hall
+              - service: timer.cancel
+                entity_id: timer.bedtime_stairs_light_off
           - conditions:
               - condition: trigger
                 id: lights_on
@@ -891,3 +906,5 @@ automation:
                   seconds: 5
               - service: light.turn_on
                 entity_id: light.main_stairs
+              - service: timer.start
+                entity_id: timer.bedtime_stairs_light_off
