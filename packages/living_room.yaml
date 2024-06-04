@@ -172,22 +172,10 @@ automation:
         variables:
           default_level: 60
     action:
-      parallel:
-        - service: mqtt.publish
-          data:
-            topic: zigbee2mqtt/Living Room Light/set
-            payload: >-
-              {"defaultLevelLocal": "{{ default_level | default(100) }}",
-               "defaultLevelRemote": "{{ default_level | default(100) }}"}
-        - service: mqtt.publish
-          data:
-            topic: zigbee2mqtt/Kitchen Light/set
-            payload: >-
-              {"defaultLevelLocal": "{{ default_level | default(100) }}",
-               "defaultLevelRemote": "{{ default_level | default(100) }}"}
-        - service: mqtt.publish
-          data:
-            topic: zigbee2mqtt/Front Hall/set
-            payload: >-
-              {"defaultLevelLocal": "{{ default_level | default(100) }}",
-               "defaultLevelRemote": "{{ default_level | default(100) }}"}
+      - service: script.blue_set_default_level
+        data:
+          default_level: "{{ default_level | default(100) }}"
+          entity_id:
+            - light.kitchen_light
+            - light.living_room_light
+            - light.front_hall
