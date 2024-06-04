@@ -95,7 +95,7 @@ automation:
           transition: 900
           brightness_pct: 60
 
-  - alias: Set default dimmer value based on sun elevation
+  - alias: Set basement default dimmer value based on sun elevation
     id: basement_dimmer_set_restore_value_sun_angle
     trigger:
       - platform: numeric_state
@@ -104,34 +104,28 @@ automation:
         below: 5.0
         id: below
         variables:
-          default_level: 60
+          default_level: 152 # 60 %
       - platform: numeric_state
         entity_id: sun.sun
         attribute: elevation
         above: 5.0
         id: above
         variables:
-          default_level: 90
+          default_level: 229 # 90%
     action:
-      - service: zwave_js.set_config_parameter
-        target:
-          entity_id: light.basement_room_light_dimmer
+      - service: script.blue_set_default_level
         data:
-          parameter: 9
-          value: "{{ default_level }}"
-      - service: zwave_js.set_config_parameter
-        target:
-          entity_id: light.basement_room_light_dimmer
-        data:
-          parameter: 10
-          value: "{{ default_level }}"
+          default_level: "{{ default_level | default(200) }}"
+          entity_id:
+            - light.basement_hall
+            - light.basement_room_light_dimmer
 
   - alias: Sync Basement Hall Light to Basement Room Light
     id: basement_sync_hall_room_lights
     trigger:
       - platform: state
         to: ~
-        entity_id: switch.basement_hall
+        entity_id: light.basement_hall
     condition:
       condition: template
       value_template: "{{ trigger.to_state.state in ['off', 'on'] }}"
@@ -148,69 +142,7 @@ automation:
       service: homeassistant.turn_off
       entity_id:
         - light.basement_room_light_dimmer
-        - switch.basement_hall
-
-  - alias: Status Light Basement switches
-    id: basement_light_status_switches
-    trigger:
-      - platform: state
-        entity_id: cover.garage
-        to: "open"
-        id: "garage_open"
-      - platform: state
-        entity_id: cover.garage
-        to: "closed"
-        id: "garage_closed"
-      - platform: state
-        entity_id: group.locks
-        to: "locked"
-        id: "doors_locked"
-      - platform: state
-        entity_id: group.locks
-        to: "unlocked"
-        id: "doors_unlocked"
-    action:
-      - choose:
-          - conditions:
-              - condition: trigger
-                id: "garage_open"
-            sequence:
-              # Set LED to Red
-              - service: script.lzw31_set_led
-                data:
-                  entity: light.basement_room_light_dimmer
-                  led_colour: 0
-                  led_brightness: 10
-          - conditions:
-              - condition: trigger
-                id: "garage_closed"
-            sequence:
-              # Set LED to Blue
-              - service: script.lzw31_set_led
-                data:
-                  entity: light.basement_room_light_dimmer
-                  led_colour: 170
-                  led_brightness: 5
-          - conditions:
-              - condition: trigger
-                id: "doors_unlocked"
-            sequence:
-              # Set LED to Red
-              - service: script.lzw30_set_led
-                data:
-                  entity: switch.basement_hall
-                  led_colour: 0
-                  led_brightness: 10
-          - conditions:
-              - condition: trigger
-                id: "doors_locked"
-            sequence:
-              # Set LED to blue
-              - service: script.lzw30_set_led
-                data:
-                  entity: switch.basement_hall
-                  led_colour: 170
-                  led_brightness: 5
+        - light.basement_hall
 
   - alias: Top of basement stairs action control
     id: basement_top_of_stairs_action_control
