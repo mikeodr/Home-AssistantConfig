@@ -79,6 +79,7 @@ automation:
                     - light.main_stairs
                     - light.upstairs_hall
                     - light.basement_stairs
+                    - light.basement_room_light_dimmer
           - conditions:
               - condition: trigger
                 id: internet_up
@@ -96,3 +97,4 @@ automation:
                     - light.main_stairs
                     - light.upstairs_hall
                     - light.basement_stairs
+                    - light.basement_room_light_dimmer
