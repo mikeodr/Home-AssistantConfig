@@ -16,16 +16,11 @@ automation:
         variables:
           default_level: 20
     action:
-      - service: mqtt.publish
+      - service: script.blue_set_default_level
         data:
-          topic: zigbee2mqtt/Main Bath Light/set
-          payload: >-
-            {"defaultLevelLocal": "{{ default_level | default(100) }}"}
-      - service: mqtt.publish
-        data:
-          topic: zigbee2mqtt/Main Bath Light/set
-          payload: >-
-            {"defaultLevelRemote": "{{ default_level | default(100) }}"}
+          default_level: "{{ default_level | default(100) }}"
+          entity_id:
+            - light.main_bath_light
 
   - alias: Dim Main Bath Light for Shower
     id: main_bath_time_light_shower
