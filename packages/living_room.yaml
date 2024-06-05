@@ -24,6 +24,52 @@ automation:
       - service: light.turn_on
         entity_id: light.kitchen_island
 
+  - alias: Front Hall Lock and Garage Control
+    id: living_front_hall_lock_garage_control
+    trigger:
+      - platform: state
+        entity_id: sensor.front_hall_action
+        to: "up_triple"
+        id: lock_unlock
+      - platform: state
+        entity_id: sensor.front_hall_action
+        to: "up_quadruple"
+        id: garage_up
+      - platform: state
+        entity_id: sensor.front_hall_action
+        to: "down_triple"
+        id: lock_lock
+      - platform: state
+        entity_id: sensor.front_hall_action
+        to: "down_quadruple"
+        id: garage_down
+    action:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: lock_unlock
+            sequence:
+              - service: lock.unlock
+                entity_id: lock.front_door
+          - conditions:
+              - condition: trigger
+                id: lock_lock
+            sequence:
+              - service: lock.lock
+                entity_id: lock.front_door
+          - conditions:
+              - condition: trigger
+                id: garage_up
+            sequence:
+              - service: cover.open_cover
+                entity_id: cover.garage
+          - conditions:
+              - condition: trigger
+                id: garage_down
+            sequence:
+              - service: cover.close_cover
+                entity_id: cover.garage
+
   - alias: Garage Control with Kitchen Switch
     id: living_garage_control_kitchen_switch
     trigger:
