@@ -1,6 +1,7 @@
 script:
   blue_set_led:
     alias: "Inovelli Blue 2-1 LED Script"
+    mode: parallel
     fields:
       color:
         description: "Color to set the color effect"
@@ -35,6 +36,7 @@ script:
 
   blue_set_default_level:
     alias: "Inovelli Blue Set Default Dimmer Level"
+    mode: parallel
     fields:
       default_level:
         description: "Default Level 0-255Default level for the load when it is turned on at the switch. A setting of 255 means that the switch will return to the level that it was on before it was turned off."
