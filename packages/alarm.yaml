@@ -137,10 +137,18 @@ automation:
         entity_id: cover.garage
         state: "open"
     action:
+      # Snapshot the camera
+      - service: camera.snapshot
+        continue_on_error: true
+        target:
+          entity_id: camera.garage_low
+        data:
+          filename: "/media/garage/snapshot.jpg"
       - service: notify.mobile_app_michaels_iphone
         data:
           message: "🚪 Garage Door Left Open 🚪"
           data:
+            image: "/media/local/garage/snapshot.jpg"
             tag: "alarmo-garage-open-alert"
             actions:
               - action: "CLOSE_GARAGE"
