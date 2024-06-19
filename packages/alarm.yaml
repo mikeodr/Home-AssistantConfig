@@ -112,6 +112,7 @@ automation:
       - platform: state
         entity_id: alarm_control_panel.alarmo
         to:
+          - arming
           - armed_night
           - armed_vacation
           - armed_away
@@ -127,6 +128,7 @@ automation:
       - platform: state
         entity_id: alarm_control_panel.alarmo
         to:
+          - arming
           - armed_night
           - armed_vacation
           - armed_away
