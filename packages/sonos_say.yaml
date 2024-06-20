@@ -1,47 +1,26 @@
 script:
   sonos_say:
     alias: "Sonos TTS script"
-    mode: restart
+    mode: queued
+    fields:
+      message:
+        description: "Message to play"
+        example: "Someone is at the door"
+      entity_id:
+        description: "Entities to notify"
+        example: "{}"
+      volume:
+        description: "Volume to play at"
+        example: "25"
     sequence:
-      - service: sonos.snapshot
+      - service: media_player.play_media
+        target:
+          entity_id: >
+            {{ entity_id }}
         data:
-          entity_id: "{{ sonos_entity }}"
-      - service: media_player.unjoin
-        data:
-          entity_id: "{{ sonos_entity }}"
-      - service: media_player.volume_set
-        data:
-          entity_id: "{{ sonos_entity }}"
-          volume_level: "{{ volume }}"
-      - service: tts.cloud_say
-        data:
-          entity_id: "{{ sonos_entity }}"
-          message: "{{ message }}"
-      - delay: "{{ delay }}"
-      - service: sonos.restore
-        data:
-          entity_id: "{{ sonos_entity }}"
-
-  sonos_group_say:
-    alias: "Sonos Group TTS Scripts"
-    mode: restart
-    sequence:
-      - service: sonos.snapshot
-        data:
-          entity_id: all
-      - service: media_player.join
-        data:
-          master: "{{ sonos_master }}"
-          entity_id: "{{ sonos_entities }}"
-      - service: media_player.volume_set
-        data:
-          entity_id: "{{ sonos_master }}"
-          volume_level: "{{ volume }}"
-      - service: tts.cloud_say
-        data:
-          entity_id: "{{ sonos_master }}"
-          message: "{{ message }}"
-      - delay: "{{ delay }}"
-      - service: sonos.restore
-        data:
-          entity_id: all
+          announce: true
+          media_content_id: >
+            media-source://tts/cloud?message="{{ message }}&cache=true"
+          media_content_type: "music"
+          extra:
+            volume: "{{ volume | default(25) }}"

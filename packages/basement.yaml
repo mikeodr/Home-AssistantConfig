@@ -194,8 +194,6 @@ automation:
     action:
       - service: script.sonos_say
         data:
-          sonos_entity: media_player.sonos_basement
-          volume: 0.25
+          entity_id:
+            - media_player.sonos_basement
           message: "Someone is at the door"
-          delay:
-            seconds: 4
