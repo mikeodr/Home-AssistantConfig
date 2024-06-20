@@ -83,7 +83,7 @@ automation:
     trigger:
       - platform: numeric_state
         entity_id: sensor.airthings_wave_111512_carbon_dioxide
-        above: 850
+        above: 950
         for:
           hours: 1
     condition:
@@ -95,4 +95,6 @@ automation:
         data:
           message: "CO2 is high, is HRV on?"
           data:
+            url: /lovelace/air-quality
+            clickAction: /lovelace/air-quality
             tag: "comfort-co2-high-notification"
