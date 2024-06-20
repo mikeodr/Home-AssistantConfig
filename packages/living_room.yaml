@@ -29,7 +29,7 @@ automation:
     trigger:
       - platform: state
         entity_id: sensor.front_hall_action
-        to: "up_triple"
+        to: "up_quadruple"
         id: lock_unlock
       - platform: state
         entity_id: sensor.front_hall_action
@@ -37,7 +37,7 @@ automation:
         id: garage_up
       - platform: state
         entity_id: sensor.front_hall_action
-        to: "down_triple"
+        to: "down_quadruple"
         id: lock_lock
       - platform: state
         entity_id: sensor.front_hall_action
