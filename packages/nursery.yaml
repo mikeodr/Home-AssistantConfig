@@ -180,7 +180,7 @@ automation:
                 default:
                   - service: scene.turn_on
                     entity_id: scene.baby_nap_off
-                  - service: homeassistant.turn_on
+                  - service: light.turn_on
                     entity_id: light.nursery_light
 
   - alias: Nursery Humidifier on evenings
