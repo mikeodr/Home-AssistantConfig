@@ -1,19 +1,26 @@
 automation:
-  - alias: Disable Climate If Door Ajar
+  - alias: Disable Climate If Door or Window Ajar
     id: disable_climate_door_ajar
     trigger:
       - platform: state
         id: "notification_door_open"
-        entity_id: binary_sensor.doors
+        entity_id:
+          - binary_sensor.doors
+          - binary_sensor.windows
         to: "on"
         for:
           minutes: 5
+    condition:
+      - not:
+          - condition: state
+            entity_id: climate.my_ecobee
+            state: "off"
     action:
       - variables:
           climate_restore_state: "{{ states('climate.my_ecobee') }}"
       - service: notify.adults
         data:
-          title: "A Door has been left open"
+          title: "A Door or window has been left open"
           message: "Disabling thermostat"
           data:
             tag: "front-door-open-warning"
