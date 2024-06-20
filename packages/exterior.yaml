@@ -265,9 +265,13 @@ automation:
         - condition: time
           after: "06:30:00"
           before: "08:00:00"
-        - condition: time
-          after: "15:30:00"
-          before: "17:30:00"
+        - and:
+            - condition: time
+              after: "16:00:00"
+              before: "17:00:00"
+            - condition: state
+              entity_id: binary_sensor.workday_sensor
+              state: "on"
     action:
       - wait_template: "{{ is_state('binary_sensor.side_door_open', 'off') }}"
       - service: lock.lock
