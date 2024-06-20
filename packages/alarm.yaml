@@ -213,29 +213,33 @@ automation:
     trigger:
       - platform: state
         entity_id:
-          - group.locks
+          - lock.locks
           - cover.garage
+          - binary_sensor.doors
         not_from:
           - "unknown"
           - "unavailable"
         to: ~
     condition:
+      - condition: state
+        entity_id: group.adults
+        state: "home"
       - condition: template
-        value_template: "{{ has_value('cover.garage') and has_value('group.locks') }}"
+        value_template: "{{ has_value('cover.garage') and has_value('lock.locks') and has_value('binary_sensor.doors') }}"
     action:
       - variables:
           duration: >-
-            {% if is_state('cover.garage', 'closed') and is_state('group.locks', 'locked') %}
+            {% if is_state('binary_sensor.doors', 'off') and is_state('cover.garage', 'closed') and is_state('lock.locks', 'locked') %}
               30
             {% else %}
               255
             {% endif %}
           color: >-
-            {# red 0, orange 5, green 85 #}
-            {% if is_state('cover.garage', 'closed') and is_state('group.locks', 'locked') %}
+            {# red 0, yellow 20, green 85 #}
+            {% if is_state('cover.garage', 'closed') and is_state('binary_sensor.doors', 'off') and is_state('lock.locks', 'locked') %}
               85
-            {% elif is_state('cover.garage', 'closed') and is_state('group.locks', 'unlocked') %}
-              5
+            {% elif is_state('binary_sensor.doors', 'off') and is_state('cover.garage', 'closed') and is_state('lock.locks', 'unlocked') %}
+              20
             {% else %}
               0
             {% endif %}
@@ -253,3 +257,4 @@ automation:
             - light.upstairs_hall
             - light.main_bath_light
             - light.basement_stairs
+            - light.basement_hall
