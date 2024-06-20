@@ -222,10 +222,8 @@ automation:
         entity_id: cover.garage
         to: "open"
       - platform: state
-        entity_id:
-          - lock.front_door
-          - lock.side_door
-        to: ~
+        entity_id: lock.locks
+        to: "unlocked"
       - platform: zone
         entity_id:
           - person.mike
@@ -233,6 +231,9 @@ automation:
           - device_tracker.tesla_location
         zone: zone.home
         event: enter
+      - platform: state
+        entity_id: binary_sensor.doors
+        to: "on"
       - platform: state
         entity_id: binary_sensor.front_door_doorbell
         from: "off"
