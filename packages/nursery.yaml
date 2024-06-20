@@ -861,9 +861,7 @@ automation:
 
   - alias: Turn off hall lights door open
     id: girls_hall_lights_off_door_open
-    mode: queued
-    max: 5
-    max_exceeded: silent
+    mode: restart
     trigger:
       # Stair Light off
       - platform: state
