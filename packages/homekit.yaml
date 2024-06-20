@@ -98,7 +98,7 @@ homekit:
         - sensor.bedroom_temperature
         - switch.master_humidifier
         # Basement
-        - switch.basement_hall
+        - light.basement_hall
         - sensor.living_room_temperature
       exclude_entities:
         - light.tagreader_led
