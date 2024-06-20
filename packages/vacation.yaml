@@ -26,11 +26,15 @@ automation:
             - top_floor
             - main_floor
             - basement
+      - service: fan.turn_off
+        target:
+          floor_id:
+            - top_floor
       - service: cover.close_cover
         entity_id: cover.garage
       - service: lock.lock
         entity_id:
-          - group.locks
+          - lock.locks
       - service: alarm_control_panel.alarm_arm_vacation
         target:
           entity_id: alarm_control_panel.alarmo
