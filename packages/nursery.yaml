@@ -804,6 +804,13 @@ automation:
         attribute: elevation
         above: 2.0
         id: turn_off
+    condition:
+      - not:
+          - condition: state
+            entity_id: alarm_control_panel.alarmo
+            state:
+              - armed_vacation
+              - armed_away
     action:
       - choose:
           - conditions:
