@@ -714,7 +714,7 @@ automation:
               - condition: time
                 before: "19:15:00"
             sequence:
-              - service: homeassistant.toggle
+              - service: light.toggle
                 entity_id: light.nursery_light
               - service: light.turn_off
                 data:
@@ -725,7 +725,7 @@ automation:
             data:
               entity_id:
                 - light.nursery_led
-          - service: homeassistant.turn_off
+          - service: light.turn_off
             entity_id: light.nursery_light
 
   - alias: Set warmer temperature for LED strip
