@@ -7,13 +7,6 @@ binary_sensor:
         delay_on:
           seconds: 10
 
-group:
-  locks:
-    name: Locks
-    entities:
-      - lock.front_door
-      - lock.side_door
-
 automation:
   - alias: Lock Jammed Acknowledge
     id: lock_jammed_acknowledged
@@ -68,7 +61,7 @@ automation:
         at: "22:30:00"
       - platform: state
         entity_id:
-          - group.locks
+          - lock.locks
         to: "unlocked"
         for:
           minutes: 5
