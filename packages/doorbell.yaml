@@ -41,7 +41,9 @@ automation:
           - input_boolean.nap_mode
           - input_boolean.quite_mode
           - switch.master_white_noise
-        to: ~
+        not_to:
+          - "unavailable"
+          - "unknown"
     action:
       - choose:
           - conditions:
