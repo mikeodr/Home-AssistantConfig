@@ -160,7 +160,7 @@ automation:
         entity_id: light.exterior_lights
         to: "on"
         for:
-          minutes: 30
+          hours: 1
     condition:
       - and:
           - condition: time
