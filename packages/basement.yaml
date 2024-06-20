@@ -148,11 +148,17 @@ automation:
     id: basement_top_of_stairs_action_control
     trigger:
       - platform: state
-        entity_id: sensor.basement_light_action
+        entity_id:
+          - sensor.basement_stairs_light_action
+          - sensor.basement_hall_action
+          - sensor.basement_room_action
         to: "up_double"
         id: turn_on
       - platform: state
-        entity_id: sensor.basement_light_action
+        entity_id:
+          - sensor.basement_stairs_light_action
+          - sensor.basement_hall_action
+          - sensor.basement_room_action
         to: "down_double"
         id: turn_off
     action:
@@ -163,16 +169,14 @@ automation:
             sequence:
               - service: light.turn_on
                 target:
-                  floor_id:
-                    - basement
+                  area_id: basement
           - conditions:
               - condition: trigger
                 id: turn_off
             sequence:
               - service: light.turn_off
                 target:
-                  floor_id:
-                    - basement
+                  floor_id: basement
 
   - alias: Doorbell notification when working
     id: basement_doorbell_notification_working
