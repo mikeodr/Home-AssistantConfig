@@ -125,6 +125,12 @@ automation:
               id: power_on
             - condition: template
               value_template: '{{ "Off Peak" in states("sensor.current_hydro_time_of_use_state") }}'
+            - not:
+                - condition: state
+                  entity_id: alarm_control_panel.alarmo
+                  state:
+                    - armed_vacation
+                    - armed_away
           sequence:
             - service: homeassistant.turn_on
               entity_id: switch.entertainment_switch_relay
