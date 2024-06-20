@@ -113,6 +113,8 @@ automation:
 
   - alias: Doorbell activated
     id: doorbell_activated
+    mode: single
+    max_exceeded: silent
     trigger:
       - platform: state
         entity_id: binary_sensor.front_door_doorbell
@@ -122,33 +124,47 @@ automation:
       - condition: state
         entity_id: group.adults
         state: "home"
+      - condition: state
+        entity_id: alarm_control_panel.alarmo
+        state: "disarmed"
     action:
-      # Pause the TV
-      - service: media_player.media_pause
-        entity_id: media_player.living_room_tv
-      # If it's halloween do fun things
-      - choose:
-          # Halloween Condition
-          - conditions:
-              - condition: template
-                value_template: "{{ now().month == 10 and now().day == 31 }}"
-              - condition: state
-                entity_id: input_boolean.nap_mode
-                state: "off"
-            sequence:
-              - service: script.sonos_say
-                data:
-                  sonos_entity: media_player.sonos_living_room
-                  volume: 0.25
-                  message: "Trick or treat!"
-                  delay:
-                    seconds: 4
+      - parallel:
+          # Pause the TV
+          - service: media_player.media_pause
+            entity_id: media_player.living_room_tv
+          # If it's halloween do fun things
+          - choose:
+              # Halloween Condition
+              - conditions:
+                  - condition: template
+                    value_template: "{{ now().month == 10 and now().day == 31 }}"
+                  - condition: state
+                    entity_id: input_boolean.nap_mode
+                    state: "off"
+                sequence:
+                  - service: script.sonos_say
+                    data:
+                      entity_id:
+                        - media_player.sonos_living_room
+                      message: "Trick or treat!"
+          - service: script.blue_set_led
+            data:
+              color: "150" # White
+              effect: "fast_blink"
+              level: 70
+              duration: 60 # 60 Seconds
+              entity_id:
+                - light.front_hall
+                - light.living_room_light
+                - light.back_deck_light
+                - light.main_stairs
+                - light.upstairs_hall
+                - light.main_bath_light
+                - light.basement_stairs
       - delay:
           # Debounce this from happening
           # again quickly.
           seconds: 30
-    mode: single
-    max_exceeded: silent
 
   - alias: Halloween Doorbell Audio
     id: doorbell_halloween_audio_message
