@@ -60,7 +60,7 @@ scene:
     entities:
       switch.nursery_white_noise:
         state: "off"
-      fan.nursery:
+      fan.girls_ceiling_fan:
         state: "off"
       fan.nursery_humidifier:
         state: "off"
@@ -208,84 +208,86 @@ automation:
       - service: homeassistant.turn_on
         entity_id: fan.nursery_humidifier
 
-  - alias: Nursery Fan On if needed
-    id: nursery_fan_temperature_conditional
+  - alias: Girls Fan Control
+    id: girls_fan_control
     trigger:
+      # Force on
       - platform: state
         entity_id: input_boolean.nap_mode
         to: "on"
-        id: force_on
-      - platform: time
-        at: "15:00:00"
-      - platform: time
-        at: "17:00:00"
-    condition:
-      - or:
-          - not:
-              - condition: state
-                entity_id: alarm_control_panel.alarmo
-                state: "armed_vacation"
-          - condition: state
-            entity_id: device_tracker.faux_girls_home
-            state: "home"
-      - or:
-          - condition: numeric_state
-            entity_id: weather.tomorrow_io_home_nowcast
-            attribute: temperature
-            above: 20
-          - condition: numeric_state
-            entity_id: sensor.girls_room_temperature #Acutal Room Temp
-            above: 22
-    action:
-      - choose:
-          # Manual trigger always turns on.
-          - conditions:
-              - condition: trigger
-                id: force_on
-            sequence:
-              service: homeassistant.turn_on
-              entity_id: fan.nursery
-          # If not a workday or override is set on
-          - conditions:
-              - or:
-                  - condition: state
-                    entity_id: binary_sensor.workday_sensor
-                    state: "off"
-                  - condition: state
-                    entity_id: input_boolean.girls_home_override
-                    state: "home"
-                  - condition: time
-                    after: "14:00:00"
-            sequence:
-              service: homeassistant.turn_on
-              entity_id: fan.nursery
-
-  - alias: Nursery Fan on if temperature rises
-    id: nursery_fan_temperature_rise_conditional
-    trigger:
-      platform: numeric_state
-      entity_id: sensor.girls_room_temperature
-      above: 23
-    condition:
-      - condition: state
-        entity_id: input_boolean.nap_mode
-        state: "on"
-      - condition: state
-        entity_id: fan.nursery
-        state: "off"
-    action:
-      - service: homeassistant.turn_on
-        entity_id: fan.nursery
-
-  - alias: Nursery Low Temperature Fan Off
-    id: nursery_low_temp_fan_off
-    trigger:
+        id: nap_on
+      - platform: numeric_state
+        entity_id: sensor.girls_room_temperature
+        above: 20.9
+        below: 25
+        variables:
+          fan_speed_percentage: 33
+      - platform: numeric_state
+        entity_id: sensor.girls_room_temperature
+        above: 24.9
+        variables:
+          fan_speed_percentage: 66
+      - platform: numeric_state
+        entity_id: sun.sun
+        attribute: azimuth
+        above: 150
+      # Force off
       - platform: numeric_state
         entity_id: sensor.girls_room_temperature
         below: 21
+        id: force_off
+    condition:
+      - not:
+          - condition: state
+            entity_id: sensor.season
+            state: "winter"
+          - condition: state
+            entity_id: alarm_control_panel.alarmo
+            state: "armed_vacation"
+          - condition: state
+            entity_id: climate.my_ecobee
+            state: "heat"
+      - condition: time
+        after: "11:00:00"
     action:
-      - service: homeassistant.turn_off
-        entity_id: fan.nursery
+      - choose:
+          # Force off
+          - conditions:
+              - condition: trigger
+                id: force_off
+            sequence:
+              - service: fan.turn_off
+                target:
+                  entity_id: fan.girls_ceiling_fan
+          # Turn on as needed
+          - conditions:
+              - or:
+                  - condition: numeric_state
+                    entity_id: weather.tomorrow_io_home_nowcast
+                    attribute: temperature
+                    above: 18
+                  - condition: numeric_state
+                    entity_id: sensor.girls_room_temperature #Actual Room Temp
+                    above: 21
+            sequence:
+              - if:
+                  - condition: trigger
+                    id: nap_on
+                  - condition: numeric_state
+                    entity_id: sensor.girls_room_temperature
+                    above: 25
+                then:
+                  - service: fan.turn_on
+                    target:
+                      entity_id: fan.girls_ceiling_fan
+                    data:
+                      percentage: 66
+                else:
+                  - service: fan.turn_on
+                    target:
+                      entity_id: fan.girls_ceiling_fan
+                    data:
+                      percentage: "{{ fan_speed_percentage | default(33) }}"
 
   - alias: Nursery Temperature Warning
     id: nursery_temp_warning
@@ -913,3 +915,19 @@ automation:
                 entity_id: light.main_stairs
               - service: timer.start
                 entity_id: timer.bedtime_stairs_light_off
+
+  - alias: Link Switch LED to light state
+    id: girls_linked_led_to_light_state
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id: light.girls_fan
+        to:
+          - "on"
+          - "off"
+    condition:
+      - condition: template
+        value_template: '{{ trigger.to_state.state in ["off", "on"] }}'
+    action:
+      service: light.turn_{{ trigger.to_state.state }}
+      entity_id: light.girls_room_switch
