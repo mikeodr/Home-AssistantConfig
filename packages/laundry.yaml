@@ -27,7 +27,9 @@ timer:
 automation:
   - alias: Laundry Notification
     id: laundry_simple_laundry_notification
-    mode: restart
+    mode: queued
+    max: 5
+    max_exceeded: silent
     trigger:
       # Notify events
       - platform: state
@@ -40,6 +42,13 @@ automation:
         event_data:
           entity_id: timer.laundry_done
         id: notify_to_move
+      # Arriving home trigger, force early notification
+      - platform: state
+        entity_id: group.adults
+        to: "home"
+        for:
+          minutes: 10
+        id: arrived_home
       # Stop timer events
       - platform: event
         event_type: mobile_app_notification_action
@@ -65,13 +74,17 @@ automation:
               - condition: trigger
                 id: notify_to_move
             sequence:
+              # Start the timer again
               - service: timer.start
                 entity_id: timer.laundry_done
+              # Clear old notification so new one
+              # notifies phones
               - service: notify.adults
                 data:
                   message: "clear_notification"
                   data:
                     tag: "laundry-done-notification"
+              # Notify anyone home
               - repeat:
                   for_each: >
                     {{ states.person | selectattr('state', 'eq', 'home') | map(attribute='attributes.notifier') | list}}
@@ -91,6 +104,7 @@ automation:
                               authenticationRequired: true
                               destructive: true
                               behavior: "default"
+              # Flash switch LEDs to notify
               - if:
                   - condition: state
                     entity_id: group.adults
@@ -108,7 +122,9 @@ automation:
                         - light.back_deck_light
                         - light.main_stairs
                         - light.upstairs_hall
+                        - light.main_bath_light
                         - light.basement_stairs
+                        - light.basement_room_light_dimmer
           - conditions:
               - condition: trigger
                 id: laundry_moved
@@ -133,4 +149,18 @@ automation:
                       - light.back_deck_light
                       - light.main_stairs
                       - light.upstairs_hall
+                      - light.main_bath_light
                       - light.basement_stairs
+          - conditions:
+              # If arriving home trigger notification early
+              # by finishing the timer if it's active causing
+              # the automation to run again with the timer
+              # finished event
+              - condition: trigger
+                id: arrived_home
+              - condition: state
+                entity_id: timer.laundry_done
+                state: "active"
+            sequence:
+              - service: timer.finish
+                entity_id: timer.laundry_done
