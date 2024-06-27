@@ -7,8 +7,7 @@ timer:
 automation:
   - alias: Basement Light Presence Control On
     id: basement_light_presence_controls_on
-    mode: queued
-    max: 25
+    mode: restart
     trigger:
       - platform: state
         entity_id: binary_sensor.basement_presence
@@ -65,8 +64,11 @@ automation:
         - conditions:
             - condition: trigger
               id: timer_lights_off
+            - condition: state
+              entity_id: binary_sensor.basement_presence
+              state: "off"
           sequence:
-            - wait_template: "{{ (states('sensor.mike_apple_watch_estimated_distance') |float(0) > 0.5) or states('device_tracker.mike_apple_watch_ble', 'not_home') }}"
+            - wait_template: "{{ (states('sensor.mike_apple_watch_estimated_distance') |float(0) > 0.5) or is_state('device_tracker.mike_apple_watch_ble', 'not_home') }}"
               timeout:
                 minutes: 10
               continue_on_timeout: true
