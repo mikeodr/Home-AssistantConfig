@@ -1,53 +1,42 @@
 ios:
   actions:
     - name: toggle_garage
-      background_color: "#000000"
       icon:
         icon: garage
-        color: "#ffffff"
+        color: "#000000"
       label:
         text: "Toggle Garage"
-        color: "#ffffff"
     - name: lock_door
-      background_color: "#000000"
       icon:
         icon: lock
-        color: "#ffffff"
+        color: "#000000"
       label:
         text: "Lock Door"
-        color: "#ffffff"
     - name: unlock_door
-      background_color: "#000000"
       icon:
         icon: lock-open
-        color: "#ffffff"
+        color: "#000000"
       label:
         text: "Unlock Door"
-        color: "#ffffff"
     - name: toggle_spare_bedroom_fan
-      background_color: "#000000"
       icon:
         icon: fan
-        color: "#ffffff"
+        color: "#000000"
       label:
         text: "Spare Bedroom Fan"
-        color: "#ffffff"
+      show_in_carplay: false
     - name: alarm_arm_away
-      background_color: "#000000"
       icon:
         icon: shield-lock
-        color: "#ffffff"
+        color: "#000000"
       label:
         text: "Arm Alarm"
-        color: "#ffffff"
     - name: alarm_disarm
-      background_color: "#000000"
       icon:
         icon: shield-lock-open
-        color: "#ffffff"
+        color: "#000000"
       label:
         text: "Disarm Alarm"
-        color: "#ffffff"
 
 sensor:
   - platform: template
@@ -83,7 +72,11 @@ sensor:
           |🧍‍♀️
           {%- endif -%}
           {%- if states("alarm_control_panel.alarmo") not in ['disarmed'] -%}
+          {%- if states("alarm_control_panel.alarmo") in ['armed_vacation'] -%}
+          |🌴
+          {%- else -%}
           |🛡️
+          {%- endif -%}
           {%- endif -%}
           {%- if is_state("alarm_control_panel.alarmo", "triggered") -%}
           |🚨
@@ -93,6 +86,9 @@ sensor:
           |🗑
           {%- else -%}
           |♻
+          {%- endif -%}
+          {% if 'Yard Waste' in state_attr('sensor.waste_current_pickup', 'pickup_types') -%}
+          🍂
           {%- endif -%}
           {%- endif -%}
       ios_main_status_body1:
