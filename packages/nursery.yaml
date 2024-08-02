@@ -587,7 +587,7 @@ automation:
           time: >
             {%- if holidays["calendar.ontario_holidays"]["events"]| count > 0 -%}
               07:30:00
-            {%- elif (now() + timedelta(hours=24)).weekday() in [6, 7] -%}
+            {%- elif (now() + timedelta(hours=24)).isoweekday() in [6, 7] -%}
               07:30:00
             {%- else -%}
               07:00:00
