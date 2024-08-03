@@ -310,3 +310,28 @@ automation:
         continue_on_timeout: false
       - service: lock.unlock
         entity_id: lock.front_door
+
+  - alias: Lock Jammed Notification
+    id: exterior_lock_jammed_notification
+    mode: queued
+    max: 5
+    max_exceeded: silent
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.front_door_lock_jammed
+          - binary_sensor.side_door_lock_jammed
+        from: "off"
+        to: "on"
+    action:
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          title: "🔓 Lock is Jammed 🔓"
+          message: "{{ trigger.to_state.name }}"
+          data:
+            tag: "exterior-lock-jammed"
+            push:
+              sound:
+                name: "default"
+                critical: 1
+                volume: 1.0
