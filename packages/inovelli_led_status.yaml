@@ -63,3 +63,22 @@ script:
                 topic: "zigbee2mqtt/{{ z2m_id }}/set"
                 payload: >-
                   {"defaultLevelRemote": "{{ default_level | default(200) }}"}
+
+automation:
+  - alias: Clear Switch LED signals on start
+    id: inovelli_clear_led_start
+    trigger:
+      - platform: homeassistant
+        event: start
+    action:
+      - service: script.blue_set_led
+        data:
+          color: "255" # White
+          effect: "clear_effect"
+          level: 70
+          duration: 65 # 5 minutes
+          entity_id: |
+            {{ states.light
+             | map(attribute="entity_id")
+             | select('is_device_attr', 'model', '2-in-1 switch + dimmer (VZM31-SN)')
+             | list}}
