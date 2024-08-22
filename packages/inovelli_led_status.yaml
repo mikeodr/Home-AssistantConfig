@@ -28,8 +28,8 @@ script:
                   {{ identifiers[1].split('_') | last }}
             - service: mqtt.publish
               data:
-                topic_template: "zigbee2mqtt/{{ z2m_id }}/set"
-                payload_template: >-
+                topic: "zigbee2mqtt/{{ z2m_id }}/set"
+                payload: >-
                   {"led_effect": {"effect": "{{ effect }}",
                    "color": "{{ color }}",
                    "level": "{{ level }}",
@@ -55,11 +55,11 @@ script:
                   {{ identifiers[1].split('_') | last }}
             - service: mqtt.publish
               data:
-                topic_template: "zigbee2mqtt/{{ z2m_id }}/set"
+                topic: "zigbee2mqtt/{{ z2m_id }}/set"
                 payload: >-
                   {"defaultLevelLocal": "{{ default_level | default(200) }}"}
             - service: mqtt.publish
               data:
-                topic_template: "zigbee2mqtt/{{ z2m_id }}/set"
-                payload_template: >-
+                topic: "zigbee2mqtt/{{ z2m_id }}/set"
+                payload: >-
                   {"defaultLevelRemote": "{{ default_level | default(200) }}"}
