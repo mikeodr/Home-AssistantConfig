@@ -1,42 +1,59 @@
 ios:
   actions:
     - name: toggle_garage
+      background_color: "#000000"
       icon:
         icon: garage
-        color: "#000000"
+        color: "#ffffff"
       label:
         text: "Toggle Garage"
+        color: "#ffffff"
+      use_custom_colors: true
     - name: lock_door
+      background_color: "#000000"
       icon:
         icon: lock
-        color: "#000000"
+        color: "#ffffff"
       label:
         text: "Lock Door"
+        color: "#ffffff"
+      use_custom_colors: true
     - name: unlock_door
+      background_color: "#000000"
       icon:
         icon: lock-open
-        color: "#000000"
+        color: "#ffffff"
       label:
         text: "Unlock Door"
+        color: "#ffffff"
+      use_custom_colors: true
     - name: toggle_spare_bedroom_fan
+      background_color: "#000000"
       icon:
         icon: fan
-        color: "#000000"
+        color: "#ffffff"
       label:
         text: "Spare Bedroom Fan"
-      show_in_carplay: false
+        color: "#ffffff"
+      use_custom_colors: true
     - name: alarm_arm_away
+      background_color: "#000000"
       icon:
         icon: shield-lock
-        color: "#000000"
+        color: "#ffffff"
       label:
         text: "Arm Alarm"
+        color: "#ffffff"
+      use_custom_colors: true
     - name: alarm_disarm
+      background_color: "#000000"
       icon:
         icon: shield-lock-open
-        color: "#000000"
+        color: "#ffffff"
       label:
         text: "Disarm Alarm"
+        color: "#ffffff"
+      use_custom_colors: true
 
 sensor:
   - platform: template
