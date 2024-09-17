@@ -130,7 +130,7 @@ sensor:
         friendly_name: "iOS Watch Complication Body 2"
         unique_id: ios_main_status_body2
         value_template: >-
-          📺{{ states('sensor.plex_mikeflix') }}
+          📺{{ states('sensor.mikeflix') }}
           {%- if is_state('binary_sensor.washer_status', 'on') -%}
           |🧺
           {%- endif -%}
