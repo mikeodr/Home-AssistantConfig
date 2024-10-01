@@ -6,12 +6,29 @@ sensor:
     max_age:
       minutes: 2
 
+  - platform: statistics
+    name: Dryer Power Average
+    entity_id: sensor.dryer_power
+    state_characteristic: mean
+    max_age:
+      minutes: 2
+
 template:
   - binary_sensor:
       - name: Washer Status
         unique_id: laundry_binary_sensor_status
         icon: mdi:washing-machine
         state: "{{ states('sensor.washing_machine_power_average') | float(0) | default(0) > 4 }}"
+        device_class: running
+        delay_on:
+          minutes: 5
+        delay_off:
+          minutes: 2
+
+      - name: Dryer Status
+        unique_id: dryer_binary_sensor_status
+        icon: mdi:washing-machine
+        state: "{{ states('sensor.laundry_dryer_power_average') | float(0) | default(0) > 3000 }}"
         device_class: running
         delay_on:
           minutes: 5
@@ -56,7 +73,7 @@ automation:
           action: "laundry_moved"
         id: laundry_moved
       - platform: state
-        entity_id: binary_sensor.dryer_running
+        entity_id: binary_sensor.dryer_status
         to: "on"
         for:
           minutes: 5
@@ -77,6 +94,12 @@ automation:
               # Start the timer again
               - service: timer.start
                 entity_id: timer.laundry_done
+              - if:
+                  - condition: state
+                    entity_id: binary_sensor.washer_status
+                    state: "on"
+                then:
+                  - stop: "Washer is running, likely moved."
               # Clear old notification so new one
               # notifies phones
               - service: notify.adults
