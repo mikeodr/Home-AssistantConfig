@@ -39,7 +39,7 @@ automation:
         target:
           entity_id: alarm_control_panel.alarmo
 
-  - alias: Keep Ecobee in Away move
+  - alias: Keep Ecobee in Away mode
     id: vacaiton_keep_ecobee_away
     trigger:
       - platform: state
@@ -94,7 +94,7 @@ automation:
         below: 2.0
         id: light_on
       - platform: time
-        at: "22:00:00"
+        at: "22:30:00"
         id: light_off
     condition:
       - condition: state
@@ -111,7 +111,7 @@ automation:
               - service: light.turn_on
                 entity_id: light.kitchen_island
               - delay:
-                  minutes: "{{ (range(5, 15)|random|int) }}"
+                  minutes: "{{ (range(15, 45)|random|int) }}"
               - service: light.turn_on
                 entity_id:
                   - light.main_stairs
