@@ -137,7 +137,7 @@ automation:
               # Halloween Condition
               - conditions:
                   - condition: template
-                    value_template: "{{ now().month == 10 and now().day == 31 }}"
+                    value_template: "{{ now().month == 10 and now().day == 31 and now().hour > 17 }}"
                   - condition: state
                     entity_id: input_boolean.nap_mode
                     state: "off"
