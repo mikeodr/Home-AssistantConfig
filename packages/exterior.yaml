@@ -305,6 +305,9 @@ automation:
           - platform: state
             entity_id: cover.garage
             to: "open"
+            not_from:
+              - "unknown"
+              - "unavailable"
         timeout:
           minutes: 15
         continue_on_timeout: false
@@ -326,7 +329,7 @@ automation:
     action:
       - service: notify.mobile_app_michaels_iphone
         data:
-          title: "🔓 Lock is Jammed 🔓"
+          title: "🔓 Lock Jammed 🔓"
           message: "{{ trigger.to_state.name }}"
           data:
             tag: "exterior-lock-jammed"
