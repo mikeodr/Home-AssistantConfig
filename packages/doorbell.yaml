@@ -147,6 +147,14 @@ automation:
                       entity_id:
                         - media_player.sonos_living_room
                       message: "Trick or treat!"
+            default:
+              - service: script.sonos_say
+                data:
+                  entity_id:
+                    - media_player.sonos_basement
+                    - media_player.sonos_living_room
+                  message: "Someone is at the door"
+                  volume: 30
           - service: script.blue_set_led
             data:
               color: "150" # White
@@ -277,22 +285,3 @@ automation:
               option: Default Message (WELCOME)
             target:
               entity_id: select.front_door_doorbell_text
-
-  - alias: Doorbell notification
-    id: doorbell_notification
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.front_door_doorbell
-        to: "on"
-    condition:
-      - condition: state
-        entity_id: alarm_control_panel.alarmo
-        state: "disarmed"
-    action:
-      - service: script.sonos_say
-        data:
-          entity_id:
-            - media_player.sonos_basement
-            - media_player.sonos_living_room
-          message: "Someone is at the door"
-          volume: 30
