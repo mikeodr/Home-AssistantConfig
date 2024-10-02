@@ -138,6 +138,44 @@ automation:
                       entity_id: group.presence_home
                       state: "not_home"
                   sequence:
-                    - service: alarm_control_panel.alarm_arm_away
-                      target:
-                        entity_id: alarm_control_panel.alarmo
+                    - if:
+                        - condition: numeric_state
+                          entity_id: sensor.home_nearest_distance
+                          above: 55000
+                      then:
+                        - service: alarm_control_panel.alarm_arm_vacation
+                          target:
+                            entity_id: alarm_control_panel.alarmo
+                      else:
+                        - service: alarm_control_panel.alarm_arm_away
+                          target:
+                            entity_id: alarm_control_panel.alarmo
+
+  - alias: Lock doors when nearby but not on wifi
+    id: lock_secure_house_nearby_but_offline
+    trigger:
+      - platform: state
+        entity_id:
+          - device_tracker.mikeiphone14_unifi
+          - device_tracker.tiffanys_iphone_unifi
+        to: "not_home"
+        for:
+          minutes: 10
+    condition:
+      - condition: state
+        entity_id: group.adults
+        state: "home"
+      - condition: state
+        entity_id:
+          - device_tracker.mikeiphone14_unifi
+          - device_tracker.tiffanys_iphone_unifi
+        state: "not_home"
+      - condition: state
+        entity_id: lock.locks
+        state: "unlocked"
+    action:
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          message: "Wifi Auto Lock Triggered"
+      - service: lock.lock
+        entity_id: lock.locks
