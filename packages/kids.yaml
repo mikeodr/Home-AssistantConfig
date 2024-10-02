@@ -23,7 +23,7 @@ automation:
           - device_tracker.tiffanys_iphone
         zone: zone.camp
         event: enter
-        id: enter_pickup_zone
+        id: enter_camp_zone
       - platform: time
         at: input_datetime.pickup_girls_reminder
         id: pickup_reminder
@@ -37,8 +37,14 @@ automation:
     action:
       - choose:
           - conditions:
-              - condition: trigger
-                id: enter_pickup_zone
+              - or:
+                  - and:
+                      - condition: trigger
+                        id: enter_pickup_zone
+                      - condition: template
+                        value_template: "{{ now().month >= 9 or now().month <= 6 }}"
+                  - condition: trigger
+                    id: enter_camp_zone
             sequence:
               - service: input_datetime.set_datetime
                 target:
