@@ -1,26 +1,4 @@
 automation:
-  - alias: Presence Notifications Home
-    id: presence_notification_home
-    trigger:
-      - platform: state
-        entity_id: person.tiff
-        to: ~
-    condition:
-      - condition: state
-        entity_id: person.mike
-        state: "not_home"
-        for:
-          minutes: 10
-    action:
-      service: notify.mobile_app_michaels_iphone
-      data:
-        title: "HASS Presence Notification"
-        message: >
-          {{ trigger.to_state.attributes.friendly_name }} is {% if trigger.to_state.state == 'home' %}back{% else %}away{% endif %}.
-        data:
-          tag: "tiff-presence-notification"
-          group: "presence-notification"
-
   - alias: Return Home Annoucement
     id: return_home_annoucement
     trigger:
