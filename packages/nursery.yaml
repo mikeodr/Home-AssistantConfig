@@ -216,9 +216,18 @@ automation:
         entity_id: input_boolean.nap_mode
         to: "on"
         id: nap_on
+      - platform: state
+        entity_id: alarm_control_panel.alarmo
+        from: "armed_vacation"
+        not_to:
+          - unknown
+          - unavailable
+          - triggered
+        variables:
+          fan_speed_percentage: 33
       - platform: numeric_state
         entity_id: sensor.girls_room_temperature
-        above: 20.9
+        above: 22.0
         below: 25
         variables:
           fan_speed_percentage: 33
@@ -234,7 +243,7 @@ automation:
       # Force off
       - platform: numeric_state
         entity_id: sensor.girls_room_temperature
-        below: 21
+        below: 22.5
         id: force_off
     condition:
       - not:
@@ -336,11 +345,18 @@ automation:
           entity_id: timer.girls_lights_off
         id: timer_finished
     condition:
+      - or:
+          - condition: state
+            entity_id: light.nursery_light
+            state: "on"
+          - condition: state
+            entity_id: light.nursery_led
+            state: "on"
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "off"
       - condition: time
-        before: "18:00:00"
+        before: "19:00:00"
     action:
       - choose:
           - conditions:
@@ -413,7 +429,7 @@ automation:
         entity_id: binary_sensor.nursery_door
         to: "on"
         for:
-          minutes: 5
+          minutes: 10
         id: left_open
       - platform: state
         entity_id: binary_sensor.nursery_door
@@ -510,7 +526,7 @@ automation:
     condition:
       # Bedtime
       - condition: time
-        after: "19:00:00"
+        after: "19:30:00"
       - condition: state
         entity_id: light.nursery_light
         state: "off"
@@ -806,6 +822,9 @@ automation:
         attribute: elevation
         above: 2.0
         id: turn_off
+      - platform: time
+        at: "22:00:00"
+        id: turn_off
     condition:
       - not:
           - condition: state
@@ -864,6 +883,8 @@ automation:
   - alias: Turn off hall lights door open
     id: girls_hall_lights_off_door_open
     mode: restart
+    trace:
+      stored_traces: 50
     trigger:
       # Stair Light off
       - platform: state
@@ -903,11 +924,12 @@ automation:
               - service: timer.cancel
                 entity_id: timer.bedtime_stairs_light_off
           - conditions:
-              - condition: trigger
-                id: lights_on
-              - condition: time
-                after: "18:30:00"
-                before: "21:00:00"
+              - and:
+                  - condition: trigger
+                    id: lights_on
+                  - condition: time
+                    after: "18:30:00"
+                    before: "21:00:00"
             sequence:
               - delay:
                   seconds: 5
