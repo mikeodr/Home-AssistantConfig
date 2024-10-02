@@ -13,7 +13,7 @@ automation:
           minutes: 15
       - condition: numeric_state
         entity_id: sensor.living_room_illuminance_lux
-        below: 50
+        below: 20
       - condition: state
         entity_id: group.adults
         state: "home"
@@ -29,7 +29,7 @@ automation:
     trigger:
       - platform: state
         entity_id: sensor.front_hall_action
-        to: "up_quadruple"
+        to: "up_triple"
         id: lock_unlock
       - platform: state
         entity_id: sensor.front_hall_action
@@ -37,7 +37,7 @@ automation:
         id: garage_up
       - platform: state
         entity_id: sensor.front_hall_action
-        to: "down_quadruple"
+        to: "down_triple"
         id: lock_lock
       - platform: state
         entity_id: sensor.front_hall_action
