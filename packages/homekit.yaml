@@ -97,8 +97,11 @@ homekit:
         - switch.master_white_noise
         - sensor.bedroom_temperature
         - switch.master_humidifier
-        # Basement
-        - light.basement_hall
+        # Living Room
         - sensor.living_room_temperature
+        - switch.entertainment_switch_relay
       exclude_entities:
         - light.tagreader_led
+        - light.basement_lights
+        - light.exterior_lights
+        - light.living_room_light_group
