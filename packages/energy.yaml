@@ -89,6 +89,8 @@ automation:
         to:
           - Mid Peak
           - On Peak
+        from:
+          - Off Peak
         id: power_off
       - platform: state
         entity_id: alarm_control_panel.alarmo
@@ -100,6 +102,7 @@ automation:
       - platform: state
         entity_id: alarm_control_panel.alarmo
         to: disarmed
+        not_from: triggered
         id: power_on
       - platform: state
         entity_id: sensor.current_hydro_time_of_use_state
