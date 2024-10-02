@@ -73,6 +73,8 @@ automation:
     trigger:
       - platform: event
         event_type: "ios_wakeup_event"
+      - platform: time
+        at: "05:00:00"
     condition:
       - condition: state
         entity_id: alarm_control_panel.alarmo
