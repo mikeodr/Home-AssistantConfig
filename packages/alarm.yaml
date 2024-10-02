@@ -221,7 +221,9 @@ automation:
         not_from:
           - "unknown"
           - "unavailable"
-        to: ~
+        not_to:
+          - "unknown"
+          - "unavailable"
     condition:
       - condition: state
         entity_id: group.adults
