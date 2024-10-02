@@ -68,10 +68,10 @@ automation:
               entity_id: binary_sensor.basement_presence
               state: "off"
           sequence:
-            - wait_template: "{{ (states('sensor.mike_apple_watch_estimated_distance') |float(0) > 0.5) or is_state('device_tracker.mike_apple_watch_ble', 'not_home') }}"
+            - wait_template: "{{ (states('sensor.mike_apple_watch_estimated_distance') |float(0) > 0.59) or is_state('device_tracker.mike_apple_watch_ble', 'not_home') }}"
               timeout:
-                minutes: 10
-              continue_on_timeout: true
+                minutes: 5
+              continue_on_timeout: false
             - service: light.turn_off
               entity_id:
                 - light.basement_hall
