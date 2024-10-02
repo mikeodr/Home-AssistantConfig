@@ -17,6 +17,7 @@ automation:
             tag: "internet-down-notification"
             group: "internet-notification"
       - repeat:
+          while: "{{ is_state('binary_sensor.internet_state', 'off') and repeat.index < 10 }}"
           sequence:
             - service: homeassistant.turn_off
               entity_id: switch.modem_reset
@@ -29,10 +30,6 @@ automation:
                 message: "Modem Toggled"
             - delay:
                 minutes: 15
-          until:
-            - condition: state
-              state: "on"
-              entity_id: binary_sensor.internet_state
       - service: notify.adults
         data:
           message: "Internet Restored"
