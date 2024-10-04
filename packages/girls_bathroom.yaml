@@ -1,0 +1,113 @@
+timer:
+  girls_bathroom_nightlight_off:
+    name: Turn off girls bathroom night light
+    duration: 00:05:00
+    restore: true
+
+automation:
+  - alias: Girls Bathroom Night Light Timer Control
+    id: girls_bathroom_night_light_timer
+    triggers:
+      - platform: state
+        entity_id: binary_sensor.bathroom_night_light_occupancy
+        to:
+          - "on"
+      - platform: state
+        entity_id: binary_sensor.bathroom_night_light_occupancy
+        to:
+          - "off"
+        for:
+          minutes: 5
+    conditions:
+      - condition: time
+        after: "22:00:00"
+        before: "06:00:00"
+      - condition: state
+        entity_id: input_boolean.nap_mode
+        state: "on"
+    actions:
+      - if:
+          - condition: template
+            value_template: "{{ trigger.to_state.state == 'off' }}"
+        then:
+          - service: timer.start
+            target:
+              entity_id: timer.girls_bathroom_nightlight_off
+        else:
+          - service: timer.cancel
+            target:
+              entity_id: timer.girls_bathroom_nightlight_off
+
+  - alias: Girls Bathroom Night Light
+    id: girls_bathroom_night_light
+    triggers:
+      # turn on triggers
+      - platform: sun
+        event: sunset
+        id: turn_on
+      - platform: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        below: 2.0
+        id: turn_on
+      - platform: state
+        entity_id: group.adults
+        from: "not_home"
+        to: "home"
+        id: turn_on
+      - platform: state
+        entity_id:
+          - binary_sensor.nursery_door
+          - binary_sensor.bathroom_night_light_occupancy
+          - input_boolean.nap_mode
+        to: "on"
+        id: turn_on
+      - platform: state
+        entity_id: input_boolean.nap_mode
+        to: "on"
+        id: turn_on
+      # turn off triggers
+      - platform: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        above: 2.0
+        id: turn_off
+      - platform: time
+        at: "22:00:00"
+        id: turn_off
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.girls_bathroom_nightlight_off
+        id: turn_off
+    condition:
+      - not:
+          - condition: state
+            entity_id: alarm_control_panel.alarmo
+            state:
+              - armed_vacation
+              - armed_away
+    action:
+      - choose:
+          - conditions:
+              - condition: numeric_state
+                entity_id: sun.sun
+                attribute: elevation
+                below: 2.0
+              - condition: trigger
+                id: turn_on
+            sequence:
+              - service: light.turn_on
+                target:
+                  entity_id: light.bathroom_night_light
+                data:
+                  brightness_pct: 20
+                  rgb_color: [255, 164, 8]
+          - conditions:
+              - condition: trigger
+                id: turn_off
+            sequence:
+              - wait_template: '{{ is_state("binary_sensor.bathroom_night_light_occupancy", "off") }}'
+              - service: light.turn_off
+                target:
+                  entity_id: light.bathroom_night_light
