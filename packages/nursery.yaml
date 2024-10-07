@@ -232,7 +232,7 @@ automation:
         variables:
           fan_speed_percentage: 33
       - platform: numeric_state
-        entity_id: sensor.girls_room_temperature
+        entity_id: sensor.meredith_room_temperature
         above: 24.9
         variables:
           fan_speed_percentage: 66
@@ -242,7 +242,7 @@ automation:
         above: 150
       # Force off
       - platform: numeric_state
-        entity_id: sensor.girls_room_temperature
+        entity_id: sensor.meredith_room_temperature
         below: 22.5
         id: force_off
     conditions:
@@ -276,14 +276,14 @@ automation:
                     attribute: temperature
                     above: 18
                   - condition: numeric_state
-                    entity_id: sensor.girls_room_temperature #Actual Room Temp
+                    entity_id: sensor.meredith_room_temperature #Actual Room Temp
                     above: 21
             sequence:
               - if:
                   - condition: trigger
                     id: nap_on
                   - condition: numeric_state
-                    entity_id: sensor.girls_room_temperature
+                    entity_id: sensor.meredith_room_temperature
                     above: 25
                 then:
                   - service: fan.turn_on
@@ -302,12 +302,12 @@ automation:
     id: nursery_temp_warning
     triggers:
       - platform: numeric_state
-        entity_id: sensor.girls_room_temperature
+        entity_id: sensor.meredith_room_temperature
         below: 17
         for:
           minutes: 30
       - platform: numeric_state
-        entity_id: sensor.girls_room_temperature
+        entity_id: sensor.meredith_room_temperature
         above: 25
         for:
           minutes: 10
