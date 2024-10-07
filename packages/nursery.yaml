@@ -226,7 +226,7 @@ automation:
         variables:
           fan_speed_percentage: 33
       - platform: numeric_state
-        entity_id: sensor.girls_room_temperature
+        entity_id: sensor.meredith_room_temperature
         above: 22.0
         below: 25
         variables:

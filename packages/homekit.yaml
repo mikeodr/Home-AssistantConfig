@@ -89,7 +89,8 @@ homekit:
         # Nursery
         - switch.nursery_fan
         - switch.nursery_white_noise
-        - sensor.girls_room_temperature
+        - sensor.meredith_room_temperature
+        - sensor.vivian_room_temperature
         - switch.nap_mode
         # Front Bedroom
         - switch.spare_bedroom_fan
