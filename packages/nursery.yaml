@@ -194,7 +194,7 @@ automation:
       - platform: time
         at: "19:00:00"
         id: early_on
-    condition:
+    conditions:
       or:
         - condition: trigger
           id: manual_on
@@ -245,7 +245,7 @@ automation:
         entity_id: sensor.girls_room_temperature
         below: 22.5
         id: force_off
-    condition:
+    conditions:
       - not:
           - condition: state
             entity_id: sensor.season
@@ -311,7 +311,7 @@ automation:
         above: 25
         for:
           minutes: 10
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "on"
@@ -344,7 +344,7 @@ automation:
         event_data:
           entity_id: timer.girls_lights_off
         id: timer_finished
-    condition:
+    conditions:
       - or:
           - condition: state
             entity_id: light.nursery_light
@@ -396,7 +396,7 @@ automation:
         to: "on"
         for:
           minutes: 30
-    condition:
+    conditions:
       - condition: time
         before: "17:00:00"
       - condition: state
@@ -414,7 +414,7 @@ automation:
         entity_id: light.nursery_light
         from: "off"
         to: "on"
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "on"
@@ -436,7 +436,7 @@ automation:
         to: "off"
         for:
           minutes: 5
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "on"
@@ -523,7 +523,7 @@ automation:
         to: "off"
         for:
           minutes: 1
-    condition:
+    conditions:
       # Bedtime
       - condition: time
         after: "19:30:00"
@@ -542,7 +542,7 @@ automation:
       - platform: state
         entity_id: binary_sensor.nursery_door
         to: "on"
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "on"
@@ -614,7 +614,7 @@ automation:
     trigger:
       - platform: time
         at: input_datetime.girls_wakeup_time
-    condition:
+    conditions:
       - or:
           - condition: state
             entity_id: group.adults
@@ -670,7 +670,7 @@ automation:
       - platform: state
         entity_id: input_boolean.nap_mode
         to: "on"
-    condition:
+    conditions:
       not:
         - condition: state
           entity_id: media_player.apple_tv_living_room
@@ -702,7 +702,7 @@ automation:
       - platform: state
         entity_id: input_boolean.nap_mode
         to: "on"
-    condition:
+    conditions:
       - condition: time
         after: "18:00:00"
     action:
@@ -754,7 +754,7 @@ automation:
       - platform: state
         entity_id: light.nursery_led
         to: "on"
-    condition:
+    conditions:
       - condition: time
         after: "18:00:00"
         before: "21:00:00"
@@ -775,7 +775,7 @@ automation:
       - platform: state
         entity_id: light.nursery_light
         to: "on"
-    condition:
+    conditions:
       - condition: time
         after: "18:00:00"
     action:
@@ -838,7 +838,7 @@ automation:
           - "unknown"
           - "unavailable"
         id: lights_on
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "on"
@@ -878,7 +878,7 @@ automation:
         to:
           - "on"
           - "off"
-    condition:
+    conditions:
       - condition: template
         value_template: '{{ trigger.to_state.state in ["off", "on"] }}'
     action:
