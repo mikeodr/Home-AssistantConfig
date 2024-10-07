@@ -84,7 +84,7 @@ automation:
     id: nursery_nap_mode_toggle
     mode: single
     max_exceeded: silent
-    trigger:
+    triggers:
       - platform: state
         entity_id: sensor.nap_mode_control_action
         to: "single"
@@ -99,7 +99,7 @@ automation:
     mode: single
     max_exceeded: silent
     id: nursery_led_on
-    trigger:
+    triggers:
       - platform: state
         entity_id: sensor.nursery_led_control_action
         to: "on"
@@ -127,7 +127,7 @@ automation:
 
   - alias: Nursery LED Off
     id: nursery_led_off
-    trigger:
+    triggers:
       - platform: state
         entity_id: sensor.nursery_led_control_action
         to: "off"
@@ -143,7 +143,7 @@ automation:
 
   - alias: Set Nap Accessories
     id: nursery_set_nap_accessories
-    trigger:
+    triggers:
       platform: state
       entity_id: input_boolean.nap_mode
     actions:
@@ -185,7 +185,7 @@ automation:
 
   - alias: Nursery Humidifier on evenings
     id: nursery_humidifer_evenings
-    trigger:
+    triggers:
       - platform: state
         entity_id: input_boolean.nap_mode
         from: "off"
@@ -210,7 +210,7 @@ automation:
 
   - alias: Girls Fan Control
     id: girls_fan_control
-    trigger:
+    triggers:
       # Force on
       - platform: state
         entity_id: input_boolean.nap_mode
@@ -300,7 +300,7 @@ automation:
 
   - alias: Nursery Temperature Warning
     id: nursery_temp_warning
-    trigger:
+    triggers:
       - platform: numeric_state
         entity_id: sensor.girls_room_temperature
         below: 17
@@ -335,7 +335,7 @@ automation:
     id: nursery_off_if_forgotten
     mode: queued
     max: 15
-    trigger:
+    triggers:
       - platform: template
         value_template: "{{ is_state('binary_sensor.girls_room_camera_motion', 'off') and is_state('binary_sensor.girls_room_occupancy', 'off') }}"
         id: timer_start
@@ -387,7 +387,7 @@ automation:
 
   - alias: Turn off nursery accessories if forgotten
     id: nursery_turn_off_white_noise_forgotten
-    trigger:
+    triggers:
       - platform: state
         entity_id:
           - switch.nursery_white_noise
@@ -409,7 +409,7 @@ automation:
 
   - alias: Turn off nap mode via light switch
     id: nursery_nap_off_via_lightswitch
-    trigger:
+    triggers:
       - platform: state
         entity_id: light.nursery_light
         from: "off"
@@ -424,7 +424,7 @@ automation:
 
   - alias: Notify if door left open during nap
     id: nursery_nap_on_door_open
-    trigger:
+    triggers:
       - platform: state
         entity_id: binary_sensor.nursery_door
         to: "on"
@@ -471,7 +471,7 @@ automation:
 
   - alias: Quiet mode control
     id: nursery_quite_mode_control
-    trigger:
+    triggers:
       - platform: time
         at: "19:00:00"
         id: quite_on
@@ -517,7 +517,7 @@ automation:
 
   - alias: Turn on nap mode if forgotten
     id: nursery_nap_mode_on_forgotten
-    trigger:
+    triggers:
       - platform: state
         entity_id: binary_sensor.nursery_door
         to: "off"
@@ -538,7 +538,7 @@ automation:
     id: nursery_door_open_during_sleep
     mode: single
     max_exceeded: silent
-    trigger:
+    triggers:
       - platform: state
         entity_id: binary_sensor.nursery_door
         to: "on"
@@ -585,7 +585,7 @@ automation:
 
   - alias: Set the girls wakeup time
     id: nursery_set_girls_wakeup_time
-    trigger:
+    triggers:
       - platform: time
         at: "09:00:00"
     actions:
@@ -611,7 +611,7 @@ automation:
 
   - alias: Let the girls out of bed
     id: nursery_let_girls_out_of_bed_time_trigger
-    trigger:
+    triggers:
       - platform: time
         at: input_datetime.girls_wakeup_time
     conditions:
@@ -630,7 +630,7 @@ automation:
 
   - alias: Reenable nursery light on power loss
     id: nusery_led_strip_reenable
-    trigger:
+    triggers:
       - platform: state
         entity_id: sensor.backupsxs1300g_status
         from: "Online"
@@ -666,7 +666,7 @@ automation:
 
   - alias: Show Nursery Camera on TV automatically
     id: nursery_show_camera_automatically
-    trigger:
+    triggers:
       - platform: state
         entity_id: input_boolean.nap_mode
         to: "on"
@@ -698,7 +698,7 @@ automation:
 
   - alias: Set living room lighting when bedtime starts
     id: nursery_turn_on_kitchen_lighting
-    trigger:
+    triggers:
       - platform: state
         entity_id: input_boolean.nap_mode
         to: "on"
@@ -719,7 +719,7 @@ automation:
 
   - alias: Girls Light Control
     id: nursery_girls_light_control
-    trigger:
+    triggers:
       - platform: state
         entity_id: sensor.nursery_light_control_action
         to: "single"
@@ -748,7 +748,7 @@ automation:
 
   - alias: Set warmer temperature for LED strip
     id: nursery_warmer_temp_led
-    trigger:
+    triggers:
       - platform: time
         at: "19:00:00"
       - platform: state
@@ -771,7 +771,7 @@ automation:
 
   - alias: Turn on LED strip for bedtime routine
     id: nursery_led_on_bedtime_routine
-    trigger:
+    triggers:
       - platform: state
         entity_id: light.nursery_light
         to: "on"
@@ -792,7 +792,7 @@ automation:
     id: girls_control_hall_lights_bedtime
     mode: single
     max_exceeded: silent
-    trigger:
+    triggers:
       - platform: state
         entity_id: input_boolean.nap_mode
         to: "on"
@@ -816,7 +816,7 @@ automation:
     mode: restart
     trace:
       stored_traces: 50
-    trigger:
+    triggers:
       # Stair Light off
       - platform: state
         entity_id: binary_sensor.nursery_door
@@ -872,7 +872,7 @@ automation:
   - alias: Link Switch LED to light state
     id: girls_linked_led_to_light_state
     mode: restart
-    trigger:
+    triggers:
       - platform: state
         entity_id: light.girls_fan
         to:
