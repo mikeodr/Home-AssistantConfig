@@ -88,7 +88,7 @@ automation:
       - platform: state
         entity_id: sensor.nap_mode_control_action
         to: "single"
-    action:
+    actions:
       - service: homeassistant.toggle
         entity_id:
           - input_boolean.nap_mode
@@ -103,7 +103,7 @@ automation:
       - platform: state
         entity_id: sensor.nursery_led_control_action
         to: "on"
-    action:
+    actions:
       - service: homeassistant.turn_on
         entity_id: switch.nursery_power_loss_gate
       - wait_template: '{{ not is_state("light.nursery_led", "unavailable") }}'
@@ -134,7 +134,7 @@ automation:
       - platform: sun
         event: sunrise
         offset: "+02:00:00"
-    action:
+    actions:
       - wait_template: '{{ not is_state("light.nursery_led", "unavailable") }}'
       - service: light.turn_off
         data:
@@ -146,7 +146,7 @@ automation:
     trigger:
       platform: state
       entity_id: input_boolean.nap_mode
-    action:
+    actions:
       - choose:
           # Turning nap on
           - conditions:
@@ -204,7 +204,7 @@ automation:
             - condition: state
               entity_id: group.adults
               state: "home"
-    action:
+    actions:
       - service: homeassistant.turn_on
         entity_id: fan.nursery_humidifier
 
@@ -258,7 +258,7 @@ automation:
             state: "heat"
       - condition: time
         after: "11:00:00"
-    action:
+    actions:
       - choose:
           # Force off
           - conditions:
@@ -315,7 +315,7 @@ automation:
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "on"
-    action:
+    actions:
       - repeat:
           for_each: >
             {{ states.person | selectattr('state', 'eq', 'home') | map(attribute='attributes.notifier') | list}}
@@ -357,7 +357,7 @@ automation:
         state: "off"
       - condition: time
         before: "19:00:00"
-    action:
+    actions:
       - choose:
           - conditions:
               - condition: trigger
@@ -402,7 +402,7 @@ automation:
       - condition: state
         entity_id: switch.nap_mode
         state: "off"
-    action:
+    actions:
       - service: homeassistant.turn_off
         target:
           entity_id: "{{ trigger.entity_id }}"
@@ -418,7 +418,7 @@ automation:
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "on"
-    action:
+    actions:
       - service: input_boolean.turn_off
         entity_id: input_boolean.nap_mode
 
@@ -444,7 +444,7 @@ automation:
           - condition: time
             after: "01:30:00"
             before: "07:00:00"
-    action:
+    actions:
       - if:
           - condition: trigger
             id: left_open
@@ -490,7 +490,7 @@ automation:
         entity_id: light.nursery_led
         to: ~
         id: led_control
-    action:
+    actions:
       - choose:
           - conditions:
               - condition: trigger
@@ -530,7 +530,7 @@ automation:
       - condition: state
         entity_id: light.nursery_light
         state: "off"
-    action:
+    actions:
       - service: homeassistant.turn_on
         entity_id: input_boolean.nap_mode
 
@@ -555,7 +555,7 @@ automation:
           - condition: time
             after: "01:30:00"
             before: "07:00:00"
-    action:
+    actions:
       - repeat:
           for_each: >
             {{ states.person | selectattr('state', 'eq', 'home') | map(attribute='attributes.notifier') | list}}
@@ -588,7 +588,7 @@ automation:
     trigger:
       - platform: time
         at: "09:00:00"
-    action:
+    actions:
       - service: calendar.get_events
         target:
           entity_id: calendar.ontario_holidays
@@ -622,7 +622,7 @@ automation:
           - condition: state
             entity_id: binary_sensor.guests_present
             state: "on"
-    action:
+    actions:
       - wait_template: '{{ not is_state("light.nursery_led", "unavailable") }}'
       - service: script.led_strip_on
         data:
@@ -642,7 +642,7 @@ automation:
         at:
           - input_datetime.girls_wakeup_time
           - "18:30:00" # On for bedtime
-    action:
+    actions:
       # Wait for the switch we want to turn on to be available
       - wait_template: '{{ not is_state("switch.nursery_power_loss_gate", "unavailable") }}'
       - choose:
@@ -675,7 +675,7 @@ automation:
         - condition: state
           entity_id: media_player.apple_tv_living_room
           state: "playing"
-    action:
+    actions:
       - service: switch.turn_on
         entity_id: switch.entertainment_switch_relay
       - service: homeassistant.turn_on
@@ -705,7 +705,7 @@ automation:
     conditions:
       - condition: time
         after: "18:00:00"
-    action:
+    actions:
       - service: light.turn_on
         entity_id:
           - light.kitchen_island
@@ -723,7 +723,7 @@ automation:
       - platform: state
         entity_id: sensor.nursery_light_control_action
         to: "single"
-    action:
+    actions:
       - choose:
           - conditions:
               - condition: state
@@ -761,7 +761,7 @@ automation:
       - condition: state
         entity_id: light.nursery_led
         state: "on"
-    action:
+    actions:
       - service: light.turn_on
         target:
           entity_id: light.nursery_led
@@ -778,7 +778,7 @@ automation:
     conditions:
       - condition: time
         after: "18:00:00"
-    action:
+    actions:
       - service: light.turn_on
         data:
           entity_id:
@@ -796,7 +796,7 @@ automation:
       - platform: state
         entity_id: input_boolean.nap_mode
         to: "on"
-    action:
+    actions:
       - service: light.turn_off
         entity_id: light.upstairs_hall
       - if:
@@ -842,7 +842,7 @@ automation:
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "on"
-    action:
+    actions:
       - choose:
           - conditions:
               - condition: trigger
@@ -881,6 +881,6 @@ automation:
     conditions:
       - condition: template
         value_template: '{{ trigger.to_state.state in ["off", "on"] }}'
-    action:
+    actions:
       service: light.turn_{{ trigger.to_state.state }}
       entity_id: light.girls_room_switch
