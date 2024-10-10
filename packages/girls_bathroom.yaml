@@ -6,7 +6,7 @@ timer:
 
 automation:
   - alias: Girls Bathroom Night Light Timer Control
-    id: girls_bathroom_night_light_timer
+    id: girls_bathroom_night_light_timer_control
     triggers:
       - platform: state
         entity_id: binary_sensor.bathroom_night_light_occupancy
@@ -18,6 +18,11 @@ automation:
           - "off"
         for:
           minutes: 5
+      - platform: state
+        entity_id: binary_sensor.nursery_door
+        to: "off"
+        for:
+          minutes: 10
     conditions:
       - condition: time
         after: "22:00:00"
@@ -80,14 +85,14 @@ automation:
         event_data:
           entity_id: timer.girls_bathroom_nightlight_off
         id: turn_off
-    condition:
+    conditions:
       - not:
           - condition: state
             entity_id: alarm_control_panel.alarmo
             state:
               - armed_vacation
               - armed_away
-    action:
+    actions:
       - choose:
           - conditions:
               - condition: numeric_state
