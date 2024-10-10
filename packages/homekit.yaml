@@ -89,8 +89,6 @@ homekit:
         # Nursery
         - switch.nursery_fan
         - switch.nursery_white_noise
-        - sensor.meredith_room_temperature
-        - sensor.vivian_room_temperature
         - switch.nap_mode
         # Front Bedroom
         - switch.spare_bedroom_fan
@@ -106,3 +104,9 @@ homekit:
         - light.basement_lights
         - light.exterior_lights
         - light.living_room_light_group
+        - climate.sparky_climate
+      exclude_entity_globs:
+        - climant.*sparky*
+        - sensor.*sparky*
+        - switch.*sparky*
+        - cover.*sparky*
