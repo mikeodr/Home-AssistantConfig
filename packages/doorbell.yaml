@@ -232,7 +232,9 @@ automation:
           - input_boolean.quite_mode
           - switch.master_white_noise
           - schedule.doorbell_do_not_distrub
-        to: ~
+        to:
+          - "on"
+          - "off"
         id: standard
       - platform: time
         at: "17:00:00"
@@ -256,23 +258,14 @@ automation:
           - conditions:
               - condition: trigger
                 id: standard
-              - or:
-                  - condition: state
-                    entity_id:
-                      - switch.nap_mode
-                    state: "on"
-                  - condition: state
-                    entity_id:
-                      - input_boolean.quite_mode
-                    state: "on"
-                  - condition: state
-                    entity_id:
-                      - switch.master_white_noise
-                    state: "on"
-                  - condition: state
-                    entity_id:
-                      - schedule.doorbell_do_not_distrub
-                    state: "on"
+              - condition: state
+                entity_id:
+                  - switch.nap_mode
+                  - input_boolean.quite_mode
+                  - switch.master_white_noise
+                  - schedule.doorbell_do_not_distrub
+                match: any
+                state: "on"
             sequence:
               - service: select.select_option
                 data:
