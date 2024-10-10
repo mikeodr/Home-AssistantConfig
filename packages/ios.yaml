@@ -1,59 +1,48 @@
-ios:
-  actions:
-    - name: toggle_garage
-      background_color: "#000000"
-      icon:
-        icon: garage
-        color: "#ffffff"
-      label:
-        text: "Toggle Garage"
-        color: "#ffffff"
-      use_custom_colors: true
-    - name: lock_door
-      background_color: "#000000"
-      icon:
-        icon: lock
-        color: "#ffffff"
-      label:
-        text: "Lock Door"
-        color: "#ffffff"
-      use_custom_colors: true
-    - name: unlock_door
-      background_color: "#000000"
-      icon:
-        icon: lock-open
-        color: "#ffffff"
-      label:
-        text: "Unlock Door"
-        color: "#ffffff"
-      use_custom_colors: true
-    - name: toggle_spare_bedroom_fan
-      background_color: "#000000"
-      icon:
-        icon: fan
-        color: "#ffffff"
-      label:
-        text: "Spare Bedroom Fan"
-        color: "#ffffff"
-      use_custom_colors: true
-    - name: alarm_arm_away
-      background_color: "#000000"
-      icon:
-        icon: shield-lock
-        color: "#ffffff"
-      label:
-        text: "Arm Alarm"
-        color: "#ffffff"
-      use_custom_colors: true
-    - name: alarm_disarm
-      background_color: "#000000"
-      icon:
-        icon: shield-lock-open
-        color: "#ffffff"
-      label:
-        text: "Disarm Alarm"
-        color: "#ffffff"
-      use_custom_colors: true
+script:
+  toggle_garage:
+    alias: "Toggle Garage"
+    mode: queued
+    icon: "mdi:garage"
+    sequence:
+      - service: cover.toggle
+        entity_id:
+          - cover.garage
+
+  lock_door:
+    alias: "Lock Door"
+    mode: queued
+    icon: "mdi:lock"
+    sequence:
+      - service: lock.lock
+        entity_id:
+          - lock.front_door
+
+  unlock_door:
+    alias: "Unlock Door"
+    mode: queued
+    icon: "mdi:lock-open"
+    sequence:
+      - service: lock.unlock
+        entity_id:
+          - lock.front_door
+
+  alarm_arm_away:
+    alias: "Arm Alarm"
+    mode: queued
+    icon: "mdi:shield-lock"
+    sequence:
+      - service: alarm_control_panel.alarm_arm_away
+        target:
+          entity_id: alarm_control_panel.alarmo
+
+  disarm_alarm:
+    alias: "Disarm Alarm"
+    mode: queued
+    icon: "mdi:shield-lock-open"
+    sequence:
+      - service: alarm_control_panel.alarm_disarm
+        target:
+          entity_id: alarm_control_panel.alarmo
 
 sensor:
   - platform: template
@@ -134,10 +123,11 @@ sensor:
           {%- if is_state('binary_sensor.washer_status', 'on') -%}
           |🧺
           {%- endif -%}
+
 automation:
   - alias: Update Complications On Specific State changes
     id: update_complications_state_changes
-    trigger:
+    triggers:
       - platform: state
         entity_id:
           - cover.garage
@@ -145,55 +135,7 @@ automation:
           - lock.side_door
           - input_boolean.nap_mode
         to: ~
-    action:
-      service: notify.mobile_app_michaels_iphone
-      data:
-        message: update_complications
-
-  - alias: iOS Toggle Garage
-    id: ios_toggle_garage
-    trigger:
-      platform: event
-      event_type: ios.action_fired
-      event_data:
-        actionID: toggle_garage
-    action:
-      service: cover.toggle
-      entity_id:
-        - cover.garage
-
-  - alias: iOS Lock Front Door
-    id: ios_lock_front door
-    trigger:
-      platform: event
-      event_type: ios.action_fired
-      event_data:
-        actionID: lock_door
-    action:
-      service: lock.lock
-      entity_id:
-        - lock.front_door
-
-  - alias: iOS Unlock Front Door
-    id: ios_unlock_front_door
-    trigger:
-      platform: event
-      event_type: ios.action_fired
-      event_data:
-        actionID: unlock_door
-    action:
-      service: lock.unlock
-      entity_id:
-        - lock.front_door
-
-  - alias: iOS Spare bedroom fan toggle
-    id: ios_spare_bedroom_fan_toggle
-    trigger:
-      - platform: event
-        event_type: ios.action_fired
-        event_data:
-          actionID: toggle_spare_bedroom_fan
-    action:
-      - service: homeassistant.toggle
-        entity_id:
-          - switch.spare_bedroom_fan
+    actions:
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          message: update_complications
