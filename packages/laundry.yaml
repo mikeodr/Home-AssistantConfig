@@ -28,10 +28,10 @@ template:
       - name: Dryer Status
         unique_id: dryer_binary_sensor_status
         icon: mdi:washing-machine
-        state: "{{ states('sensor.laundry_dryer_power_average') | float(0) | default(0) > 3000 }}"
+        state: "{{ states('sensor.dryer_power_average') | float(0) | default(0) > 3000 }}"
         device_class: running
         delay_on:
-          minutes: 5
+          minutes: 2
         delay_off:
           minutes: 2
 
