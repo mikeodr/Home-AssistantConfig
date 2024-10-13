@@ -200,6 +200,16 @@ automation:
         not_to:
           - "unknown"
           - "unavailable"
+          - "opening"
+          - "closing"
+      - platform: state
+        entity_id: cover.garage
+        to: "closing"
+        id: "closing"
+      - platform: state
+        entity_id: cover.garage
+        to: "opening"
+        id: "opening"
     condition:
       - condition: state
         entity_id: group.adults
@@ -207,34 +217,74 @@ automation:
       - condition: template
         value_template: "{{ has_value('cover.garage') and has_value('lock.locks') and has_value('binary_sensor.doors') }}"
     action:
-      - variables:
-          duration: >-
-            {% if is_state('binary_sensor.doors', 'off') and is_state('cover.garage', 'closed') and is_state('lock.locks', 'locked') %}
-              30
-            {% else %}
-              255
-            {% endif %}
-          color: >-
-            {# red 0, yellow 20, green 85 #}
-            {% if is_state('cover.garage', 'closed') and is_state('binary_sensor.doors', 'off') and is_state('lock.locks', 'locked') %}
-              85
-            {% elif is_state('binary_sensor.doors', 'off') and is_state('cover.garage', 'closed') and is_state('lock.locks', 'unlocked') %}
-              20
-            {% else %}
-              0
-            {% endif %}
-      - service: script.blue_set_led
-        data:
-          color: "{{ color }}"
-          effect: "solid"
-          level: 40
-          duration: "{{ duration }}"
-          entity_id:
-            - light.front_hall
-            - light.kitchen_light
-            - light.back_deck_light
-            - light.main_stairs
-            - light.upstairs_hall
-            - light.main_bath_light
-            - light.basement_stairs
-            - light.basement_hall
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: opening
+            sequence:
+              - service: script.blue_set_led
+                data:
+                  color: "0"
+                  effect: "fast_rising"
+                  level: 40
+                  duration: "15"
+                  entity_id:
+                    - light.front_hall
+                    - light.kitchen_light
+                    - light.back_deck_light
+                    - light.main_stairs
+                    - light.upstairs_hall
+                    - light.main_bath_light
+                    - light.basement_stairs
+                    - light.basement_hall
+          - conditions:
+              - condition: trigger
+                id: closing
+            sequence:
+              - service: script.blue_set_led
+                data:
+                  color: "0"
+                  effect: "fast_falling"
+                  level: 40
+                  duration: "15"
+                  entity_id:
+                    - light.front_hall
+                    - light.kitchen_light
+                    - light.back_deck_light
+                    - light.main_stairs
+                    - light.upstairs_hall
+                    - light.main_bath_light
+                    - light.basement_stairs
+                    - light.basement_hall
+        default:
+          - variables:
+              duration: >-
+                {% if is_state('binary_sensor.doors', 'off') and is_state('cover.garage', 'closed') and is_state('lock.locks', 'locked') %}
+                  30
+                {% else %}
+                  255
+                {% endif %}
+              color: >-
+                {# red 0, yellow 20, green 85 #}
+                {% if is_state('cover.garage', 'closed') and is_state('binary_sensor.doors', 'off') and is_state('lock.locks', 'locked') %}
+                  85
+                {% elif is_state('binary_sensor.doors', 'off') and is_state('cover.garage', 'closed') and is_state('lock.locks', 'unlocked') %}
+                  20
+                {% else %}
+                  0
+                {% endif %}
+          - service: script.blue_set_led
+            data:
+              color: "{{ color }}"
+              effect: "solid"
+              level: 40
+              duration: "{{ duration }}"
+              entity_id:
+                - light.front_hall
+                - light.kitchen_light
+                - light.back_deck_light
+                - light.main_stairs
+                - light.upstairs_hall
+                - light.main_bath_light
+                - light.basement_stairs
+                - light.basement_hall
