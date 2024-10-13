@@ -35,7 +35,7 @@ automation:
     id: doorbell_set_doorbell_chime_state
     mode: single
     max_exceeded: silent
-    trigger:
+    triggers:
       - platform: state
         entity_id:
           - input_boolean.nap_mode
@@ -44,7 +44,7 @@ automation:
         not_to:
           - "unavailable"
           - "unknown"
-    action:
+    actions:
       - choose:
           - conditions:
               - condition: state
@@ -86,12 +86,12 @@ automation:
     id: doorbell_notification_message
     mode: single
     max_exceeded: silent
-    trigger:
+    triggers:
       platform: state
       entity_id: binary_sensor.front_door_doorbell
       from: "off"
       to: "on"
-    action:
+    actions:
       - delay:
           seconds: 1
       # Snapshot the camera
@@ -154,19 +154,19 @@ automation:
     id: doorbell_activated
     mode: single
     max_exceeded: silent
-    trigger:
+    triggers:
       - platform: state
         entity_id: binary_sensor.front_door_doorbell
         from: "off"
         to: "on"
-    condition:
+    conditions:
       - condition: state
         entity_id: group.adults
         state: "home"
       - condition: state
         entity_id: alarm_control_panel.alarmo
         state: "disarmed"
-    action:
+    actions:
       - parallel:
           # Pause the TV
           - service: media_player.media_pause
@@ -217,12 +217,12 @@ automation:
     id: doorbell_halloween_audio_message
     mode: single
     max_exceeded: silent
-    trigger:
+    triggers:
       - platform: state
         entity_id: binary_sensor.front_door_doorbell
         from: "off"
         to: "on"
-    condition:
+    conditions:
       - condition: time
         after: "16:00:00"
         before: "21:00:00"
@@ -231,7 +231,7 @@ automation:
       - condition: numeric_state
         entity_id: sensor.home_nearest_distance
         below: 500
-    action:
+    actions:
       - service: tts.cloud_say
         data:
           entity_id: media_player.front_door_speaker
@@ -242,11 +242,11 @@ automation:
 
   - alias: Doorbell package detected
     id: doorbell_package_detected
-    trigger:
+    triggers:
       - platform: state
         entity_id: binary_sensor.front_door_package_detected
         to: "on"
-    action:
+    actions:
       - service: camera.snapshot
         target:
           entity_id: camera.g4_doorbell_high
@@ -264,7 +264,7 @@ automation:
   - alias: Set doorbell message
     id: doorbell_set_message
     max_exceeded: silent
-    trigger:
+    triggers:
       - platform: state
         entity_id:
           - switch.nap_mode
@@ -276,7 +276,7 @@ automation:
           - "off"
       - platform: time
         at: "17:00:00"
-    action:
+    actions:
       - choose:
           - conditions:
               - condition: template
