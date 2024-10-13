@@ -40,7 +40,7 @@ switch:
             entity_id: input_boolean.nap_mode
 
 homekit:
-  - name: Nursery Camera Bridge
+  - name: Girls Camera Bridge
     mode: accessory
     port: 21065
     filter:
