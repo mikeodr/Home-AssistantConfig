@@ -107,9 +107,48 @@ automation:
           title: "Ding Dong"
           message: "Someone is at the front door"
           data:
+            url: /dashboard-doorbell/doorbell
+            clickAction: dashboard-doorbell/doorbell
             image: "/media/local/doorbell/snapshot.jpg"
             tag: "doorbell-notification"
             group: "doorbell-group"
+            actions:
+              - action: "NOT_INTERESTED"
+                title: "Not interested"
+                activationMode: "background"
+                authenticationRequired: true
+                destructive: true
+                behavior: "default"
+
+  - alias: Not Interested Message
+    id: doorbell_not_interested_message
+    triggers:
+      - platform: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: "NOT_INTERESTED"
+      - trigger: state
+        entity_id: input_button.sorry_not_interested
+    actions:
+      - service: tts.cloud_say
+        data:
+          entity_id: media_player.front_door_speaker
+          message: "Sorry, not interested"
+          cache: true
+      - delay:
+          seconds: 1
+      - action: text.set_value
+        target:
+          entity_id: text.front_door_doorbell
+        data:
+          value: Not interested
+      - delay:
+          seconds: 15
+      - action: automation.trigger
+        data:
+          skip_condition: true
+        target:
+          entity_id: automation.set_doorbell_message
 
   - alias: Doorbell activated
     id: doorbell_activated
@@ -235,7 +274,6 @@ automation:
         to:
           - "on"
           - "off"
-        id: standard
       - platform: time
         at: "17:00:00"
     action:
@@ -256,8 +294,6 @@ automation:
                 data:
                   value: "Trick or Treat!"
           - conditions:
-              - condition: trigger
-                id: standard
               - condition: state
                 entity_id:
                   - switch.nap_mode
