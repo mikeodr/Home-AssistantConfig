@@ -141,6 +141,9 @@ automation:
         for:
           minutes: 2
     condition:
+      - not:
+          - condition: template
+            value_template: "{{ now().month == 10 and now().day == 31 and now().hour > 17 }}"
       - condition: numeric_state
         entity_id: sun.sun
         attribute: elevation
