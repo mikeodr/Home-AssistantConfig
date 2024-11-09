@@ -105,7 +105,7 @@ sensor:
           😴
           {%- else -%}
           👶
-          {%- endif %} {{ states("sensor.meredith_room_temperature")}}
+          {%- endif %} {{ states("sensor.girls_room_temperature")}}
           {%- if is_state("climate.my_ecobee", "heat") -%}
           |🔥
           {%- elif is_state("climate.my_ecobee", "cool") -%}
