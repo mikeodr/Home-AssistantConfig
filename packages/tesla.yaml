@@ -3,18 +3,15 @@ automation:
     id: tesla_sentry_mode_home_reminder
     trigger:
       - platform: state
-        entity_id: sensor.tesla_state
-        from: "driving"
+        entity_id: device_tracker.sparky_location
+        to: "home"
         for:
           minutes: 15
     condition:
       - condition: state
-        entity_id: device_tracker.tesla_location
-        state: "home"
-      - condition: state
         entity_id:
-          - binary_sensor.tesla_plugged_in
-          - binary_sensor.tesla_sentry_mode
+          - binary_sensor.sparky_charge_cable
+          - switch.sparky_sentry_mode
         state: "off"
     action:
       - service: notify.mobile_app_michaels_iphone
@@ -28,13 +25,17 @@ automation:
     id: tesla_disable_wifi_in_driveway
     trigger:
       - platform: state
-        entity_id: binary_sensor.tesla_plugged_in
+        entity_id: binary_sensor.sparky_charge_cable
         to: "on"
         id: plugged_in
       - platform: state
-        entity_id: binary_sensor.tesla_plugged_in
+        entity_id: binary_sensor.sparky_charge_cable
         to: "off"
         id: unplugged
+    condition:
+      - condition: state
+        entity_id: device_tracker.sparky_location
+        state: "home"
     action:
       - choose:
           - conditions:
