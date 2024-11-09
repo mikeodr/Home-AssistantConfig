@@ -29,6 +29,9 @@ automation:
       - condition: state
         entity_id: binary_sensor.guests_present
         state: "off"
+      - condition: state
+        entity_id: device_tracker.faux_girls_home
+        state: "not_home"
     action:
       - service: alarm_control_panel.alarm_{{ 'disarm' if 'home' == trigger.to_state.state else 'arm_away' }}
         target:
@@ -46,16 +49,19 @@ automation:
 
   - alias: Auto Arm Alarm Night
     id: alarm_auto_arm_night_mode
-    trigger:
+    triggers:
       - platform: time
         at: "00:00:00"
       - platform: time
         at: "01:00:00"
-    condition:
+      - platform: event
+        event_type: "goodnight_event"
+    conditions:
       - condition: state
         entity_id:
           - person.mike
           - person.tiff
+        match: any
         state: "home"
       - condition: state
         entity_id: alarm_control_panel.alarmo
@@ -63,7 +69,23 @@ automation:
       - condition: state
         entity_id: media_player.living_room_tv
         state: "off"
-    action:
+    actions:
+      - parallel:
+          - service: light.turn_off
+            target:
+              floor_id:
+                - basement
+                - main_floor
+          - service: cover.close_cover
+            entity_id: cover.garage
+          - service: lock.lock
+            entity_id:
+              - lock.locks
+      - wait_template: "{{ is_state('cover.garage', 'closed') }}"
+      - service: homeassistant.turn_off
+        entity_id: media_player.living_room_tv
+      - delay:
+          seconds: 30
       - service: alarm_control_panel.alarm_arm_night
         target:
           entity_id: alarm_control_panel.alarmo
