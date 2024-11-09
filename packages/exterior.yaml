@@ -51,6 +51,18 @@ automation:
               entity_id: cover.garage
               state: "open"
           sequence:
+            - wait_for_trigger:
+                - platform: state
+                  entity_id: binary_sensor.garage_motion
+                  to: "off"
+                  for:
+                    minutes: 10
+            - if:
+                - "{{ not wait.completed }}"
+              then:
+                - service: timer.start
+                  entity_id: timer.garage_left_open
+                - stop: "Motion in garate not continuing"
             - service: timer.start
               entity_id: timer.garage_left_open
             - service: notify.mobile_app_michaels_iphone
