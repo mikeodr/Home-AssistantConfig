@@ -186,6 +186,7 @@ automation:
                       entity_id:
                         - media_player.sonos_living_room
                       message: "Trick or treat!"
+                      volume: 25
             default:
               - service: script.sonos_say
                 data:
