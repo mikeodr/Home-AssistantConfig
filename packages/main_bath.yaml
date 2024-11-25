@@ -43,3 +43,17 @@ automation:
         data:
           brightness_pct: 3
           transition: 10
+
+  - alias: Main Bath Full Brightness
+    id: main_bath_full_brightness
+    triggers:
+      - platform: state
+        entity_id:
+          - sensor.main_bath_light_action
+        to: "up_double"
+    actions:
+      - service: light.turn_on
+        target:
+          entity_id: light.main_bath_light
+        data:
+          brightness_pct: 100
