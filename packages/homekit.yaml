@@ -104,6 +104,10 @@ homekit:
         - light.basement_lights
         - light.exterior_lights
         - light.living_room_light_group
+        - light.konnected_511a3c_warning_beep
+        - light.girls_room_switch
+        - light.girls_fan
+        - light.girls_fan_fan
         - climate.sparky_climate
       exclude_entity_globs:
         - climant.*sparky*
