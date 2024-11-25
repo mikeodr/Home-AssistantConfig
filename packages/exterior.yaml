@@ -341,7 +341,33 @@ automation:
           - binary_sensor.side_door_lock_jammed
         from: "off"
         to: "on"
-    action:
+        for:
+          minutes: 5
+    actions:
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          title: "🔓 Lock Jammed 🔓"
+          message: "{{ trigger.to_state.name }}"
+          data:
+            tag: "exterior-lock-jammed"
+
+  - alias: Exiting Area with jammed lock
+    id: exterior_area_with_jammed_lock
+    triggers:
+      - platform: state
+        entity_id:
+          - device_tracker.sparky_location
+          - device_tracker.michaels_iphone
+          - device_tracker.tiffanys_iphone
+        to: "away"
+    conditions:
+      - condition: state
+        entity_id:
+          - binary_sensor.front_door_lock_jammed
+          - binary_sensor.side_door_lock_jammed
+        match: any
+        state: "on"
+    actions:
       - service: notify.mobile_app_michaels_iphone
         data:
           title: "🔓 Lock Jammed 🔓"
