@@ -108,6 +108,9 @@ automation:
         entity_id: sensor.current_hydro_time_of_use_state
         to: Off Peak
         id: power_on
+      - platform: time
+        at: "17:30:00"
+        id: power_on
     action:
       choose:
         - conditions:
@@ -126,8 +129,8 @@ automation:
         - conditions:
             - condition: trigger
               id: power_on
-            - condition: template
-              value_template: '{{ "Off Peak" in states("sensor.current_hydro_time_of_use_state") }}'
+            - condition: time
+              after: "17:00:00"
             - not:
                 - condition: state
                   entity_id: alarm_control_panel.alarmo
