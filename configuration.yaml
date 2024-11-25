@@ -24,3 +24,5 @@ group: !include config/groups.yaml
 input_boolean: !include config/input_boolean.yaml
 notify: !include config/notify.yaml
 script: !include_dir_merge_named scripts/
+
+battery_notes:
