@@ -884,3 +884,15 @@ automation:
     actions:
       service: light.turn_{{ trigger.to_state.state }}
       entity_id: light.girls_room_switch
+
+  - alias: Mute Girls Speaker at bedtime
+    id: girls_mute_speaker_at_bedtime
+    triggers:
+      - platform: state
+        entity_id: input_boolean.nap_mode
+        to: "on"
+    actions:
+      - service: media_player.volume_set
+        data:
+          volume_level: 0.01
+        entity_id: media_player.girls_room_sonos
