@@ -10,7 +10,6 @@ google_calendars.yaml
 secrets.yaml
 .storage/
 tts/
-.vscode/
 *.xml
 blueprints/
 home-assistant.log*
