@@ -243,7 +243,6 @@ automation:
         entity_id:
           - person.mike
           - person.tiff
-          - device_tracker.tesla_location
         zone: zone.home
         event: enter
       - platform: state
@@ -312,7 +311,6 @@ automation:
         entity_id:
           - person.mike
           - person.tiff
-          - device_tracker.tesla_location
         zone: zone.home
         event: enter
     action:

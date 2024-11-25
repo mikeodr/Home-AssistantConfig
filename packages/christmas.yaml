@@ -46,7 +46,6 @@ automation:
         id: turn_on
       - platform: zone
         entity_id:
-          - device_tracker.tesla_location
           - person.mike
           - person.tiff
         zone: zone.home
@@ -92,7 +91,6 @@ automation:
     trigger:
       - platform: zone
         entity_id:
-          - device_tracker.tesla_location
           - person.mike
           - person.tiff
         zone: zone.home
