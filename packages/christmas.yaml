@@ -1,10 +1,3 @@
-group:
-  exterior_christmas_lights:
-    name: Exterior Christmas Lights
-    entities:
-      - light.front_christmas_lights
-      - light.deck_christmas_lights
-
 automation:
   - alias: Exterior Christmas Lights On
     id: xmas_exteior_lights_on
@@ -15,7 +8,7 @@ automation:
         below: 0.25
     action:
       service: homeassistant.turn_on
-      entity_id: group.exterior_christmas_lights
+      entity_id: light.exterior_christmas_lights
 
   - alias: Exterior Christmas Lights Off
     id: xmas_exterior_lights_off
@@ -26,7 +19,7 @@ automation:
         event: sunrise
     action:
       service: homeassistant.turn_off
-      entity_id: group.exterior_christmas_lights
+      entity_id: light.exterior_christmas_lights
 
   - alias: Christmas Tree lights on when living room occupied
     id: xmas_lights_room_occupied
@@ -104,4 +97,4 @@ automation:
         after: "15:30:00"
     action:
       service: homeassistant.turn_on
-      entity_id: group.exterior_christmas_lights
+      entity_id: light.exterior_christmas_lights
