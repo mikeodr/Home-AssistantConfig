@@ -179,3 +179,32 @@ automation:
               - service: light.turn_off
                 target:
                   floor_id: basement
+
+  - alias: Basement Space Heater Control
+    id: basement_space_heater_control
+    triggers:
+      - platform: state
+        entity_id:
+          - binary_sensor.basement_presence
+          - binary_sensor.basement_ecobee_occupancy
+        to:
+          - "on"
+        id: turn_on
+      - platform: state
+        entity_id: light.basement_lights
+        to: "off"
+        id: turn_off
+    actions:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: turn_on
+            sequence:
+              - service: switch.turn_on
+                entity_id: switch.basement_space_heater
+          - conditions:
+              - condition: trigger
+                id: turn_off
+            sequence:
+              - service: switch.turn_off
+                entity_id: switch.basement_space_heater
