@@ -41,6 +41,7 @@ automation:
           - input_boolean.nap_mode
           - input_boolean.quite_mode
           - switch.master_white_noise
+          - schedule.doorbell_do_not_distrub
         not_to:
           - "unavailable"
           - "unknown"
@@ -52,6 +53,7 @@ automation:
                   - input_boolean.nap_mode
                   - input_boolean.quite_mode
                   - switch.master_white_noise
+                  - schedule.doorbell_do_not_distrub
                 state: "off"
             sequence:
               - service: select.select_option
