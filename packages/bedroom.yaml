@@ -85,6 +85,10 @@ automation:
         to: "on"
       - platform: time
         at: "07:30:00"
+      - platform: state
+        entity_id:
+          - switch.master_white_noise
+        to: "off"
     condition:
       - condition: state
         entity_id: input_boolean.sleeping_in
@@ -93,7 +97,7 @@ automation:
         entity_id: input_boolean.nap_mode
         state: "off"
       - condition: time
-        after: "07:25:00"
+        after: "07:00:00"
       - condition: time
         before: "08:00:00"
     action:
