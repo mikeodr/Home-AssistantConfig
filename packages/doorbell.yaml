@@ -94,8 +94,6 @@ automation:
       from: "off"
       to: "on"
     actions:
-      - delay:
-          seconds: 1
       # Snapshot the camera
       - service: camera.snapshot
         continue_on_error: true
