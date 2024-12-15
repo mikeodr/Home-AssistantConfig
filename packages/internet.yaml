@@ -3,9 +3,9 @@ automation:
     id: internet_reset_modem_internet_down
     trigger:
       - platform: state
-        entity_id: binary_sensor.internet_state
-        from: "on"
-        to: "off"
+        entity_id: sensor.opnsense_wan_igb1_status
+        from: "online"
+        to: "offline"
         for:
           minutes: 30
     action:
@@ -17,7 +17,7 @@ automation:
             tag: "internet-down-notification"
             group: "internet-notification"
       - repeat:
-          while: "{{ is_state('binary_sensor.internet_state', 'off') and repeat.index < 10 }}"
+          while: "{{ not is_state('sensor.opnsense_wan_igb1_status', 'online') and repeat.index < 10 }}"
           sequence:
             - service: homeassistant.turn_off
               entity_id: switch.modem_reset
@@ -41,14 +41,15 @@ automation:
     id: internet_notify_leds
     trigger:
       - platform: state
-        entity_id: binary_sensor.internet_state
-        from: "on"
-        to: "off"
+        entity_id: sensor.opnsense_wan_igb1_status
+        from: "online"
+        to: "offline"
+        for:
+          minutes: 5
         id: internet_down
       - platform: state
-        entity_id: binary_sensor.internet_state
-        from: "off"
-        to: "on"
+        entity_id: sensor.opnsense_wan_igb1_status
+        to: "online"
         id: internet_up
     condition:
       - condition: state
