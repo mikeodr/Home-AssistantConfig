@@ -1,7 +1,7 @@
 timer:
   basement_lights_off:
     name: Turn off basement lights
-    duration: 00:15:00
+    duration: 00:25:00
     restore: true
 
 automation:
@@ -68,14 +68,13 @@ automation:
               entity_id: binary_sensor.basement_presence
               state: "off"
           sequence:
-            - wait_template: "{{ (states('sensor.mike_apple_watch_estimated_distance') |float(0) > 0.59) or is_state('device_tracker.mike_apple_watch_ble', 'not_home') }}"
+            - wait_template: "{{ (states('sensor.michael_s_iphone_ble_estimated_distance') |float(0) > 0.59) or is_state('device_tracker.mike_apple_watch_ble', 'not_home') }}"
               timeout:
-                minutes: 5
-              continue_on_timeout: false
+                minutes: 15
+              continue_on_timeout: true
             - service: light.turn_off
               entity_id:
-                - light.basement_hall
-                - light.basement_room_light_dimmer
+                - light.basement_lights
 
   - alias: Dim Light Over 15 Minutes at Sundown
     id: basement_dim_light_at_sundown
@@ -179,6 +178,8 @@ automation:
               - service: light.turn_off
                 target:
                   floor_id: basement
+              - service: switch.turn_off
+                entity_id: switch.basement_space_heater
 
   - alias: Basement Space Heater Control
     id: basement_space_heater_control
@@ -186,19 +187,27 @@ automation:
       - platform: state
         entity_id:
           - binary_sensor.basement_presence
-          - binary_sensor.basement_ecobee_occupancy
         to:
           - "on"
         id: turn_on
       - platform: state
-        entity_id: light.basement_lights
+        entity_id:
+          - binary_sensor.basement_presence
         to: "off"
+        for:
+          minutes: 10
+        id: turn_off
+      - platform: template
+        value_template: "{{ 'armed_' in states('alarm_control_panel.alarmo') }}"
         id: turn_off
     actions:
       - choose:
           - conditions:
               - condition: trigger
                 id: turn_on
+              - condition: state
+                entity_id: alarm_control_panel.alarmo
+                state: "disarmed"
             sequence:
               - service: switch.turn_on
                 entity_id: switch.basement_space_heater
@@ -208,3 +217,37 @@ automation:
             sequence:
               - service: switch.turn_off
                 entity_id: switch.basement_space_heater
+
+  - alias: Basement Stairs Light Motion Control
+    id: basement_stairs_light_motion_control
+    triggers:
+      - platform: state
+        entity_id: binary_sensor.basement_stairs_motion_occupancy
+        from: "off"
+        to: "on"
+        id: turn_on
+      - platform: state
+        entity_id: binary_sensor.basement_stairs_motion_occupancy
+        to: "off"
+        for:
+          minutes: 15
+        id: turn_off
+    actions:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: group.adults
+                state: "home"
+              - condition: state
+                entity_id: alarm_control_panel.alarmo
+                state: "disarmed"
+              - condition: trigger
+                id: turn_on
+              - condition: time
+                after: "07:45:00"
+            sequence:
+              - service: light.turn_on
+                entity_id: light.basement_stairs
+        default:
+          - service: light.turn_off
+            entity_id: light.basement_stairs
