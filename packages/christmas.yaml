@@ -55,6 +55,9 @@ automation:
       - condition: time
         after: "06:00:00"
         before: "22:30:00"
+      - condition: state
+        entity_id: alarm_control_panel.alarmo
+        state: "disarmed"
     action:
       choose:
         - conditions:
