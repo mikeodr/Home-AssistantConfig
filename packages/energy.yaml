@@ -129,14 +129,53 @@ automation:
         - conditions:
             - condition: trigger
               id: power_on
-            - condition: time
-              after: "17:00:00"
-            - not:
+            - condition: state
+              entity_id: alarm_control_panel.alarmo
+              state: disarmed
+            - or:
                 - condition: state
-                  entity_id: alarm_control_panel.alarmo
-                  state:
-                    - armed_vacation
-                    - armed_away
+                  entity_id: schedule.tv_power
+                  state: "on"
+                - condition: state
+                  entity_id: calendar.ontario_holidays
+                  state: "on"
           sequence:
             - service: homeassistant.turn_on
               entity_id: switch.entertainment_switch_relay
+
+  - alias: Save powerwall on holidays
+    id: energy_save_powerwall_on_holidays
+    triggers:
+      - platform: state
+        entity_id: schedule.holiday_powerwall
+        to: "on"
+        id: "son"
+      - platform: state
+        entity_id: schedule.holiday_powerwall
+        to: "off"
+    actions:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: "son"
+              - condition: state
+                entity_id: calendar.ontario_holidays
+                state: "on"
+            sequence:
+              - service: number.set_value
+                target:
+                  entity_id: number.home_backup_reserve
+                data:
+                  value: 100
+              - service: notify.mobile_app_michaels_iphone
+                data:
+                  messsage: "Powerwall set for holidays"
+        default:
+          - service: number.set_value
+            target:
+              entity_id: number.home_backup_reserve
+            data:
+              value: 20
+          - service: notify.mobile_app_michaels_iphone
+            data:
+              messsage: "Powerwall holidays off"
