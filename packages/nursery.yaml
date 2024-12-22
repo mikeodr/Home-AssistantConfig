@@ -939,7 +939,7 @@ automation:
     actions:
       - action: number.set_value
         data:
-          value: 900
+          value: 900 # 30 minutes in seconds
         target:
           entity_id: >
             {% if trigger.entity_id == "media_player.bedroom_player" %}
