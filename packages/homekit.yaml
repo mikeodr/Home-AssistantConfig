@@ -57,9 +57,9 @@ homekit:
     port: 21069
     filter:
       include_entities:
-        - camera.g4_doorbell_high
+        - camera.front_door_high_resolution_channel
     entity_config:
-      camera.g4_doorbell_high:
+      camera.front_door_high_resolution_channel:
         video_codec: copy
         support_audio: false
         linked_doorbell_sensor: binary_sensor.front_door_doorbell

@@ -98,7 +98,7 @@ automation:
       - service: camera.snapshot
         continue_on_error: true
         target:
-          entity_id: camera.front_door_low
+          entity_id: camera.front_door_low_resolution_channel
         data:
           filename: "/media/doorbell/snapshot.jpg"
       # Notify Everyone
@@ -250,7 +250,7 @@ automation:
     actions:
       - service: camera.snapshot
         target:
-          entity_id: camera.g4_doorbell_high
+          entity_id: camera.front_door_package_camera
         data:
           filename: "/media/doorbell/package.jpg"
       - service: notify.adults
