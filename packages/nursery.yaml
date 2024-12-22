@@ -896,3 +896,54 @@ automation:
         data:
           volume_level: 0.01
         entity_id: media_player.girls_room_sonos
+
+  - alias: Yoto Player Auto Play at bedtime
+    id: girls_yoto_player_bedtime
+    triggers:
+      - platform: state
+        entity_id: input_boolean.nap_mode
+        from: "off"
+        to: "on"
+    conditions:
+      not:
+        - condition: state
+          entity_id: media_player.bedroom_player
+          state: "playing"
+    actions:
+      - wait_for_trigger:
+          - platform: template
+            value_template: >
+              {{ states('media_player.bedroom_player') not in ['off', 'unknown', 'unavailable'] }}
+        timeout:
+          minutes: 30
+        continue_on_timeout: false
+      - action: media_player.play_media
+        data:
+          media_content_id: "7AzCP-01-01" # Bedtime meditation
+          media_content_type: music
+        target:
+          entity_id: media_player.bedroom_player
+
+  - alias: Auto sleep timer for Yotos overnight
+    id: girls_yoto_auto_sleep_players_overnight
+    triggers:
+      - platform: state
+        entity_id:
+          - media_player.bedroom_player
+          - media_player.merry_and_vivs_player
+        to: "playing"
+    conditions:
+      - condition: time
+        after: "23:00:00"
+        before: "06:00:00"
+    actions:
+      - action: number.set_value
+        data:
+          value: 900
+        target:
+          entity_id: >
+            {% if trigger.entity_id == "media_player.bedroom_player" %}
+              number.bedroom_player_sleep_timer_seconds_remaining
+            {% else %}
+              number.merry_and_vivs_player_sleep_timer_seconds_remaining
+            {% endif %}
