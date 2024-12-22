@@ -1,10 +1,32 @@
 timer:
   basement_lights_off:
     name: Turn off basement lights
-    duration: 00:25:00
+    duration: 00:10:00
     restore: true
 
 automation:
+  - alias: Basement Light on pir entrance
+    id: basement_light_on_pir_entrance
+    triggers:
+      - platform: state
+        entity_id: binary_sensor.basement_stairs_motion_occupancy
+        from: "off"
+        to: "on"
+    conditions:
+      - condition: state
+        entity_id: alarm_control_panel.alarmo
+        state: "disarmed"
+    actions:
+      - wait_for_trigger:
+          - platform: state
+            entity_id: binary_sensor.basement_hall_motion_occupancy
+            to: "on"
+        timeout:
+          minutes: 5
+        continue_on_timeout: false
+      - service: light.turn_on
+        entity_id: light.basement_lights
+
   - alias: Basement Light Presence Control On
     id: basement_light_presence_controls_on
     mode: restart
@@ -68,10 +90,6 @@ automation:
               entity_id: binary_sensor.basement_presence
               state: "off"
           sequence:
-            - wait_template: "{{ (states('sensor.michael_s_iphone_ble_estimated_distance') |float(0) > 0.59) or is_state('device_tracker.mike_apple_watch_ble', 'not_home') }}"
-              timeout:
-                minutes: 15
-              continue_on_timeout: true
             - service: light.turn_off
               entity_id:
                 - light.basement_lights
@@ -185,17 +203,12 @@ automation:
     id: basement_space_heater_control
     triggers:
       - platform: state
-        entity_id:
-          - binary_sensor.basement_presence
-        to:
-          - "on"
+        entity_id: binary_sensor.basement_presence
+        to: "on"
         id: turn_on
       - platform: state
-        entity_id:
-          - binary_sensor.basement_presence
+        entity_id: binary_sensor.basement_presence
         to: "off"
-        for:
-          minutes: 10
         id: turn_off
       - platform: template
         value_template: "{{ 'armed_' in states('alarm_control_panel.alarmo') }}"
@@ -230,7 +243,7 @@ automation:
         entity_id: binary_sensor.basement_stairs_motion_occupancy
         to: "off"
         for:
-          minutes: 15
+          minutes: 10
         id: turn_off
     actions:
       - choose:
