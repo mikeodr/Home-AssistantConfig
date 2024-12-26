@@ -27,7 +27,7 @@ timer:
     restore: true
   bedtime_stairs_light_off:
     name: Turn off Stairs Lights
-    duration: 01:00:00
+    duration: 00:30:00
     restore: true
 
 scene:
@@ -226,13 +226,13 @@ automation:
         variables:
           fan_speed_percentage: 33
       - platform: numeric_state
-        entity_id: sensor.girls_room_temperature_temperature
+        entity_id: sensor.girls_room_temperature
         above: 22.0
         below: 25
         variables:
           fan_speed_percentage: 33
       - platform: numeric_state
-        entity_id: sensor.girls_room_temperature_temperature
+        entity_id: sensor.girls_room_temperature
         above: 24.9
         variables:
           fan_speed_percentage: 66
@@ -242,7 +242,7 @@ automation:
         above: 150
       # Force off
       - platform: numeric_state
-        entity_id: sensor.girls_room_temperature_temperature
+        entity_id: sensor.girls_room_temperature
         below: 22.5
         id: force_off
     conditions:
@@ -276,14 +276,14 @@ automation:
                     attribute: temperature
                     above: 18
                   - condition: numeric_state
-                    entity_id: sensor.girls_room_temperature_temperature #Actual Room Temp
+                    entity_id: sensor.girls_room_temperature #Actual Room Temp
                     above: 21
             sequence:
               - if:
                   - condition: trigger
                     id: nap_on
                   - condition: numeric_state
-                    entity_id: sensor.girls_room_temperature_temperature
+                    entity_id: sensor.girls_room_temperature
                     above: 25
                 then:
                   - service: fan.turn_on
@@ -302,12 +302,12 @@ automation:
     id: nursery_temp_warning
     triggers:
       - platform: numeric_state
-        entity_id: sensor.girls_room_temperature_temperature
+        entity_id: sensor.girls_room_temperature
         below: 17
         for:
           minutes: 30
       - platform: numeric_state
-        entity_id: sensor.girls_room_temperature_temperature
+        entity_id: sensor.girls_room_temperature
         above: 25
         for:
           minutes: 10
@@ -392,7 +392,6 @@ automation:
         entity_id:
           - switch.nursery_white_noise
           - fan.nursery_humidifier
-          - switch.nursery
         to: "on"
         for:
           minutes: 30
@@ -632,7 +631,7 @@ automation:
     id: nusery_led_strip_reenable
     triggers:
       - platform: state
-        entity_id: sensor.backupsxs1300g_status
+        entity_id: sensor.ups_status
         from: "Online"
       - platform: state
         entity_id: input_boolean.nap_mode
@@ -860,7 +859,7 @@ automation:
                     id: lights_on
                   - condition: time
                     after: "18:30:00"
-                    before: "21:00:00"
+                    before: "22:30:00"
             sequence:
               - delay:
                   seconds: 5
@@ -910,10 +909,7 @@ automation:
           entity_id: media_player.bedroom_player
           state: "playing"
     actions:
-      - wait_for_trigger:
-          - platform: template
-            value_template: >
-              {{ states('media_player.bedroom_player') not in ['off', 'unknown', 'unavailable'] }}
+      - wait_template: "{{ states('media_player.bedroom_player') not in ['off', 'unknown', 'unavailable'] }}"
         timeout:
           minutes: 30
         continue_on_timeout: false
@@ -947,3 +943,21 @@ automation:
             {% else %}
               number.merry_and_vivs_player_sleep_timer_seconds_remaining
             {% endif %}
+
+  - alias: Yoto Player Turn off automatically
+    id: girls_yoto_auto_off
+    triggers:
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.bedtime_stairs_light_off
+    actions:
+      - wait_template: "{{ is_state('binary_sensor.girls_room_camera_motion', 'off') and is_state('binary_sensor.girls_room_occupancy', 'off') }}"
+        timeout:
+          minutes: 15
+        continue_on_timeout: false
+      - action: media_player.media_stop
+        target:
+          entity_id:
+            - media_player.bedroom_player
+            - media_player.merry_and_vivs_player
