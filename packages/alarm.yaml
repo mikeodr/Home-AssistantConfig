@@ -22,10 +22,10 @@ automation:
       - platform: state
         entity_id:
           - group.presence_home
-        to: ~
+        not_to:
+          - "unavailable"
+          - "unknown"
     condition:
-      - condition: template
-        value_template: "{{ trigger.to_state.state in ['home', 'not_home'] }}"
       - condition: state
         entity_id: binary_sensor.guests_present
         state: "off"
@@ -33,9 +33,20 @@ automation:
         entity_id: device_tracker.faux_girls_home
         state: "not_home"
     action:
-      - service: alarm_control_panel.alarm_{{ 'disarm' if 'home' == trigger.to_state.state else 'arm_away' }}
+      - service: calendar.get_events
         target:
-          entity_id: alarm_control_panel.alarmo
+          entity_id: calendar.house_planning
+        data:
+          duration:
+            hours: 8
+        response_variable: cal
+      - if:
+          - condition: template
+            value_template: "{{ cal['calendar.house_planning'].events | selectattr('summary', 'contains', 'Cleaners') | list | length == 0 }}"
+        then:
+          - service: alarm_control_panel.alarm_{{ 'disarm' if 'home' == trigger.to_state.state else 'arm_away' }}
+            target:
+              entity_id: alarm_control_panel.alarmo
       - if:
           - condition: template
             value_template: "{{ trigger.to_state.state  == 'home' }}"
