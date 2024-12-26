@@ -8,17 +8,6 @@ binary_sensor:
           seconds: 10
 
 automation:
-  - alias: Lock Jammed Acknowledge
-    id: lock_jammed_acknowledged
-    trigger:
-      platform: event
-      event_type: mobile_app_notification_action
-      event_data:
-        action: "ACK_LOCK_JAMMED"
-    action:
-      service: homeassistant.turn_off
-      entity_id: alert.lock_jammed
-
   - alias: Lock Status Change
     id: lock_status_change
     trigger:
