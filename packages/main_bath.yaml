@@ -57,3 +57,18 @@ automation:
           entity_id: light.main_bath_light
         data:
           brightness_pct: 100
+
+  - alias: Main Bath Fan on for humidity
+    id: main_bath_on_humidity
+    triggers:
+      - platform: numeric_state
+        entity_id: sensor.bathroom_humidity_derivative
+        above: 1
+    conditions:
+      - condition: state
+        entity_id: group.adults
+        state: "home"
+    actions:
+      - action: notify.mobile_app_michaels_iphone
+        data:
+          message: "Shower fan should run"
