@@ -165,6 +165,8 @@ automation:
         entity_id: binary_sensor.basement_presence
         to: "off"
         id: turn_off
+        for:
+          minutes: 5
       - platform: template
         value_template: "{{ 'armed_' in states('alarm_control_panel.alarmo') }}"
         id: turn_off
