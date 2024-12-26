@@ -169,7 +169,10 @@ automation:
                   value: 100
               - service: notify.mobile_app_michaels_iphone
                 data:
-                  messsage: "Powerwall set for holidays"
+                  message: "Powerwall set for holidays"
+                  data:
+                    tag: "powerwall"
+                    group: "enery"
         default:
           - service: number.set_value
             target:
@@ -178,4 +181,7 @@ automation:
               value: 20
           - service: notify.mobile_app_michaels_iphone
             data:
-              messsage: "Powerwall holidays off"
+              message: "Powerwall holidays off"
+              data:
+                tag: "powerwall"
+                group: "enery"
