@@ -1,6 +1,6 @@
 automation:
   - alias: Morning Wake Up Sequence
-    id: morning_wake_up_sequence
+    id: mornings_wake_up_sequence
     mode: single
     max_exceeded: silent
     trigger:
