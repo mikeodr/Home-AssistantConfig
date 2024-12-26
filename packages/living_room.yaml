@@ -180,7 +180,7 @@ automation:
           - if:
               - not:
                   - condition: state
-                    entity_id: media_player.plex_plex_for_apple_tv_living_room
+                    entity_id: media_player.apple_tv_living_room
                     state: "playing"
             then:
               - service: light.turn_on
@@ -225,3 +225,34 @@ automation:
             - light.kitchen_light
             - light.living_room_light
             - light.front_hall
+
+  - alias: Front door open turns on front hall light
+    id: main_floor_front_door_turn_on_hall_light
+    mode: single
+    max_exceeded: silent
+    triggers:
+      - platform: state
+        entity_id: binary_sensor.front_door
+        to: "on"
+    conditions:
+      - condition: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        below: 5.0
+      - condition: time
+        before: "21:30:00"
+    actions:
+      - service: light.turn_on
+        entity_id: light.front_hall
+
+  - alias: Turn off front hall lights
+    id: main_floor_front_hall_light_off_high_sun_elevation
+    triggers:
+      - platform: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        above: 10.0
+    actions:
+      - service: light.turn_off
+        entity_id:
+          - light.front_hall
