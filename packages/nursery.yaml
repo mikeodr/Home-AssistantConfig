@@ -344,6 +344,10 @@ automation:
         event_data:
           entity_id: timer.girls_lights_off
         id: timer_finished
+      - platform: state
+        entity_id: light.girls_fan
+        to: "on"
+        id: cancel_timer
     conditions:
       - or:
           - condition: state
@@ -359,6 +363,12 @@ automation:
         before: "19:00:00"
     actions:
       - choose:
+          - conditions:
+              - condition: trigger
+                id: cancel_timer
+            sequence:
+              - service: timer.cancel
+                entity_id: timer.girls_lights_off
           - conditions:
               - condition: trigger
                 id: timer_start
@@ -718,6 +728,8 @@ automation:
 
   - alias: Girls Light Control
     id: nursery_girls_light_control
+    mode: single
+    max_exceeded: silent
     triggers:
       - platform: state
         entity_id: sensor.nursery_light_control_action
@@ -744,6 +756,8 @@ automation:
                 - light.nursery_led
           - service: light.turn_off
             entity_id: light.nursery_light
+      - delay:
+          seconds: 5
 
   - alias: Set warmer temperature for LED strip
     id: nursery_warmer_temp_led
@@ -859,7 +873,7 @@ automation:
                     id: lights_on
                   - condition: time
                     after: "18:30:00"
-                    before: "22:30:00"
+                    before: "21:45:00"
             sequence:
               - delay:
                   seconds: 5
