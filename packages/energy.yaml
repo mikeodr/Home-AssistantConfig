@@ -153,14 +153,15 @@ automation:
       - platform: state
         entity_id: schedule.holiday_powerwall
         to: "off"
+    conditions:
+      - condition: state
+        entity_id: calendar.ontario_holidays
+        state: "on"
     actions:
       - choose:
           - conditions:
               - condition: trigger
                 id: "son"
-              - condition: state
-                entity_id: calendar.ontario_holidays
-                state: "on"
             sequence:
               - service: number.set_value
                 target:
