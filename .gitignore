@@ -21,3 +21,4 @@ zigbee2mqtt/
 tmp/
 image/
 esphome/
+tesla_fleet.key
