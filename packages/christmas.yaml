@@ -1,29 +1,32 @@
 automation:
   - alias: Exterior Christmas Lights On
     id: xmas_exteior_lights_on
-    trigger:
+    triggers:
       - platform: numeric_state
         entity_id: sun.sun
         attribute: elevation
         below: 0.25
-    action:
+    conditions:
+      - condition: template
+        value_template: "{{ now().month in [11, 12, 1, 2] }}"
+    actions:
       service: homeassistant.turn_on
       entity_id: light.exterior_christmas_lights
 
   - alias: Exterior Christmas Lights Off
     id: xmas_exterior_lights_off
-    trigger:
+    triggers:
       - platform: time
         at: "23:30:00"
       - platform: sun
         event: sunrise
-    action:
+    actions:
       service: homeassistant.turn_off
       entity_id: light.exterior_christmas_lights
 
   - alias: Christmas Tree lights on when living room occupied
     id: xmas_lights_room_occupied
-    trigger:
+    triggers:
       - platform: state
         entity_id: binary_sensor.living_room_occupancy
         to: "on"
@@ -52,13 +55,15 @@ automation:
           - armed_away
         id: turn_off
     condition:
+      - condition: template
+        value_template: "{{ now().month in [11, 12, 1, 2] }}"
       - condition: time
         after: "06:00:00"
         before: "22:30:00"
       - condition: state
         entity_id: alarm_control_panel.alarmo
         state: "disarmed"
-    action:
+    actions:
       choose:
         - conditions:
             - condition: trigger
@@ -75,16 +80,16 @@ automation:
 
   - alias: Christmas Tree off at bedtime
     id: xmas_tree_lights_off_night
-    trigger:
+    triggers:
       platform: time
       at: "22:30:00"
-    action:
+    actions:
       service: homeassistant.turn_off
       entity_id: light.christmas_tree
 
   - alias: Exterior Christmas Lights on arriving home
     id: external_xmas_lights_on_arrive_home
-    trigger:
+    triggers:
       - platform: zone
         entity_id:
           - person.mike
@@ -92,12 +97,14 @@ automation:
         zone: zone.home
         event: enter
     condition:
+      - condition: template
+        value_template: "{{ now().month in [11, 12, 1, 2] }}"
       - condition: numeric_state
         entity_id: sun.sun
         attribute: elevation
         below: 3.35
       - condition: time
         after: "15:30:00"
-    action:
+    actions:
       service: homeassistant.turn_on
       entity_id: light.exterior_christmas_lights
