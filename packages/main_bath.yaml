@@ -47,10 +47,11 @@ automation:
   - alias: Main Bath Full Brightness
     id: main_bath_full_brightness
     triggers:
-      - platform: state
-        entity_id:
-          - sensor.main_bath_light_action
-        to: "up_double"
+      - trigger: device
+        domain: mqtt
+        device_id: e3bc901892c55fbcaa6dd42876632c35
+        type: action
+        subtype: up_double
     actions:
       - service: light.turn_on
         target:

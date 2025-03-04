@@ -4,12 +4,24 @@ automation:
     mode: single
     max_exceeded: silent
     trigger:
-      - platform: state
-        to: "down_double"
-        entity_id:
-          - sensor.main_bath_light_action
-          - sensor.main_stairs_action
-          - sensor.upstairs_hall_action
+      # Main Bath
+      - trigger: device
+        domain: mqtt
+        device_id: e3bc901892c55fbcaa6dd42876632c35
+        type: action
+        subtype: down_double
+      # Main Stairs
+      - trigger: device
+        domain: mqtt
+        device_id: 0d619322f1e8664e17f93285090c18bd
+        type: action
+        subtype: down_double
+      # Upstairs Hall
+      - trigger: device
+        domain: mqtt
+        device_id: 67df18469d484ee9d7870f2a5fb692cb
+        type: action
+        subtype: down_double
     condition:
       - condition: time
         after: "21:00:00"

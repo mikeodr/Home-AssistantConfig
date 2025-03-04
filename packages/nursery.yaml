@@ -85,9 +85,11 @@ automation:
     mode: single
     max_exceeded: silent
     triggers:
-      - platform: state
-        entity_id: sensor.nap_mode_control_action
-        to: "single"
+      - trigger: device
+        domain: mqtt
+        device_id: 1cb9a601720330d677b308f3d186b9ff
+        type: action
+        subtype: single
     actions:
       - service: homeassistant.toggle
         entity_id:
@@ -100,9 +102,11 @@ automation:
     max_exceeded: silent
     id: nursery_led_on
     triggers:
-      - platform: state
-        entity_id: sensor.nursery_led_control_action
-        to: "on"
+      - trigger: device
+        domain: mqtt
+        device_id: 1ccea5c5991d06dc7b15dd83b69832e4
+        type: action
+        subtype: "on"
     actions:
       - service: homeassistant.turn_on
         entity_id: switch.nursery_power_loss_gate
@@ -128,9 +132,11 @@ automation:
   - alias: Nursery LED Off
     id: nursery_led_off
     triggers:
-      - platform: state
-        entity_id: sensor.nursery_led_control_action
-        to: "off"
+      - trigger: device
+        domain: mqtt
+        device_id: 1ccea5c5991d06dc7b15dd83b69832e4
+        type: action
+        subtype: "off"
       - platform: sun
         event: sunrise
         offset: "+02:00:00"
@@ -731,9 +737,11 @@ automation:
     mode: single
     max_exceeded: silent
     triggers:
-      - platform: state
-        entity_id: sensor.nursery_light_control_action
-        to: "single"
+      - trigger: device
+        domain: mqtt
+        device_id: 119108667bc7ad9e3c4d82d08b065ed3
+        type: action
+        subtype: single
     actions:
       - choose:
           - conditions:

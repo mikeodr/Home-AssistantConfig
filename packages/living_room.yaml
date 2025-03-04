@@ -27,21 +27,29 @@ automation:
   - alias: Front Hall Lock and Garage Control
     id: living_front_hall_lock_garage_control
     trigger:
-      - platform: state
-        entity_id: sensor.front_hall_action
-        to: "up_triple"
+      - trigger: device
+        domain: mqtt
+        device_id: 949dd8fd2c9e4403656fc84e75de9607
+        type: action
+        subtype: up_triple
         id: lock_unlock
-      - platform: state
-        entity_id: sensor.front_hall_action
-        to: "up_quadruple"
+      - trigger: device
+        domain: mqtt
+        device_id: 949dd8fd2c9e4403656fc84e75de9607
+        type: action
+        subtype: up_quadruple
         id: garage_up
-      - platform: state
-        entity_id: sensor.front_hall_action
-        to: "down_triple"
+      - trigger: device
+        domain: mqtt
+        device_id: 949dd8fd2c9e4403656fc84e75de9607
+        type: action
+        subtype: down_triple
         id: lock_lock
-      - platform: state
-        entity_id: sensor.front_hall_action
-        to: "down_quadruple"
+      - trigger: device
+        domain: mqtt
+        device_id: 949dd8fd2c9e4403656fc84e75de9607
+        type: action
+        subtype: down_quadruple
         id: garage_down
     action:
       - choose:
@@ -73,13 +81,19 @@ automation:
   - alias: Garage Control with Kitchen Switch
     id: living_garage_control_kitchen_switch
     trigger:
-      - platform: state
-        entity_id: sensor.kitchen_light_action
-        to: "up_triple"
+      - trigger: device
+        domain: mqtt
+        # Kitchen Light
+        device_id: e97867a8181f2b6c5aef264706584f91
+        type: action
+        subtype: up_triple
         id: garage_up_trigger
-      - platform: state
-        entity_id: sensor.kitchen_light_action
-        to: "down_triple"
+      - trigger: device
+        domain: mqtt
+        # Kitchen Light
+        device_id: e97867a8181f2b6c5aef264706584f91
+        type: action
+        subtype: down_triple
         id: garage_down_trigger
     action:
       - choose:
@@ -99,14 +113,20 @@ automation:
   - alias: Lock Control with Living Switch
     id: living_front_lock_control_living_switch
     trigger:
-      - platform: state
-        entity_id: sensor.living_room_action
-        to: "up_triple"
-        id: door_unlock_trigger
-      - platform: state
-        entity_id: sensor.living_room_action
-        to: "down_triple"
-        id: door_lock_trigger
+      - trigger: device
+        domain: mqtt
+        # Living Room Light
+        device_id: c2fce543d85f8ffccd89691a42f784d9
+        type: action
+        subtype: up_triple
+        id: garage_up_trigger
+      - trigger: device
+        domain: mqtt
+        # Living Room Light
+        device_id: c2fce543d85f8ffccd89691a42f784d9
+        type: action
+        subtype: down_triple
+        id: garage_down_trigger
     action:
       - choose:
           - conditions:
@@ -126,18 +146,32 @@ automation:
     id: living_room_light_group_multitap_control
     mode: single
     max_exceeded: silent
-    trigger:
-      - platform: state
-        entity_id:
-          - sensor.living_room_action
-          - sensor.kitchen_light_action
-        to: "up_double"
+    triggers:
+      # Living Room
+      - trigger: device
+        domain: mqtt
+        device_id: c2fce543d85f8ffccd89691a42f784d9
+        type: action
+        subtype: up_double
         id: turn_on
-      - platform: state
-        entity_id:
-          - sensor.living_room_action
-          - sensor.kitchen_light_action
-        to: "down_double"
+      - trigger: device
+        domain: mqtt
+        device_id: c2fce543d85f8ffccd89691a42f784d9
+        type: action
+        subtype: down_double
+        id: turn_off
+      # Kitchen Light
+      - trigger: device
+        domain: mqtt
+        device_id: e97867a8181f2b6c5aef264706584f91
+        type: action
+        subtype: up_double
+        id: turn_on
+      - trigger: device
+        domain: mqtt
+        device_id: e97867a8181f2b6c5aef264706584f91
+        type: action
+        subtype: down_double
         id: turn_off
     action:
       - choose:

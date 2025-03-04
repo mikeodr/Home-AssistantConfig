@@ -121,19 +121,44 @@ automation:
   - alias: Top of basement stairs action control
     id: basement_top_of_stairs_action_control
     trigger:
-      - platform: state
-        entity_id:
-          - sensor.basement_stairs_light_action
-          - sensor.basement_hall_action
-          - sensor.basement_room_action
-        to: "up_double"
+      # Basement Stairs
+      - trigger: device
+        domain: mqtt
+        device_id: db7cbb2e9f9508cfb87c54e915766ff3
+        type: action
+        subtype: up_double
         id: turn_on
-      - platform: state
-        entity_id:
-          - sensor.basement_stairs_light_action
-          - sensor.basement_hall_action
-          - sensor.basement_room_action
-        to: "down_double"
+      - trigger: device
+        domain: mqtt
+        device_id: db7cbb2e9f9508cfb87c54e915766ff3
+        type: action
+        subtype: down_double
+        id: turn_off
+      # Basement Room
+      - trigger: device
+        domain: mqtt
+        device_id: 2dfe60ede49072748ae1109333546706
+        type: action
+        subtype: up_double
+        id: turn_on
+      - trigger: device
+        domain: mqtt
+        device_id: 2dfe60ede49072748ae1109333546706
+        type: action
+        subtype: down_double
+        id: turn_off
+      # Basement Hall
+      - trigger: device
+        domain: mqtt
+        device_id: 4fd03b2b6cc39b1cc034f88e88f749d6
+        type: action
+        subtype: up_double
+        id: turn_on
+      - trigger: device
+        domain: mqtt
+        device_id: 4fd03b2b6cc39b1cc034f88e88f749d6
+        type: action
+        subtype: down_double
         id: turn_off
     action:
       - choose:
