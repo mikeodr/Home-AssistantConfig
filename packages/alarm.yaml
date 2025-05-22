@@ -16,23 +16,38 @@ automation:
     mode: single
     max_exceeded: silent
 
+  - alias: Guests Present Reminder
+    id: alarm_guests_present_reminder
+    trigger:
+      - platform: state
+        entity_id: group.presence_home
+        to: "not_home"
+    condition:
+      - condition: state
+        entity_id: binary_sensor.guests_present
+        state: "on"
+    actions:
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          message: "🛡️ Guests home, alarm not armed 🛡️"
+
   - alias: Auto Arm and Disarm System
     id: alarm_arm_based_on_presence
-    trigger:
+    triggers:
       - platform: state
         entity_id:
           - group.presence_home
         not_to:
           - "unavailable"
           - "unknown"
-    condition:
+    conditions:
       - condition: state
         entity_id: binary_sensor.guests_present
         state: "off"
       - condition: state
         entity_id: device_tracker.faux_girls_home
         state: "not_home"
-    action:
+    actions:
       - service: calendar.get_events
         target:
           entity_id: calendar.house_planning
