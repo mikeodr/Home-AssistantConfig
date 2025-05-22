@@ -43,4 +43,4 @@ automation:
             - light.living_room_light
         data:
           brightness_pct: 28
-          transition: 90
+          transition: 120
