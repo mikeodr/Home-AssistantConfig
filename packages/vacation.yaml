@@ -88,48 +88,22 @@ automation:
     max_exceeded: silent
     id: vacation_lighting
     trigger:
-      - platform: numeric_state
-        entity_id: sun.sun
-        attribute: elevation
-        below: 2.0
-        id: light_on
-      - platform: time
-        at: "22:30:00"
-        id: light_off
-    condition:
-      - condition: state
+      - platform: state
         entity_id: alarm_control_panel.alarmo
-        state: "armed_vacation"
+        to:
+          - "armed_vacation"
+        id: "armed"
+      - platform: state
+        entity_id: alarm_control_panel.alarmo
+        to: "disarmed"
     action:
-      - delay:
-          minutes: "{{ (range(0, 25)|random|int) }}"
       - choose:
           - conditions:
               - condition: trigger
-                id: light_on
+                id: "armed"
             sequence:
-              - service: light.turn_on
-                entity_id: light.kitchen_island
-              - delay:
-                  minutes: "{{ (range(15, 45)|random|int) }}"
-              - service: light.turn_on
-                entity_id:
-                  - light.main_stairs
-                  - light.main_bath_light
-          - conditions:
-              - condition: trigger
-                id: light_off
-            sequence:
-              - service: light.turn_off
-                continue_on_error: true
-                target:
-                  floor_id:
-                    - main_floor
-                    - basement
-              - delay:
-                  minutes: "{{ (range(10, 35)|random|int) }}"
-              - service: light.turn_off
-                continue_on_error: true
-                target:
-                  floor_id:
-                    - top_floor
+              - service: switch.turn_on
+                entity_id: switch.simulated_light_presence
+        default:
+          - service: switch.turn_off
+            entity_id: switch.simulated_light_presence
