@@ -82,6 +82,7 @@ automation:
         entity_id:
           - binary_sensor.bedroom_ecobee_motion
           - binary_sensor.bedroom_ecobee_occupancy
+          - light.main_bath_light
         to: "on"
       - platform: time
         at: "07:30:00"
