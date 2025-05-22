@@ -12,7 +12,7 @@ automation:
         for:
           minutes: 15
       - condition: numeric_state
-        entity_id: sensor.living_room_illuminance_lux
+        entity_id: sensor.living_room_motion_illuminance
         below: 20
       - condition: state
         entity_id: group.adults
@@ -219,14 +219,8 @@ automation:
             then:
               - service: light.turn_on
                 entity_id: light.living_room_light_group
-                data:
-                  brightness_pct: 65
-                  transition: 20
           - service: light.turn_on
             entity_id: light.front_hall
-            data:
-              brightness_pct: 65
-              transition: 5
 
   - alias: Set Main floor Lights default local level
     id: main_floor_light_default_local_level
