@@ -46,12 +46,23 @@ automation:
                   - condition: trigger
                     id: enter_camp_zone
             sequence:
-              - service: input_datetime.set_datetime
-                target:
-                  entity_id: input_datetime.pickup_girls_reminder
-                data:
-                  date: "{{ now().strftime('%Y-%m-%d') }}"
-                  time: "15:45:00"
+              if:
+                - condition: trigger
+                  id: enter_camp_zone
+              then:
+                - service: input_datetime.set_datetime
+                  target:
+                    entity_id: input_datetime.pickup_girls_reminder
+                  data:
+                    date: "{{ now().strftime('%Y-%m-%d') }}"
+                    time: "{{ states('input_datetime.camp_pickup_time') }}"
+              else:
+                - service: input_datetime.set_datetime
+                  target:
+                    entity_id: input_datetime.pickup_girls_reminder
+                  data:
+                    date: "{{ now().strftime('%Y-%m-%d') }}"
+                    time: "15:45:00"
           - conditions:
               - condition: trigger
                 id: pickup_reminder
