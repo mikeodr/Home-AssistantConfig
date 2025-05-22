@@ -739,7 +739,7 @@ automation:
     triggers:
       - trigger: device
         domain: mqtt
-        device_id: 119108667bc7ad9e3c4d82d08b065ed3
+        device_id: 619b1285a00b9c9b050cedb19e02d4c1
         type: action
         subtype: single
     actions:
@@ -939,6 +939,11 @@ automation:
         data:
           media_content_id: "7AzCP-01-01" # Bedtime meditation
           media_content_type: music
+        target:
+          entity_id: media_player.bedroom_player
+      - action: media_player.volume_set
+        data:
+          volume_level: 0.5
         target:
           entity_id: media_player.bedroom_player
 
