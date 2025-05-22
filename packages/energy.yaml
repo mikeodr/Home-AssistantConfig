@@ -75,7 +75,7 @@ sensor:
       {{ data | selectattr('Dist', 'eq', 'Enova Power Corp.-Kitchener-Wilmot Hydro Rate Zone') | map(attribute='RPPOnP') | first }}
 
 automation:
-  - alias: Save power when not home
+  - alias: Save media power when not home
     id: media_energy_saver_not_home
     trigger:
       - platform: state
@@ -109,7 +109,7 @@ automation:
         to: Off Peak
         id: power_on
       - platform: time
-        at: "17:30:00"
+        at: "15:30:00"
         id: power_on
     action:
       choose:
@@ -186,3 +186,17 @@ automation:
               data:
                 tag: "powerwall"
                 group: "enery"
+
+  - alias: Save power on grid outage
+    id: energy_save_power_grid_outage
+    triggers:
+      - platform: state
+        entity_id: binary_sensor.home_grid_status
+        from: "on"
+        to: "off"
+        id: power_loss
+    actions:
+      - service: homeassistant.turn_off
+        target:
+          entity_id:
+            - switch.basement_space_heater
