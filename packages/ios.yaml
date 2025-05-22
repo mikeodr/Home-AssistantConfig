@@ -44,6 +44,14 @@ script:
         target:
           entity_id: alarm_control_panel.alarmo
 
+  toggle_spare_bedroom_fan:
+    alias: "Toggle Spare Bedroom Fan"
+    mode: queued
+    icon: "mdi:fan"
+    sequence:
+      - service: switch.toggle
+        entity_id: switch.spare_bedroom_fan
+
 sensor:
   - platform: template
     sensors:
