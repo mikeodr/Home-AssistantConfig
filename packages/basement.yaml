@@ -21,6 +21,11 @@ automation:
           - platform: state
             entity_id: binary_sensor.basement_hall_motion_occupancy
             to: "on"
+          - platform: state
+            entity_id: sensor.basement_fp1_presence_event
+            to:
+              - "enter"
+              - "approach"
         timeout:
           minutes: 5
         continue_on_timeout: false
@@ -101,8 +106,11 @@ automation:
         to: ~
         entity_id: light.basement_hall
     condition:
-      condition: template
-      value_template: "{{ trigger.to_state.state in ['off', 'on'] }}"
+      - condition: state
+        entity_id: alarm_control_panel.alarmo
+        state: "disarmed"
+      - condition: template
+        value_template: "{{ trigger.to_state.state in ['off', 'on'] }}"
     action:
       - service: homeassistant.turn_{{ trigger.to_state.state }}
         entity_id: light.basement_room_light_dimmer
@@ -203,6 +211,9 @@ automation:
               - condition: state
                 entity_id: alarm_control_panel.alarmo
                 state: "disarmed"
+              - condition: state
+                entity_id: binary_sensor.home_grid_status
+                state: "on"
             sequence:
               - service: switch.turn_on
                 entity_id: switch.basement_space_heater
