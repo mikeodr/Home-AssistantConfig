@@ -3,7 +3,7 @@ binary_sensor:
     sensors:
       guests_present:
         friendly_name: "Guests Home"
-        value_template: "{{ (states('sensor.coreguest') | int) > 0 }}"
+        value_template: "{{ (states('sensor.coreguest') | int) > 0 or states('input_boolean.guests_present') }}"
       waste_dashboard:
         value_template: >-
           {% set garbage_day=states('sensor.waste_current_pickup') | as_datetime -%}
