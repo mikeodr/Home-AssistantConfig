@@ -931,7 +931,7 @@ automation:
           entity_id: media_player.bedroom_player
           state: "playing"
     actions:
-      - wait_template: "{{ states('media_player.bedroom_player') not in ['off', 'unknown', 'unavailable'] }}"
+      - wait_template: "{{ states('binary_sensor.bedroom_player_online') not in ['offline', 'unknown', 'unavailable'] }}"
         timeout:
           minutes: 30
         continue_on_timeout: false
