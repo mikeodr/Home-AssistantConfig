@@ -203,6 +203,10 @@ automation:
       - platform: template
         value_template: "{{ 'armed_' in states('alarm_control_panel.alarmo') }}"
         id: turn_off
+    condition:
+      - condition: state
+        entity_id: sensor.season
+        state: "winter"
     actions:
       - choose:
           - conditions:
