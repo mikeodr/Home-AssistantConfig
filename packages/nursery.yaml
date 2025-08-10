@@ -979,9 +979,9 @@ automation:
         event_data:
           entity_id: timer.bedtime_stairs_light_off
     actions:
-      - wait_template: "{{ is_state('binary_sensor.girls_room_camera_motion', 'off') and is_state('binary_sensor.girls_room_occupancy', 'off') }}"
+      - wait_template: "{{ is_state('binary_sensor.girls_room_motion', 'off') and is_state('binary_sensor.girls_room_occupancy', 'off') }}"
         timeout:
-          minutes: 15
+          minutes: 90
         continue_on_timeout: false
       - action: media_player.media_stop
         target:
