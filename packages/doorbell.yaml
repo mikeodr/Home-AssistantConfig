@@ -315,3 +315,28 @@ automation:
               option: Default Message (WELCOME)
             target:
               entity_id: select.front_door_doorbell_text
+
+  - alias: Set doorbell chime on shutdown
+    id: 080e0639-daa4-4632-adcf-fd4be3b42f4c
+    triggers:
+      - platform: homeassistant
+        event: shutdown
+    conditions:
+      - condition: state
+        entity_id: input_boolean.nap_mode
+        state: "off"
+      - condition: state
+        entity_id: input_boolean.quite_mode
+        state: "off"
+      - condition: state
+        entity_id: switch.master_white_noise
+        state: "off"
+      - condition: state
+        entity_id: schedule.doorbell_do_not_distrub
+        state: "off"
+    actions:
+      - service: select.select_option
+        target:
+          entity_id: select.front_door_chime_type
+        data:
+          option: Mechanical
