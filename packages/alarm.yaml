@@ -31,6 +31,25 @@ automation:
         data:
           message: "🛡️ Guests home, alarm not armed 🛡️"
 
+  - alias: Reminder to disable guests present
+    id: 2c36b0b2-3180-40e1-9cc8-f37660cf62e7
+    trigger:
+      - platform: state
+        entity_id: person.mike
+        to: "home"
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.guests_present
+        state: "on"
+    actions:
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          title: "Guests Present Reminder"
+          message: "Need to disable guests present?"
+          data:
+            url: /dashboard-security/home
+            clickAction: /dashboard-security/home
+
   - alias: Auto Arm and Disarm System
     id: alarm_arm_based_on_presence
     triggers:
@@ -163,7 +182,7 @@ automation:
       - service: camera.snapshot
         continue_on_error: true
         target:
-          entity_id: camera.garage_low
+          entity_id: camera.garage_low_resolution_channel
         data:
           filename: "/media/garage/snapshot.jpg"
       - service: notify.mobile_app_michaels_iphone
@@ -332,3 +351,38 @@ automation:
                 - light.main_bath_light
                 - light.basement_stairs
                 - light.basement_hall
+
+  - alias: Notify Water Shutoff Jammed
+    id: b08f5491-f6f0-4c03-b8a9-14c4a4b68ac5
+    triggers:
+      - platform: state
+        entity_id: binary_sensor.water_shutoff_valve_jammed
+        to: "on"
+    actions:
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          message: "🚰 Water Shutoff Valve Jammed 🚰"
+          data:
+            tag: "water-shutoff-valve-jammed"
+            push:
+              sound:
+                name: "default"
+                critical: 1
+                volume: 1.0
+
+  - alias: Shut off water when leak detected and not home or overnight
+    id: 7dad3c90-f96f-4976-878c-0ab3d1a6241a
+    triggers:
+      - platform: state
+        entity_id: alarm_control_panel.water
+        to:
+          - triggered
+    conditions:
+      not:
+        - condition: state
+          entity_id: alarm_control_panel.alarmo
+          state:
+            - disarmed
+    actions:
+      - service: valve.close_valve
+        entity_id: valve.water_shutoff
