@@ -73,7 +73,7 @@ automation:
                 message: Garage Door Left Open
                 data:
                   tag: "garage-door-open-alert"
-                  entity_id: camera.garage_low
+                  entity_id: camera.garage_low_resolution_channel
                   actions:
                     - action: "CLOSE_GARAGE"
                       title: "Close Garage"
