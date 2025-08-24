@@ -298,3 +298,4 @@ automation:
       - service: adaptive_lighting.apply
         data:
           entity_id: switch.adaptive_lighting_adapt_brightness_living_room
+          transition: 90
