@@ -284,3 +284,17 @@ automation:
       - service: light.turn_off
         entity_id:
           - light.front_hall
+
+  - alias: Set Adaptive on Living Room Late Mornings
+    id: cd72c85e-327a-4958-8e2b-fef856573302
+    trigger:
+      - platform: time
+        at: "09:30:00"
+    condition:
+      - condition: state
+        entity_id: light.living_room_light_group
+        state: "on"
+    action:
+      - service: adaptive_lighting.apply
+        data:
+          entity_id: switch.adaptive_lighting_adapt_brightness_living_room
