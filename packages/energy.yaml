@@ -111,6 +111,10 @@ automation:
       - platform: time
         at: "15:30:00"
         id: power_on
+      - platform: state
+        entity_id: schedule.tv_power
+        to: "on"
+        id: power_on
     action:
       choose:
         - conditions:
