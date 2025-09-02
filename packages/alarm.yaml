@@ -386,3 +386,50 @@ automation:
     actions:
       - service: valve.close_valve
         entity_id: valve.water_shutoff
+
+  - alias: Alert on Alarm Trigger
+    id: 3fa42dee-e85e-4787-8bdd-4d0db3dd7e59
+    triggers:
+      - platform: state
+        entity_id: alarm_control_panel.master
+        to:
+          - "triggered"
+    actions:
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: >
+                  {{ trigger.to_state is defined and
+                    trigger.to_state.attributes.open_sensors is defined and
+                    trigger.to_state.attributes.open_sensors.values()
+                      | select('ne', 'unavailable')
+                      | list
+                      | count == 0 }}
+            sequence:
+              - service: notify.mobile_app_michaels_iphone
+                data:
+                  message: >
+                    Cause:
+                    {%- for k, v in (trigger.to_state.attributes.open_sensors or {}).items() %}
+                    {{ state_attr(k, 'friendly_name') or k }}: {{ v }}
+                    {%- endfor %}
+                  title: 🚨 Alarmo Alert! 🚨
+                  data:
+                    url: /dashboard-security/home
+                    clickAction: /dashboard-security/home
+        default:
+          - service: notify.mobile_app_michaels_iphone
+            data:
+              message: >
+                Cause:
+                {%- for k, v in (trigger.to_state.attributes.open_sensors or {}).items() %}
+                {{ state_attr(k, 'friendly_name') or k }}: {{ 'wet' if state_attr(k, 'device_class') == 'moisture' else v }}
+                {%- endfor %}
+              title: 🚨 Alarmo Alert! 🚨
+              data:
+                push:
+                  sound:
+                    name: default
+                    critical: 1
+                url: /dashboard-security/home
+                clickAction: /dashboard-security/home
