@@ -11,7 +11,7 @@ automation:
         variables:
           default_level: 254
       - platform: state
-        entity_id: alarm_control_panel.alarmo
+        entity_id: alarm_control_panel.master
         to: "armed_night"
         variables:
           default_level: 20

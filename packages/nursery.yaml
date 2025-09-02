@@ -223,7 +223,7 @@ automation:
         to: "on"
         id: nap_on
       - platform: state
-        entity_id: alarm_control_panel.alarmo
+        entity_id: alarm_control_panel.master
         from: "armed_vacation"
         not_to:
           - unknown
@@ -257,7 +257,7 @@ automation:
             entity_id: sensor.season
             state: "winter"
           - condition: state
-            entity_id: alarm_control_panel.alarmo
+            entity_id: alarm_control_panel.master
             state: "armed_vacation"
           - condition: state
             entity_id: climate.my_ecobee

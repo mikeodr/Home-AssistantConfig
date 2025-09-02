@@ -164,7 +164,7 @@ automation:
         entity_id: group.adults
         state: "home"
       - condition: state
-        entity_id: alarm_control_panel.alarmo
+        entity_id: alarm_control_panel.master
         state: "disarmed"
     actions:
       - parallel:
