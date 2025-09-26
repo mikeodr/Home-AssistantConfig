@@ -75,6 +75,31 @@ sensor:
       {{ data | selectattr('Dist', 'eq', 'Enova Power Corp.-Kitchener-Wilmot Hydro Rate Zone') | map(attribute='RPPOnP') | first }}
 
 automation:
+  - alias: Enable Media Power from switches
+    id: 09f3ceb2-4782-4385-bc78-d2f3827eb73d
+    trigger:
+      # Deck light switch
+      - trigger: device
+        domain: mqtt
+        device_id: cffa3ef7848f9e2b8688eea2a1fe4f28
+        type: action
+        subtype: config_double
+      # Kitchen Light switch
+      - trigger: device
+        domain: mqtt
+        device_id: e97867a8181f2b6c5aef264706584f91
+        type: action
+        subtype: config_double
+      # Living room light switch
+      - trigger: device
+        domain: mqtt
+        device_id: c2fce543d85f8ffccd89691a42f784d9
+        type: action
+        subtype: config_double
+    action:
+      - service: switch.turn_on
+        entity_id: switch.entertainment_switch_relay
+
   - alias: Save media power when not home
     id: media_energy_saver_not_home
     trigger:
