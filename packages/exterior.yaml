@@ -266,17 +266,13 @@ automation:
 
   - alias: Lock the side door when forgotten feeding the dog
     id: exterior_lock_side_door_dog
+    mode: single
     trigger:
       - platform: state
         entity_id: lock.side_door
         to: "unlocked"
         for:
-          minutes: 1
-      - platform: state
-        entity_id: binary_sensor.side_door_open
-        to: "off"
-        for:
-          seconds: 15
+          minutes: 10
     condition:
       or:
         - condition: time
@@ -293,6 +289,8 @@ automation:
       - wait_template: "{{ is_state('binary_sensor.side_door_open', 'off') }}"
       - service: lock.lock
         entity_id: lock.side_door
+      - delay:
+          minutes: 5
 
   - alias: Garage below freezeing warning
     id: exterior_garage_below_freezing
