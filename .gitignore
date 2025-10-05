@@ -22,3 +22,4 @@ tmp/
 image/
 esphome/
 tesla_fleet.key
+.ha_run.lock
