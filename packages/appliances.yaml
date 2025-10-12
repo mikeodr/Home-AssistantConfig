@@ -1,15 +1,22 @@
 automation:
   - alias: Water Softener Salt Bin Low
     id: appliances_water_softener_salt_bin_low
-    trigger:
+    triggers:
       - platform: numeric_state
-        entity_id: sensor.salt_sensor_weight
-        below: 9
+        entity_id: sensor.salt_sensor_salt_level
+        below: 20
         for:
           hours: 24
-    action:
+      - platform: time
+        at: "10:30:00"
+    conditions:
+      - condition: numeric_state
+        entity_id: sensor.salt_sensor_salt_level
+        below: 20
+    actions:
       - service: notify.mobile_app_michaels_iphone
         data:
-          message: "Water Softener Salt Low! {{ states('sensor.salt_sensor_weight') }}kg"
+          title: "Water Softener Salt Low"
+          message: "{{ states('sensor.salt_sensor_salt_level') }} / {{ states('sensor.salt_sensor_salt_level') }}"
           data:
             tag: "water-softener-salt-low"
