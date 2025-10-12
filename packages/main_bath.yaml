@@ -61,6 +61,7 @@ automation:
 
   - alias: Main Bath Fan on for humidity
     id: main_bath_on_humidity
+    mode: single
     triggers:
       - platform: numeric_state
         entity_id: sensor.bathroom_humidity_derivative
@@ -73,3 +74,5 @@ automation:
       - action: notify.mobile_app_michaels_iphone
         data:
           message: "Shower fan should run"
+      - delay:
+          hours: 1
