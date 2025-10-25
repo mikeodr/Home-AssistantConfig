@@ -1,0 +1,27 @@
+automation:
+  - alias: Halloween Exterior Accessories On
+    id: 088e3882-6792-4181-a1b9-4e846f58b9f5
+    triggers:
+      - platform: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        below: 0.25
+    conditions:
+      - condition: template
+        value_template: "{{ now().month in [9, 10] }}"
+    actions:
+      service: homeassistant.turn_on
+      entity_id: 
+        - switch.outdoor_plug
+
+  - alias: Exterior Halloween Accessories Off
+    id: 205cb42d-305e-429c-9224-bacd7e82775a
+    triggers:
+      - platform: time
+        at: "23:30:00"
+      - platform: sun
+        event: sunrise
+    actions:
+      service: homeassistant.turn_off
+      entity_id: 
+        - switch.outdoor_plug
