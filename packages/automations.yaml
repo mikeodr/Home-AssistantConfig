@@ -56,26 +56,3 @@ automation:
       - service: notify.mobile_app_michaels_iphone
         data:
           message: "There is a new Home Assistant release available."
-
-  - alias: Presence Arriving
-    id: general_presence_notification_home
-    trigger:
-      - platform: state
-        entity_id:
-          - person.bumpa
-          - person.lisa
-        from: "not_home"
-        to: "home"
-    condition:
-      - condition: state
-        entity_id: person.mike
-        state: "home"
-    action:
-      service: notify.mobile_app_michaels_iphone
-      data:
-        title: "HASS Presence Notification"
-        message: >
-          {{ trigger.to_state.attributes.friendly_name }} is arriving
-        data:
-          tag: "person-presence-notification"
-          group: "presence-notification"
