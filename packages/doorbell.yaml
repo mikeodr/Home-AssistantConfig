@@ -247,6 +247,22 @@ automation:
       - platform: state
         entity_id: binary_sensor.front_door_package_detected
         to: "on"
+    conditions:
+      - or:
+          - and:
+            - condition: state
+              entity_id: group.adults
+              state: "home"
+              for: "00:10:00"
+            - condition: state
+              entity_id: binary_sensor.front_door
+              state: "off"
+              for:
+                minutes: 2
+          - and:
+              - condition: state
+                entity_id: group.adults
+                state: "not_home"
     actions:
       - service: camera.snapshot
         target:
