@@ -363,6 +363,9 @@ automation:
         entity_id: alarm_control_panel.water
         to:
           - triggered
+        not_from:
+          - "unknown"
+          - "unavailable"
     conditions:
       not:
         - condition: state
