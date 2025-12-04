@@ -188,6 +188,10 @@ automation:
             entity_id: sun.sun
             attribute: elevation
             below: 0.25
+          - not:
+            - condition: state
+              entity_id: alarm_control_panel.shed
+              state: "triggered"
     action:
       - wait_template: '{{ is_state("binary_sensor.front_door_person_detected", "off") }}'
       - service: light.turn_off
