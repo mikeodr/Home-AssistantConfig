@@ -17,7 +17,7 @@ automation:
       - service: notify.mobile_app_michaels_iphone
         data:
           title: "Water Softener Salt Low"
-          message: "{{ states('sensor.salt_sensor_salt_level') }} / {{ states('sensor.salt_sensor_salt_level') }}"
+          message: "{{ states('sensor.salt_sensor_salt_level') | round(2) }}% / {{ states('sensor.salt_sensor_vl53l0x_distance') | round(2) }}m"
           data:
             tag: "water-softener-salt-low"
 
