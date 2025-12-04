@@ -94,6 +94,12 @@ automation:
       from: "off"
       to: "on"
     actions:
+      - service: notify.adults
+        data:
+          title: "Ding Dong"
+          message: "Someone is at the front door"
+          data:
+            tag: "doorbell-notification"
       # Snapshot the camera
       - service: camera.snapshot
         continue_on_error: true
@@ -111,7 +117,6 @@ automation:
             clickAction: dashboard-doorbell/doorbell
             image: "/media/local/doorbell/snapshot.jpg"
             tag: "doorbell-notification"
-            group: "doorbell-group"
             actions:
               - action: "NOT_INTERESTED"
                 title: "Not interested"
