@@ -25,5 +25,6 @@ automation:
     condition:
       - condition: time
         after: "21:00:00"
+        before: "04:00:00"
     actions:
       - event: goodnight_event
