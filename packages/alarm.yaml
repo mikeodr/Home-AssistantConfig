@@ -422,3 +422,77 @@ automation:
                     critical: 1
                 url: /dashboard-security/home
                 clickAction: /dashboard-security/home
+
+  - alias: Alert on Shed Alarm Trigger
+    id: f0f49f86-0474-4b51-afcd-75315546e8eb
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.shed
+        to: triggered
+        not_from:
+          - "unknown"
+          - "unavailable"
+    conditions:
+      - condition: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        below: 0.25
+    actions:
+      - service: light.turn_on
+        entity_id: light.exterior_lights
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          message: "Shed Alarm Triggered!"
+          title: 🚨 Alarmo Alert! 🚨
+          data:
+            push:
+              sound:
+                name: default
+                critical: 1
+            url: /dashboard-security/home
+            clickAction: /dashboard-security/home
+
+  - alias: Auto Arm and Disarm Shed
+    id: 28a489e9-12db-4ac4-b5ff-26f5c61dfb22
+    triggers:
+      - platform: state
+        entity_id:
+          - group.adults
+        not_to:
+          - "unavailable"
+          - "unknown"
+    conditions:
+      - condition: state
+        entity_id: schedule.shed_alarm_schedule
+        state: "off"
+    actions:
+      - service: alarm_control_panel.alarm_{{ 'disarm' if 'home' == trigger.to_state.state else 'arm_away' }}
+        target:
+          entity_id: alarm_control_panel.alarmo
+
+  - alias: Auto arm shed on schedule
+    id: 075a7b5b-0e08-4ec8-80f9-5a43f765ee80
+    trigger:
+      - platform: state
+        entity_id: schedule.shed_alarm_schedule
+    actions:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: schedule.shed_alarm_schedule
+                state: "on"
+            sequence:
+              - service: alarm_control_panel.alarm_arm_away
+                target:
+                  entity_id: alarm_control_panel.shed
+          - conditions:
+              - condition: state
+                entity_id: schedule.shed_alarm_schedule
+                state: "off"
+              - condition: state
+                entity_id: alarm_control_panel.alarmo
+                state: "disarmed"
+            sequence:
+              - service: alarm_control_panel.alarm_disarm
+                target:
+                  entity_id: alarm_control_panel.shed
