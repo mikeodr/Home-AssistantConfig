@@ -202,7 +202,7 @@ automation:
                   message: "Powerwall set for holidays"
                   data:
                     tag: "powerwall"
-                    group: "enery"
+                    group: "energy"
         default:
           - service: number.set_value
             target:
@@ -214,7 +214,7 @@ automation:
               message: "Powerwall holidays off"
               data:
                 tag: "powerwall"
-                group: "enery"
+                group: "energy"
 
   - alias: Save power on grid outage
     id: energy_save_power_grid_outage
