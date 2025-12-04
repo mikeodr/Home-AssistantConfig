@@ -121,10 +121,12 @@ automation:
       - platform: time
         at: "23:00:00"
     action:
-      service: homeassistant.turn_off
-      entity_id:
-        - light.basement_room_light_dimmer
-        - light.basement_hall
+      - wait_template: "{{ is_state('binary_sensor.basement_presence', 'off') }}"
+      - service: light.turn_off
+        entity_id:
+          - light.basement_room_light_dimmer
+          - light.basement_hall
+          - light.basement_stairs
 
   - alias: Top of basement stairs action control
     id: basement_top_of_stairs_action_control
@@ -206,7 +208,9 @@ automation:
     condition:
       - condition: state
         entity_id: sensor.season
-        state: "winter"
+        state:
+          - "winter"
+          - "autumn"
     actions:
       - choose:
           - conditions:
