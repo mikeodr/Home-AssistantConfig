@@ -1,6 +1,6 @@
 automation:
   - alias: Return Home Annoucement
-    id: return_home_annoucement
+    id: 57f1accf-7ab0-4346-ac95-0db120c693f2
     trigger:
       platform: zone
       entity_id:
@@ -25,7 +25,7 @@ automation:
     max_exceeded: silent
 
   - alias: Tiff Returning Home Notification
-    id: tiff_return_home_notification
+    id: 7979021b-cc82-4311-9e2c-e340d646d7ab
     trigger:
       platform: zone
       entity_id: person.tiff
@@ -47,7 +47,7 @@ automation:
             group: "presence-notification"
 
   - alias: Update notification
-    id: update_notification
+    id: db03afc6-87cc-47eb-b9e4-15fccfb13c79
     trigger:
       - platform: state
         entity_id: binary_sensor.docker_hub_update_available
