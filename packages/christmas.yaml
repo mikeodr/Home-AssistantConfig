@@ -10,7 +10,7 @@ automation:
       - condition: template
         value_template: "{{ now().month in [11, 12, 1, 2] }}"
     actions:
-      service: homeassistant.turn_on
+      service: light.turn_on
       entity_id: light.exterior_christmas_lights
 
   - alias: Exterior Christmas Lights Off
@@ -21,7 +21,7 @@ automation:
       - platform: sun
         event: sunrise
     actions:
-      service: homeassistant.turn_off
+      service: light.turn_off
       entity_id: light.exterior_christmas_lights
 
   - alias: Christmas Tree lights on when living room occupied
@@ -69,13 +69,13 @@ automation:
             - condition: trigger
               id: turn_on
           sequence:
-            - service: homeassistant.turn_on
+            - service: light.turn_on
               entity_id: light.christmas_tree
         - conditions:
             - condition: trigger
               id: turn_off
           sequence:
-            - service: homeassistant.turn_off
+            - service: light.turn_off
               entity_id: light.christmas_tree
 
   - alias: Christmas Tree off at bedtime
@@ -84,7 +84,7 @@ automation:
       platform: time
       at: "22:30:00"
     actions:
-      service: homeassistant.turn_off
+      service: light.turn_off
       entity_id: light.christmas_tree
 
   - alias: Exterior Christmas Lights on arriving home
@@ -106,5 +106,5 @@ automation:
       - condition: time
         after: "15:30:00"
     actions:
-      service: homeassistant.turn_on
+      service: light.turn_on
       entity_id: light.exterior_christmas_lights
