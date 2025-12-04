@@ -27,7 +27,7 @@ timer:
     restore: true
   bedtime_stairs_light_off:
     name: Turn off Stairs Lights
-    duration: 00:30:00
+    duration: 00:45:00
     restore: true
 
 scene:
@@ -935,17 +935,37 @@ automation:
         timeout:
           minutes: 30
         continue_on_timeout: false
-      - action: media_player.play_media
-        data:
-          media_content_id: "7AzCP-01-01" # Bedtime meditation
-          media_content_type: music
+      - action: input_boolean.toggle
         target:
-          entity_id: media_player.bedroom_player
-      - action: media_player.volume_set
-        data:
-          volume_level: 0.5
-        target:
-          entity_id: media_player.bedroom_player
+          entity_id: input_boolean.girls_yoto_selection
+      - if:
+          - condition: state
+            entity_id: input_boolean.girls_yoto_selection
+            state: "on"
+        then:
+          - action: media_player.play_media
+            data:
+              media_content_id: "7AzCP-01-01" # Bedtime meditation
+              media_content_type: music
+            target:
+              entity_id: media_player.bedroom_player
+          - action: media_player.volume_set
+            data:
+              volume_level: 0.5
+            target:
+              entity_id: media_player.bedroom_player
+        else:
+          - action: media_player.play_media
+            data:
+              media_content_id: "42qYs-10-01" # Moon Music
+              media_content_type: music
+            target:
+              entity_id: media_player.bedroom_player
+          - action: media_player.volume_set
+            data:
+              volume_level: 0.3125
+            target:
+              entity_id: media_player.bedroom_player
 
   - alias: Auto sleep timer for Yotos overnight
     id: girls_yoto_auto_sleep_players_overnight
