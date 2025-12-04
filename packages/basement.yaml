@@ -14,7 +14,7 @@ automation:
         to: "on"
     conditions:
       - condition: state
-        entity_id: alarm_control_panel.master
+        entity_id: alarm_control_panel.alarmo
         state: "disarmed"
     actions:
       - wait_for_trigger:
@@ -107,7 +107,7 @@ automation:
         entity_id: light.basement_hall
     condition:
       - condition: state
-        entity_id: alarm_control_panel.master
+        entity_id: alarm_control_panel.alarmo
         state: "disarmed"
       - condition: template
         value_template: "{{ trigger.to_state.state in ['off', 'on'] }}"
@@ -201,7 +201,7 @@ automation:
         for:
           minutes: 5
       - platform: template
-        value_template: "{{ 'armed_' in states('alarm_control_panel.master') }}"
+        value_template: "{{ 'armed_' in states('alarm_control_panel.alarmo') }}"
         id: turn_off
     condition:
       - condition: state
@@ -213,7 +213,7 @@ automation:
               - condition: trigger
                 id: turn_on
               - condition: state
-                entity_id: alarm_control_panel.master
+                entity_id: alarm_control_panel.alarmo
                 state: "disarmed"
               - condition: state
                 entity_id: binary_sensor.home_grid_status
@@ -249,7 +249,7 @@ automation:
                 entity_id: group.adults
                 state: "home"
               - condition: state
-                entity_id: alarm_control_panel.master
+                entity_id: alarm_control_panel.alarmo
                 state: "disarmed"
               - condition: trigger
                 id: turn_on

@@ -48,7 +48,7 @@ automation:
         event: enter
         id: turn_on
       - platform: state
-        entity_id: alarm_control_panel.master
+        entity_id: alarm_control_panel.alarmo
         to:
           - armed_night
           - armed_vacation
@@ -61,7 +61,7 @@ automation:
         after: "06:00:00"
         before: "22:30:00"
       - condition: state
-        entity_id: alarm_control_panel.master
+        entity_id: alarm_control_panel.alarmo
         state: "disarmed"
     actions:
       choose:

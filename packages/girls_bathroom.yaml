@@ -88,7 +88,7 @@ automation:
     conditions:
       - not:
           - condition: state
-            entity_id: alarm_control_panel.master
+            entity_id: alarm_control_panel.alarmo
             state:
               - armed_vacation
               - armed_away

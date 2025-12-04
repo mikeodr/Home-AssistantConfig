@@ -107,7 +107,7 @@ automation:
                   tag: "cleaners-code"
             - service: alarm_control_panel.alarm_disarm
               target:
-                entity_id: alarm_control_panel.master
+                entity_id: alarm_control_panel.alarmo
         - conditions:
             - condition: trigger
               id: clear_lock
@@ -134,11 +134,11 @@ automation:
                       then:
                         - service: alarm_control_panel.alarm_arm_vacation
                           target:
-                            entity_id: alarm_control_panel.master
+                            entity_id: alarm_control_panel.alarmo
                       else:
                         - service: alarm_control_panel.alarm_arm_away
                           target:
-                            entity_id: alarm_control_panel.master
+                            entity_id: alarm_control_panel.alarmo
 
   - alias: Lock doors when nearby but not on wifi
     id: lock_secure_house_nearby_but_offline

@@ -104,7 +104,7 @@ automation:
     id: media_energy_saver_not_home
     trigger:
       - platform: state
-        entity_id: alarm_control_panel.master
+        entity_id: alarm_control_panel.alarmo
         to:
           - armed_night
           - armed_vacation
@@ -118,14 +118,14 @@ automation:
           - Off Peak
         id: power_off
       - platform: state
-        entity_id: alarm_control_panel.master
+        entity_id: alarm_control_panel.alarmo
         to:
           - armed_away
         for:
           minutes: 30
         id: power_off
       - platform: state
-        entity_id: alarm_control_panel.master
+        entity_id: alarm_control_panel.alarmo
         to: disarmed
         not_from: triggered
         id: power_on
@@ -159,7 +159,7 @@ automation:
             - condition: trigger
               id: power_on
             - condition: state
-              entity_id: alarm_control_panel.master
+              entity_id: alarm_control_panel.alarmo
               state: disarmed
             - or:
                 - condition: state

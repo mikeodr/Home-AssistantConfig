@@ -13,11 +13,11 @@ automation:
         below: 5
     condition:
       - condition: state
-        entity_id: alarm_control_panel.master
+        entity_id: alarm_control_panel.alarmo
         state: "armed_away"
       - not:
           - condition: state
-            entity_id: alarm_control_panel.master
+            entity_id: alarm_control_panel.alarmo
             state: "armed_vacation"
     action:
       - variables:
@@ -65,7 +65,7 @@ automation:
       - platform: sun
         event: sunset
       - platform: state
-        entity_id: alarm_control_panel.master
+        entity_id: alarm_control_panel.alarmo
         to: "armed_away"
     condition:
       - condition: numeric_state

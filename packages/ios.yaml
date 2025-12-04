@@ -33,7 +33,7 @@ script:
     sequence:
       - service: alarm_control_panel.alarm_arm_away
         target:
-          entity_id: alarm_control_panel.master
+          entity_id: alarm_control_panel.alarmo
 
   disarm_alarm:
     alias: "Disarm Alarm"
@@ -42,7 +42,7 @@ script:
     sequence:
       - service: alarm_control_panel.alarm_disarm
         target:
-          entity_id: alarm_control_panel.master
+          entity_id: alarm_control_panel.alarmo
 
   toggle_spare_bedroom_fan:
     alias: "Toggle Spare Bedroom Fan"
@@ -85,8 +85,8 @@ sensor:
           {%- elif is_state("person.tiff", "home") -%}
           |🧍‍♀️
           {%- endif -%}
-          {%- if states("alarm_control_panel.master") not in ['disarmed'] -%}
-          {%- if states("alarm_control_panel.master") in ['armed_vacation'] -%}
+          {%- if states("alarm_control_panel.alarmo") not in ['disarmed'] -%}
+          {%- if states("alarm_control_panel.alarmo") in ['armed_vacation'] -%}
           |🌴
           {%- else -%}
           |🛡️

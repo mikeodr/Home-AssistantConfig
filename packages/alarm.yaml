@@ -80,7 +80,7 @@ automation:
         then:
           - service: alarm_control_panel.alarm_{{ 'disarm' if 'home' == trigger.to_state.state else 'arm_away' }}
             target:
-              entity_id: alarm_control_panel.master
+              entity_id: alarm_control_panel.alarmo
       - if:
           - condition: template
             value_template: "{{ trigger.to_state.state  == 'home' }}"
@@ -129,7 +129,7 @@ automation:
       - wait_template: "{{ is_state('binary_sensor.basement_presence', 'off') }}"
       - service: alarm_control_panel.alarm_arm_night
         target:
-          entity_id: alarm_control_panel.master
+          entity_id: alarm_control_panel.alarmo
 
   - alias: Disable Armed Night on iOS alarm wakeup
     id: alarm_disable_armed_night_ios_wakeup
@@ -140,18 +140,18 @@ automation:
         at: "05:00:00"
     condition:
       - condition: state
-        entity_id: alarm_control_panel.master
+        entity_id: alarm_control_panel.alarmo
         state: "armed_night"
     action:
       - service: alarm_control_panel.alarm_disarm
         target:
-          entity_id: alarm_control_panel.master
+          entity_id: alarm_control_panel.alarmo
 
   - alias: Lock all doors when alarm armed
     id: alarm_lock_all_doors_armed
     trigger:
       - platform: state
-        entity_id: alarm_control_panel.master
+        entity_id: alarm_control_panel.alarmo
         to:
           - arming
           - armed_night
@@ -167,7 +167,7 @@ automation:
     id: alarm_alert_garage_left_open
     trigger:
       - platform: state
-        entity_id: alarm_control_panel.master
+        entity_id: alarm_control_panel.alarmo
         to:
           - arming
           - armed_night
@@ -222,7 +222,7 @@ automation:
     id: alarm_turn_off_all_lights
     trigger:
       - platform: state
-        entity_id: alarm_control_panel.master
+        entity_id: alarm_control_panel.alarmo
         to:
           - armed_vacation
           - armed_away
@@ -238,7 +238,7 @@ automation:
     id: alarm_turn_off_lights_bedtime
     trigger:
       - platform: state
-        entity_id: alarm_control_panel.master
+        entity_id: alarm_control_panel.alarmo
         to: armed_night
     action:
       - service: light.turn_off
@@ -380,7 +380,7 @@ automation:
     conditions:
       not:
         - condition: state
-          entity_id: alarm_control_panel.master
+          entity_id: alarm_control_panel.alarmo
           state:
             - disarmed
     actions:
@@ -391,7 +391,7 @@ automation:
     id: 3fa42dee-e85e-4787-8bdd-4d0db3dd7e59
     triggers:
       - platform: state
-        entity_id: alarm_control_panel.master
+        entity_id: alarm_control_panel.alarmo
         to:
           - "triggered"
     actions:
