@@ -367,11 +367,19 @@ automation:
           - "unknown"
           - "unavailable"
     conditions:
-      not:
-        - condition: state
-          entity_id: alarm_control_panel.alarmo
-          state:
-            - disarmed
+      - condition: template
+        value_template: >
+          {{ trigger.to_state is defined and
+            trigger.to_state.attributes.open_sensors is defined and
+            trigger.to_state.attributes.open_sensors.values()
+              | select('ne', 'unavailable')
+              | list
+              | count == 0 }}
+      - not:
+          - condition: state
+            entity_id: alarm_control_panel.alarmo
+            state:
+              - disarmed
     actions:
       - service: valve.close_valve
         entity_id: valve.water_shutoff
@@ -380,7 +388,8 @@ automation:
     id: 3fa42dee-e85e-4787-8bdd-4d0db3dd7e59
     triggers:
       - platform: state
-        entity_id: alarm_control_panel.alarmo
+        entity_id:
+          - alarm_control_panel.master
         to:
           - "triggered"
     actions:

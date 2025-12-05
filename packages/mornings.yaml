@@ -28,6 +28,30 @@ automation:
             entity_id: sensor.tomorrow_io_home_cloud_cover
             above: 65
     action:
+      - if:
+          - condition: state
+            entity_id: valve.water_shutoff
+            state: "closed"
+        then:
+          - service: notify.mobile_app_michaels_iphone
+            data:
+              message: "🚰 Water is Off 🚰"
+              data:
+                tag: "water-alert"
+                actions:
+                  - action: "OPEN_WATER_VALVE"
+                    title: "Open Water Valve"
+                    activationMode: "background"
+                    authenticationRequired: true
+                    destructive: true
+                    behavior: "default"
+                push:
+                  sound:
+                    name: "default"
+                    critical: 1
+                    volume: 1.0
+                url: /dashboard-security/home
+                clickAction: /dashboard-security/home
       - service: homeassistant.turn_on
         target:
           label_id: christmas_tree
