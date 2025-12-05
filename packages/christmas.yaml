@@ -11,7 +11,8 @@ automation:
         value_template: "{{ now().month in [11, 12, 1, 2] }}"
     actions:
       service: light.turn_on
-      entity_id: light.exterior_christmas_lights
+      target:
+        label_id: outside_christmas_lights
 
   - alias: Exterior Christmas Lights Off
     id: xmas_exterior_lights_off
@@ -22,7 +23,8 @@ automation:
         event: sunrise
     actions:
       service: light.turn_off
-      entity_id: light.exterior_christmas_lights
+      target:
+        label_id: outside_christmas_lights
 
   - alias: Christmas Tree lights on when living room occupied
     id: xmas_lights_room_occupied
@@ -70,13 +72,15 @@ automation:
               id: turn_on
           sequence:
             - service: light.turn_on
-              entity_id: light.christmas_tree
+              target:
+                label_id: christmas_tree
         - conditions:
             - condition: trigger
               id: turn_off
           sequence:
             - service: light.turn_off
-              entity_id: light.christmas_tree
+              target:
+                label_id: christmas_tree
 
   - alias: Christmas Tree off at bedtime
     id: xmas_tree_lights_off_night
@@ -85,7 +89,8 @@ automation:
       at: "22:30:00"
     actions:
       service: light.turn_off
-      entity_id: light.christmas_tree
+      target:
+        label_id: christmas_tree
 
   - alias: Exterior Christmas Lights on arriving home
     id: external_xmas_lights_on_arrive_home
@@ -107,4 +112,5 @@ automation:
         after: "15:30:00"
     actions:
       service: light.turn_on
-      entity_id: light.exterior_christmas_lights
+      target:
+        label_id: outside_christmas_lights
