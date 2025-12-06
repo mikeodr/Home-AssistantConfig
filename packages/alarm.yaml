@@ -477,7 +477,7 @@ automation:
     actions:
       - service: alarm_control_panel.alarm_{{ 'disarm' if 'home' == trigger.to_state.state else 'arm_away' }}
         target:
-          entity_id: alarm_control_panel.alarmo
+          entity_id: alarm_control_panel.shed
 
   - alias: Auto arm shed on schedule
     id: 075a7b5b-0e08-4ec8-80f9-5a43f765ee80
