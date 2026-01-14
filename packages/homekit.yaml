@@ -22,22 +22,21 @@ template:
       - name: faux_nursery_homekit_bell
         auto_off: 3
         state: "true"
-
-switch:
-  - platform: template
-    switches:
-      nap_mode:
-        friendly_name: "Nap Mode"
-        unique_id: "homekit_switch_nap_mode"
-        value_template: "{{ is_state('input_boolean.nap_mode', 'on') }}"
+  - switch:
+      - unique_id: homekit_switch_nap_mode
         turn_on:
-          service: homeassistant.turn_on
-          target:
-            entity_id: input_boolean.nap_mode
+          - target:
+              entity_id:
+                - input_boolean.nap_mode
+            action: homeassistant.turn_on
         turn_off:
-          service: homeassistant.turn_off
-          target:
-            entity_id: input_boolean.nap_mode
+          - target:
+              entity_id:
+                - input_boolean.nap_mode
+            action: homeassistant.turn_off
+        default_entity_id: switch.nap_mode
+        name: Nap Mode
+        state: "{{ is_state('input_boolean.nap_mode', 'on') }}"
 
 homekit:
   - name: Girls Camera Bridge
