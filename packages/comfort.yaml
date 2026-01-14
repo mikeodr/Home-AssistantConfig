@@ -1,4 +1,27 @@
-automation:
+automations:
+  - alias: Update Outside Min Temp Next 8h
+    id: update_outside_min_temp_next_8h
+    trigger:
+      - platform: time_pattern
+        minutes: "/30"
+      - platform: homeassistant
+        event: start
+    action:
+      - service: weather.get_forecasts
+        target:
+          entity_id: weather.tomorrow_io_home_nowcast
+        data:
+          type: hourly
+        response_variable: forecast
+      - variables:
+          temps: "{{ forecast['weather.tomorrow_io_home_nowcast'].forecast | map(attribute='temperature') | list }}"
+          min_temp: "{{ temps[:8] | min(default=0) }}"
+      - service: number.set_value
+        target:
+          entity_id: input_number.outside_min_temperature_next_8_hours
+        data:
+          value: "{{ min_temp | round(1) }}"
+
   - alias: Disable Climate If Door or Window Ajar
     id: disable_climate_door_ajar
     trigger:
@@ -25,8 +48,7 @@ automation:
           data:
             tag: "front-door-open-warning"
             push:
-              name: "default"
-              critical: 1
+              interruption-level: critical
       - service: climate.turn_off
         target:
           entity_id: climate.my_ecobee
