@@ -117,6 +117,8 @@ automation:
                         title: Laundry is done!
                         message: Laundry cycle complete
                         data:
+                          push:
+                            interruption-level: time-sensitive
                           tag: "laundry-done-notification"
                           url: /dashboard-laundry/home
                           clickAction: /dashboard-laundry/home
