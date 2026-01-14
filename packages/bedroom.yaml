@@ -4,76 +4,39 @@ input_boolean:
     icon: mdi:alarm-snooze
 
 automation:
-  - alias: Bedroom Comfort when arrival past bedtime
-    id: bedroom_comfort_arrive_past_bedtime
-    trigger:
-      platform: state
-      entity_id: group.adults
-      from: "not_home"
-      to: "home"
-    condition:
-      - condition: time
-        after: "22:00:00"
-        before: "07:00:00"
-    action:
-      service: homeassistant.turn_on
-      entity_id:
-        - switch.master_white_noise
-        - switch.master_humidifier
-
-  - alias: Bedroom Humidifier On Early Evenings
-    id: bedroom_comfort_early_evenings
-    trigger:
-      - platform: time
-        at: "21:30:00"
-    condition:
-      - condition: state
-        entity_id: group.adults
-        state: "home"
-    action:
-      service: homeassistant.turn_on
-      entity_id:
-        - switch.master_humidifier
-
   - alias: Bedroom Comfort On Evenings
-    id: bedroom_comfort_evenings
+    id: 6b49967c-0167-4f4f-ba1e-5abaeb5fdcb5
     trigger:
       - platform: time
         at: "22:30:00"
-    condition:
-      - condition: state
+      - platform: state
+        entity_id: sensor.tiffanys_iphone_battery_state
+        from: "Not Charging"
+        to:
+          - "Charging"
+          - "Full"
+      - platform: state
         entity_id: group.adults
-        state: "home"
-    action:
-      service: homeassistant.turn_on
-      entity_id:
-        - switch.master_white_noise
-        - switch.master_humidifier
-
-  - alias: Bedroom Comfort if in bed
-    id: bedroom_comfort_if_in_bed_early
-    trigger:
-      - platform: state
-        entity_id: sensor.tiffanys_iphone_battery_state
-        from: "Not Charging"
-        to: "Charging"
-      - platform: state
-        entity_id: sensor.tiffanys_iphone_battery_state
-        from: "Not Charging"
-        to: "Full"
-      - platform: time
-        at: "22:45:00"
-    condition:
+        from: "not_home"
+        to: "home"
+    conditions:
       - condition: time
         after: "22:00:00"
+        before: "04:00:00"
       - condition: state
         entity_id: group.adults
         state: "home"
-    action:
-      service: homeassistant.turn_on
-      entity_id:
-        - switch.master_white_noise
-        - switch.master_humidifier
+    actions:
+      - service: switch.turn_on
+        entity_id:
+          - switch.master_white_noise
+      - if:
+          - condition: numeric_state
+            entity_id: input_number.outside_min_temperature_next_8_hours
+            above: -15
+        then:
+          - service: switch.turn_on
+            entity_id: switch.master_humidifier
 
   - alias: Bedroom off mornings
     id: bedroom_off_mornings_nursery_active
@@ -101,11 +64,11 @@ automation:
         after: "07:00:00"
       - condition: time
         before: "08:00:00"
-    action:
-      service: homeassistant.turn_off
-      entity_id:
-        - switch.master_white_noise
-        - switch.master_humidifier
+    actions:
+      - service: homeassistant.turn_off
+        entity_id:
+          - switch.master_white_noise
+          - switch.master_humidifier
 
   - alias: Spare Bedroom Fan Toggle
     id: spare_bedroom_fan_toggle
