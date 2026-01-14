@@ -378,7 +378,4 @@ automation:
           data:
             tag: "exterior-lock-jammed"
             push:
-              sound:
-                name: "default"
-                critical: 1
-                volume: 1.0
+              interruption-level: critical
