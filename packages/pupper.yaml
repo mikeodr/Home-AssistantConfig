@@ -6,12 +6,12 @@ input_boolean:
 automation:
   - alias: Ask if Pupper Home after Dark
     id: ask_pupper_home
-    trigger:
+    triggers:
       - platform: numeric_state
         entity_id: sun.sun
         attribute: elevation
         below: 5
-    condition:
+    conditions:
       - condition: state
         entity_id: alarm_control_panel.alarmo
         state: "armed_away"
@@ -19,7 +19,7 @@ automation:
           - condition: state
             entity_id: alarm_control_panel.alarmo
             state: "armed_vacation"
-    action:
+    actions:
       - variables:
           action_home: "{{ 'HOME_' ~ context.id }}"
           action_away: "{{ 'AWAY_' ~ context.id }}"
@@ -61,13 +61,13 @@ automation:
 
   - alias: Set light on for Pupper at dark
     id: set_pupper_light_on
-    trigger:
+    triggers:
       - platform: sun
         event: sunset
       - platform: state
         entity_id: alarm_control_panel.alarmo
         to: "armed_away"
-    condition:
+    conditions:
       - condition: numeric_state
         entity_id: sun.sun
         attribute: elevation
@@ -75,8 +75,24 @@ automation:
       - condition: state
         entity_id: input_boolean.pupper_home
         state: "on"
-    action:
+    actions:
       - delay:
           minutes: 5
-      - service: homeassistant.turn_on
+      - service: light.turn_on
         entity_id: light.kitchen_island
+  
+  - alias: Reset Pupper Home
+    id: d0ee77f1-0e4f-40bd-8d03-a10fa95de594
+    triggers:
+      - platform: sun
+        event: sunrise
+    conditions:
+      - condition: state
+        entity_id: input_boolean.pupper_home
+        state: "off"
+      - condition: state
+        entity_id: group.adults
+        state: "home"
+    actions:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.pupper_home
