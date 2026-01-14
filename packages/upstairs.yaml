@@ -7,7 +7,7 @@ automation:
       # Main Bath
       - trigger: device
         domain: mqtt
-        device_id: e3bc901892c55fbcaa6dd42876632c35
+        device_id: 24606a2c9bf2c14af2ad0305265c97e6
         type: action
         subtype: down_double
       # Main Stairs
