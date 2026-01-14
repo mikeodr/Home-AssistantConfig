@@ -1,3 +1,8 @@
+input_boolean:
+  basement_auto_lights:
+    name: Basement Auto Lights
+    icon: mdi:lightbulb-auto
+
 timer:
   basement_lights_off:
     name: Turn off basement lights
@@ -5,6 +10,41 @@ timer:
     restore: true
 
 automation:
+  - alias: Basement Auto Lights Enable/Disable
+    id: 643e3840-0a08-4883-a940-4a6f1b957387
+    trigger:
+      # Basement Room
+      - trigger: device
+        domain: mqtt
+        device_id: 98f1058de3b13db61c686228a6665d8d
+        type: action
+        subtype: config_double
+        id: disable_auto
+      # Basement Hall
+      - trigger: device
+        domain: mqtt
+        device_id: 4fd03b2b6cc39b1cc034f88e88f749d6
+        type: action
+        subtype: config_double
+        id: disable_auto
+      - platform: time
+        at: "00:00:00"
+        id: enable_auto
+    action:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: disable_auto
+            sequence:
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.basement_auto_lights
+          - conditions:
+              - condition: trigger
+                id: enable_auto
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.basement_auto_lights
+
   - alias: Basement Light on pir entrance
     id: basement_light_on_pir_entrance
     triggers:
@@ -14,8 +54,15 @@ automation:
         to: "on"
     conditions:
       - condition: state
+        entity_id: input_boolean.basement_auto_lights
+        state: "on"
+      - condition: state
         entity_id: alarm_control_panel.alarmo
         state: "disarmed"
+      - not:
+          - condition: state
+            entity_id: media_player.basement
+            state: "playing"
     actions:
       - wait_for_trigger:
           - platform: state
@@ -37,7 +84,8 @@ automation:
     mode: restart
     trigger:
       - platform: state
-        entity_id: binary_sensor.basement_presence
+        entity_id: binary_sensor.group_basement_presence
+        from: "off"
         to: "on"
         id: lights_on
       - platform: state
@@ -47,7 +95,7 @@ automation:
           - "approach"
         id: lights_on
       - platform: state
-        entity_id: binary_sensor.basement_presence
+        entity_id: binary_sensor.group_basement_presence
         to: "off"
         id: timer_start
       - platform: event
@@ -55,17 +103,27 @@ automation:
         event_data:
           entity_id: timer.basement_lights_off
         id: timer_lights_off
+    conditions:
+      - condition: state
+        entity_id: input_boolean.basement_auto_lights
+        state: "on"
     action:
       choose:
         - conditions:
             - condition: trigger
               id: lights_on
             - condition: state
+              entity_id: binary_sensor.group_basement_presence
+              state: "off"
+              for:
+                minutes: 6
+            - condition: state
               entity_id: binary_sensor.workday_sensor
               state: "on"
-            - condition: state
-              entity_id: input_boolean.nap_mode
-              state: "off"
+            - not:
+                - condition: state
+                  entity_id: media_player.basement
+                  state: "playing"
           sequence:
             - service: timer.cancel
               target:
@@ -92,7 +150,7 @@ automation:
             - condition: trigger
               id: timer_lights_off
             - condition: state
-              entity_id: binary_sensor.basement_presence
+              entity_id: binary_sensor.group_basement_presence
               state: "off"
           sequence:
             - service: light.turn_off
@@ -106,6 +164,9 @@ automation:
         to: ~
         entity_id: light.basement_hall
     condition:
+      - condition: state
+        entity_id: input_boolean.basement_auto_lights
+        state: "on"
       - condition: state
         entity_id: alarm_control_panel.alarmo
         state: "disarmed"
@@ -121,7 +182,7 @@ automation:
       - platform: time
         at: "23:00:00"
     action:
-      - wait_template: "{{ is_state('binary_sensor.basement_presence', 'off') }}"
+      - wait_template: "{{ is_state('binary_sensor.group_basement_presence', 'off') }}"
       - service: light.turn_off
         entity_id:
           - light.basement_room_light_dimmer
@@ -193,11 +254,11 @@ automation:
     id: basement_space_heater_control
     triggers:
       - platform: state
-        entity_id: binary_sensor.basement_presence
+        entity_id: binary_sensor.group_basement_presence
         to: "on"
         id: turn_on
       - platform: state
-        entity_id: binary_sensor.basement_presence
+        entity_id: binary_sensor.group_basement_presence
         to: "off"
         id: turn_off
         for:
@@ -246,6 +307,10 @@ automation:
         for:
           minutes: 10
         id: turn_off
+    conditions:
+      - condition: state
+        entity_id: input_boolean.basement_auto_lights
+        state: "on"
     actions:
       - choose:
           - conditions:
