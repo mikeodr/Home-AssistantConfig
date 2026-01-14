@@ -60,10 +60,10 @@ automation:
                 target:
                   entity_id: select.front_door_chime_type
                 data:
-                  option: Mechanical
+                  option: mechanical
               - delay:
                   seconds: 10
-              - wait_template: "{{ is_state('select.front_door_chime_type', 'Mechanical') }}"
+              - wait_template: "{{ is_state('select.front_door_chime_type', 'mechanical') }}"
                 timeout:
                   minutes: 10
               - if:
@@ -73,7 +73,7 @@ automation:
                     target:
                       entity_id: select.front_door_chime_type
                     data:
-                      option: Mechanical
+                      option: mechanical
                   - service: notify.mobile_app_michaels_iphone
                     data:
                       message: "Check Doorbell Mechanical State"
@@ -82,7 +82,7 @@ automation:
             target:
               entity_id: select.front_door_chime_type
             data:
-              option: None
+              option: none
 
   - alias: Doorbell notification Message
     id: doorbell_notification_message
@@ -360,4 +360,4 @@ automation:
         target:
           entity_id: select.front_door_chime_type
         data:
-          option: Mechanical
+          option: mechanical
