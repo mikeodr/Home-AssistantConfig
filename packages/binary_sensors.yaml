@@ -1,11 +1,11 @@
-binary_sensor:
-  - platform: template
-    sensors:
-      guests_present:
-        friendly_name: "Guests Home"
-        value_template: "{{ (states('sensor.coreguest') | int) > 0 or states('input_boolean.guests_present') }}"
-      waste_dashboard:
-        value_template: >-
+template:
+  - binary_sensor:
+      - default_entity_id: binary_sensor.guests_present
+        name: Guests Home
+        state: "{{ (states('sensor.coreguest') | int) > 0 or states('input_boolean.guests_present') }}"
+  - binary_sensor:
+      - default_entity_id: binary_sensor.waste_dashboard
+        state: >-
           {% set garbage_day=states('sensor.waste_current_pickup') | as_datetime -%}
           {%- if now().day == (garbage_day - timedelta(days=1)).day or
           now().day == garbage_day.day and now().hour < 10 -%}
@@ -13,3 +13,4 @@ binary_sensor:
           {%- else -%}
           off
           {%-endif-%}
+        name: waste_dashboard
