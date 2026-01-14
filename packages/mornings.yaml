@@ -9,9 +9,6 @@ automation:
       - platform: state
         entity_id: input_boolean.nap_mode
         to: "off"
-      - platform: state
-        entity_id: binary_sensor.living_room_occupancy
-        to: "on"
     condition:
       - condition: state
         entity_id: group.adults
@@ -46,10 +43,7 @@ automation:
                     destructive: true
                     behavior: "default"
                 push:
-                  sound:
-                    name: "default"
-                    critical: 1
-                    volume: 1.0
+                  interruption-level: critical
                 url: /dashboard-security/home
                 clickAction: /dashboard-security/home
       - service: homeassistant.turn_on
@@ -61,11 +55,21 @@ automation:
         timeout:
           hours: 1
         continue_on_timeout: false
-      - service: light.turn_on
-        target:
-          entity_id:
-            - light.kitchen_light
-            - light.living_room_light
-        data:
-          brightness_pct: 28
-          transition: 120
+      - if:
+          - condition: state
+            entity_id: person.mike
+            state: "home"
+          - condition: state
+            entity_id: binary_sensor.michaels_iphone_focus
+            state: "off"
+        then:
+          - service: light.turn_on
+            target:
+              entity_id:
+                - light.kitchen_light
+                - light.living_room_light
+            data:
+              brightness_pct: 28
+              transition: 120
+      - delay:
+          hours: 3
