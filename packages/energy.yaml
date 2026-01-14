@@ -133,14 +133,14 @@ automation:
         entity_id: sensor.current_hydro_time_of_use_state
         to: Off Peak
         id: power_on
-      - platform: time
-        at: "16:00:00"
-        id: power_on
       - platform: state
         entity_id: schedule.tv_power
         to: "on"
         id: power_on
-    action:
+    conditions:
+        - condition: template
+          value_template: "{{ now().date() > (states('input_datetime.holidays_end') | as_datetime | as_local).date() }}"
+    actions:
       choose:
         - conditions:
             - condition: trigger
