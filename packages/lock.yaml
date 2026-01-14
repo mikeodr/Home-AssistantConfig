@@ -1,11 +1,9 @@
-binary_sensor:
-  - platform: template
-    sensors:
-      lock_jammed:
-        friendly_name: "Front Lock Jammed"
-        value_template: "{{ is_state('sensor.front_door_lock_alarm_access_control', 'Lock Jammed') }}"
-        delay_on:
-          seconds: 10
+template:
+- binary_sensor:
+  - delay_on: 0:00:10
+    default_entity_id: binary_sensor.lock_jammed
+    name: Front Lock Jammed
+    state: "{{ is_state('sensor.front_door_lock_alarm_access_control', 'Lock Jammed') }}"
 
 automation:
   - alias: Lock Status Change
@@ -145,7 +143,7 @@ automation:
     trigger:
       - platform: state
         entity_id:
-          - device_tracker.mikeiphone14_unifi
+          - device_tracker.mike_iphone
           - device_tracker.tiffanys_iphone_unifi
         to: "not_home"
         for:
@@ -156,7 +154,7 @@ automation:
         state: "home"
       - condition: state
         entity_id:
-          - device_tracker.mikeiphone14_unifi
+          - device_tracker.mike_iphone
           - device_tracker.tiffanys_iphone_unifi
         state: "not_home"
       - condition: state
