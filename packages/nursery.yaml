@@ -45,17 +45,6 @@ scene:
         brightness: 203
         rgb_color: [255, 127, 0]
 
-  - name: baby_nap_on
-    entities:
-      switch.nursery_white_noise:
-        state: "on"
-      light.nursery_led:
-        state: "off"
-      light.nursery_light:
-        state: "off"
-      fan.nursery_humidifier:
-        state: "on"
-
   - name: baby_nap_off
     entities:
       switch.nursery_white_noise:
@@ -160,12 +149,23 @@ automation:
                 entity_id: input_boolean.nap_mode
                 state: "on"
             sequence:
-              - service: scene.turn_on
-                entity_id: scene.baby_nap_on
+              - service: switch.turn_on
+                entity_id: switch.nursery_white_noise
+              - service: light.turn_off
+                entity_id: light.nursery_led
+              - service: light.turn_off
+                entity_id: light.nursery_light
               - service: media_player.volume_set
                 data:
                   volume_level: 0.15
                 entity_id: media_player.sonos_living_room
+              - if:
+                  - condition: numeric_state
+                    entity_id: input_number.outside_min_temperature_next_8_hours
+                    above: -15
+                then:
+                  - service: homeassistant.turn_on
+                    entity_id: fan.nursery_humidifier
           # Turning nap off
           - conditions:
               - condition: state
@@ -637,6 +637,8 @@ automation:
           - condition: state
             entity_id: binary_sensor.guests_present
             state: "on"
+      - condition: time
+        before: input_datetime.holidays_end
     actions:
       - wait_template: '{{ not is_state("light.nursery_led", "unavailable") }}'
       - service: script.led_strip_on
@@ -949,6 +951,8 @@ automation:
               media_content_type: music
             target:
               entity_id: media_player.bedroom_player
+          - delay:
+              seconds: 3
           - action: media_player.volume_set
             data:
               volume_level: 0.5
@@ -957,10 +961,12 @@ automation:
         else:
           - action: media_player.play_media
             data:
-              media_content_id: "42qYs-10-01" # Moon Music
+              media_content_id: "42qYs-00-01" # Moon Music
               media_content_type: music
             target:
               entity_id: media_player.bedroom_player
+          - delay:
+              seconds: 3
           - action: media_player.volume_set
             data:
               volume_level: 0.3125
