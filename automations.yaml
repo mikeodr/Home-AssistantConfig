@@ -18,3 +18,99 @@
     metadata: {}
     data: {}
   mode: single
+- id: '1765204692120'
+  alias: Battery Notes - Battery Threshold
+  description: ''
+  use_blueprint:
+    path: andrew-codechimp/battery_notes_battery_threshold.yaml
+    input:
+      include_devices_enabled: false
+      excluded_devices:
+      - 2994c544d0591b00f34f708013b9cc3a
+      - 85fd975ede3a62b40338643853970f8c
+      - 94c5295f6f5589760ec5c0ef9f783d7d
+      - 327f44d91f4e9106e8fdf88a206add2a
+      - 2bd3a1a05bd9af2489b54126ed58bdea
+      - 0f1add8ea641663a2bd8ac41e3f65e77
+      - bb3f3806884845ec952844a6c1bfe237
+      - 2a55a105b54a3f776575b47f0cdd9e85
+      - 04eed6d2f4bdd77843fa655cdc2ee0f5
+      additional_conditions:
+      - condition: state
+        entity_id: person.mike
+        state:
+        - home
+        for:
+          hours: 0
+          minutes: 30
+          seconds: 0
+      on_low_actions:
+      - action: notify.mobile_app_michaels_iphone
+        metadata: {}
+        data:
+          title: '{{ trigger.event.data.device_name }} Battery Low'
+          message: The device has a battery level of {{ trigger.event.data.battery_level
+            }}% {{ '\n' -}} You need {{ trigger.event.data.battery_quantity }}× {{
+            trigger.event.data.battery_type }}
+- id: '1765205088443'
+  alias: Battery Notes - Battery Replaced
+  description: ''
+  use_blueprint:
+    path: andrew-codechimp/battery_notes_battery_replaced.yaml
+    input:
+      on_replaced_actions:
+      - action: notify.mobile_app_michaels_iphone
+        metadata: {}
+        data:
+          message: '{{ trigger.event.data.device_name }}''s battery has been replaced'
+- id: '1765205209642'
+  alias: Battery Notes - Battery Not Reported
+  description: ''
+  use_blueprint:
+    path: andrew-codechimp/battery_notes_battery_not_reported.yaml
+    input:
+      excluded_devices:
+      - 2994c544d0591b00f34f708013b9cc3a
+      - 85fd975ede3a62b40338643853970f8c
+      - 94c5295f6f5589760ec5c0ef9f783d7d
+      - 327f44d91f4e9106e8fdf88a206add2a
+      - 2bd3a1a05bd9af2489b54126ed58bdea
+      - 438cfe377dd24542ae429c988ed9a92f
+      - 0f1add8ea641663a2bd8ac41e3f65e77
+      - bb3f3806884845ec952844a6c1bfe237
+      additional_conditions:
+      - condition: state
+        entity_id: person.mike
+        state:
+        - home
+        for:
+          hours: 0
+          minutes: 30
+          seconds: 0
+      user_actions:
+      - action: notify.mobile_app_michaels_iphone
+        metadata: {}
+        data:
+          message: 'Missed battery report for: {{ trigger.event.data.device_name }}'
+- id: '1767732647323'
+  alias: Turn off Printer Light on Finish
+  description: Turn off the P1S Printer light when print is finished
+  triggers:
+  - trigger: state
+    entity_id:
+    - sensor.p1s_01p00c5a1800662_print_status
+    from:
+    - running
+    to:
+    - finish
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+  conditions: []
+  actions:
+  - type: turn_off
+    device_id: efa11b49368feb5eca6fd9b8153251e0
+    entity_id: 93069828a30dc124a2b0eb7ecb200bad
+    domain: light
+  mode: single
