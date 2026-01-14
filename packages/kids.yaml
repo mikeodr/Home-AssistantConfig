@@ -75,7 +75,4 @@ automation:
                     tag: "pickup-reminder"
                     group: "pickup-notification"
                     push:
-                      sound:
-                        name: "default"
-                        critical: 1
-                        volume: 0.5
+                      interruption-level: critical
