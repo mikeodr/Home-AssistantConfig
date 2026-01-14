@@ -52,13 +52,11 @@ script:
       - service: switch.toggle
         entity_id: switch.spare_bedroom_fan
 
-sensor:
-  - platform: template
-    sensors:
-      ios_main_status_summary:
-        friendly_name: "iOS Watch Complication Summary Line"
-        unique_id: ios_main_status_summary_line
-        value_template: >-
+template:
+  - sensor:
+      - unique_id: ios_main_status_summary_line
+        name: "iOS Watch Complication Summary Line"
+        state: >-
           {%- if is_state("lock.front_door", "locked") and is_state("lock.side_door", "locked") -%}
           🔒
           {%- else -%}
@@ -105,10 +103,9 @@ sensor:
           🍂
           {%- endif -%}
           {%- endif -%}
-      ios_main_status_body1:
-        friendly_name: "iOS Watch Complication Body 1"
-        unique_id: ios_main_status_body1
-        value_template: >-
+      - unique_id: ios_main_status_body1
+        name: "iOS Watch Complication Body 1"
+        state: >-
           {%- if states("input_boolean.nap_mode") == 'on' -%}
           😴
           {%- else -%}
@@ -123,10 +120,9 @@ sensor:
           {%- else -%}
           |⏹️
           {%- endif %} {{ state_attr('climate.my_ecobee', 'current_temperature') }}
-      ios_main_status_body2:
-        friendly_name: "iOS Watch Complication Body 2"
-        unique_id: ios_main_status_body2
-        value_template: >-
+      - unique_id: ios_main_status_body2
+        name: "iOS Watch Complication Body 2"
+        state: >-
           📺{{ states('sensor.mikeflix') }}
           {%- if is_state('binary_sensor.washer_status', 'on') -%}
           |🧺
