@@ -149,7 +149,7 @@ automation:
                         - light.upstairs_hall
                         - light.main_bath_light
                         - light.basement_stairs
-                        - light.basement_room_light_dimmer
+                        - light.basement_room
           - conditions:
               - condition: trigger
                 id: laundry_moved
