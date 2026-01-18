@@ -16,7 +16,7 @@ automation:
       # Basement Room
       - trigger: device
         domain: mqtt
-        device_id: 98f1058de3b13db61c686228a6665d8d
+        device_id: e3bc901892c55fbcaa6dd42876632c35
         type: action
         subtype: config_double
         id: disable_auto
@@ -130,13 +130,13 @@ automation:
                 entity_id: timer.basement_lights_off
             - if:
                 - condition: state
-                  entity_id: light.basement_room_light_dimmer
+                  entity_id: light.basement_room
                   state: "off"
               then:
                 - service: light.turn_on
                   entity_id:
                     - light.basement_hall
-                    - light.basement_room_light_dimmer
+                    - light.basement_room
         - conditions:
             - condition: trigger
               id: timer_start
@@ -174,7 +174,7 @@ automation:
         value_template: "{{ trigger.to_state.state in ['off', 'on'] }}"
     action:
       - service: homeassistant.turn_{{ trigger.to_state.state }}
-        entity_id: light.basement_room_light_dimmer
+        entity_id: light.basement_room
 
   - alias: Basement Lights off Night
     id: basement_night_auto_off
@@ -185,7 +185,7 @@ automation:
       - wait_template: "{{ is_state('binary_sensor.group_basement_presence', 'off') }}"
       - service: light.turn_off
         entity_id:
-          - light.basement_room_light_dimmer
+          - light.basement_room
           - light.basement_hall
           - light.basement_stairs
 
@@ -208,13 +208,13 @@ automation:
       # Basement Room
       - trigger: device
         domain: mqtt
-        device_id: 2dfe60ede49072748ae1109333546706
+        device_id: e3bc901892c55fbcaa6dd42876632c35
         type: action
         subtype: up_double
         id: turn_on
       - trigger: device
         domain: mqtt
-        device_id: 2dfe60ede49072748ae1109333546706
+        device_id: e3bc901892c55fbcaa6dd42876632c35
         type: action
         subtype: down_double
         id: turn_off
@@ -315,6 +315,9 @@ automation:
       - choose:
           - conditions:
               - condition: state
+                entity_id: input_boolean.basement_auto_lights
+                state: "on"
+              - condition: state
                 entity_id: group.adults
                 state: "home"
               - condition: state
@@ -322,11 +325,15 @@ automation:
                 state: "disarmed"
               - condition: trigger
                 id: turn_on
-              - condition: time
-                after: "07:45:00"
+              - condition: state
+                entity_id: sun.sun
+                state: "above_horizon"
             sequence:
               - service: light.turn_on
                 entity_id: light.basement_stairs
-        default:
-          - service: light.turn_off
-            entity_id: light.basement_stairs
+          - conditions:
+              - condition: trigger
+                id: turn_off
+            sequence:
+              - service: light.turn_off
+                entity_id: light.basement_stairs
