@@ -126,7 +126,7 @@ automation:
       - wait_template: "{{ is_state('cover.garage', 'closed') }}"
       - service: homeassistant.turn_off
         entity_id: media_player.living_room_tv
-      - wait_template: "{{ is_state('binary_sensor.basement_presence', 'off') }}"
+      - wait_template: "{{ is_state('binary_sensor.group_basement_presence', 'off') }}"
       - service: alarm_control_panel.alarm_arm_night
         target:
           entity_id: alarm_control_panel.alarmo
@@ -199,10 +199,7 @@ automation:
                 destructive: true
                 behavior: "default"
             push:
-              sound:
-                name: "default"
-                critical: 1
-                volume: 1.0
+              interruption-level: critical
 
   - alias: Turn off all indoor lights when armed
     id: alarm_turn_off_all_lights
@@ -351,10 +348,7 @@ automation:
           data:
             tag: "water-shutoff-valve-jammed"
             push:
-              sound:
-                name: "default"
-                critical: 1
-                volume: 1.0
+              interruption-level: critical
 
   - alias: Shut off water when leak detected and not home or overnight
     id: 7dad3c90-f96f-4976-878c-0ab3d1a6241a
@@ -426,9 +420,7 @@ automation:
               title: 🚨 Alarmo Alert! 🚨
               data:
                 push:
-                  sound:
-                    name: default
-                    critical: 1
+                  interruption-level: critical
                 url: /dashboard-security/home
                 clickAction: /dashboard-security/home
 
@@ -455,9 +447,7 @@ automation:
           title: 🚨 Alarmo Alert! 🚨
           data:
             push:
-              sound:
-                name: default
-                critical: 1
+              interruption-level: critical
             url: /dashboard-security/home
             clickAction: /dashboard-security/home
 
@@ -491,7 +481,7 @@ automation:
                 entity_id: schedule.shed_alarm_schedule
                 state: "on"
             sequence:
-              - service: alarm_control_panel.alarm_arm_away
+              - service: alarm_control_panel.alarm_arm_night
                 target:
                   entity_id: alarm_control_panel.shed
           - conditions:
