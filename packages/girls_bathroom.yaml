@@ -1,10 +1,98 @@
+template:
+  - fan:
+      - turn_on:
+          - target:
+              entity_id:
+                - light.girls_bathroom_fan
+            action: light.turn_on
+        turn_off:
+          - target:
+              entity_id:
+                - light.girls_bathroom_fan
+            action: light.turn_off
+        unique_id: 24e81d59-fc98-43d8-9520-2470bf02f2e7
+        default_entity_id: fan.girls_bathroom_fan
+        name: Girls Bathroom Fan
+        state: "{{ is_state('light.girls_bathroom_fan', 'on') }}"
+
 timer:
   girls_bathroom_nightlight_off:
     name: Turn off girls bathroom night light
     duration: 00:05:00
     restore: true
+  girls_bathroom_fan:
+    name: Girls Bathroom Fan Timer
+    restore: true
 
 automation:
+  - alias: Girls Bath Fan on for humidity
+    id: d9ecf779-3b9f-4069-b80d-4e688f3f073b
+    mode: queued
+    triggers:
+      - platform: state
+        entity_id: fan.girls_bathroom_fan
+        from: "off"
+        to: "on"
+        id: fan_on
+      - platform: numeric_state
+        entity_id: sensor.girls_bathroom_humidity_derivative
+        above: 1
+        id: humidity_rise
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.girls_bathroom_fan
+        id: timer_finished
+      - platform: state
+        entity_id: fan.girls_bathroom_fan
+        from: "on"
+        to: "off"
+        id: fan_off
+    conditions:
+      - condition: state
+        entity_id: group.adults
+        state: "home"
+    actions:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: fan_on
+              - condition: state
+                entity_id: timer.girls_bathroom_fan
+                state: "inactive"
+            sequence:
+              - service: timer.start
+                target:
+                  entity_id: timer.girls_bathroom_fan
+                data:
+                  duration: "00:15:00"
+          - conditions:
+              - condition: trigger
+                id: humidity_rise
+            sequence:
+              - service: fan.turn_on
+                target:
+                  entity_id: fan.girls_bathroom_fan
+              - service: timer.start
+                target:
+                  entity_id: timer.girls_bathroom_fan
+                data:
+                  duration: "01:00:00"
+          - conditions:
+              - condition: trigger
+                id: timer_finished
+            sequence:
+              - service: fan.turn_off
+                target:
+                  entity_id: fan.girls_bathroom_fan
+          - conditions:
+              - condition: trigger
+                id: fan_off
+            sequence:
+              - service: timer.cancel
+                target:
+                  entity_id: timer.girls_bathroom_fan
+
   - alias: Girls Bathroom Night Light Timer Control
     id: girls_bathroom_night_light_timer_control
     triggers:
