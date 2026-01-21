@@ -1,6 +1,6 @@
-automations:
+automation:
   - alias: Update Outside Min Temp Next 8h
-    id: update_outside_min_temp_next_8h
+    id: 90a8c803-be94-4c12-b217-3269a3994d67
     trigger:
       - platform: time_pattern
         minutes: "/30"
@@ -15,7 +15,7 @@ automations:
         response_variable: forecast
       - variables:
           temps: "{{ forecast['weather.tomorrow_io_home_nowcast'].forecast | map(attribute='temperature') | list }}"
-          min_temp: "{{ temps[:8] | min(default=0) }}"
+          min_temp: "{{ temps[:8] | min | default(0) }}"
       - service: number.set_value
         target:
           entity_id: input_number.outside_min_temperature_next_8_hours

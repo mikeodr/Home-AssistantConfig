@@ -164,7 +164,7 @@ automation:
               - if:
                   - condition: numeric_state
                     entity_id: input_number.outside_min_temperature_next_8_hours
-                    above: -15
+                    above: -13
                 then:
                   - service: homeassistant.turn_on
                     entity_id: fan.nursery_humidifier
@@ -203,15 +203,18 @@ automation:
         at: "19:00:00"
         id: early_on
     conditions:
-      or:
-        - condition: trigger
-          id: manual_on
-        - and:
-            - condition: trigger
-              id: early_on
-            - condition: state
-              entity_id: group.adults
-              state: "home"
+      - condition: numeric_state
+        entity_id: input_number.outside_min_temperature_next_8_hours
+        above: -13
+      - or:
+          - condition: trigger
+            id: manual_on
+          - and:
+              - condition: trigger
+                id: early_on
+              - condition: state
+                entity_id: group.adults
+                state: "home"
     actions:
       - service: homeassistant.turn_on
         entity_id: fan.nursery_humidifier

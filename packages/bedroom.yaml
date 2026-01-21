@@ -33,7 +33,7 @@ automation:
       - if:
           - condition: numeric_state
             entity_id: input_number.outside_min_temperature_next_8_hours
-            above: -15
+            above: -13
         then:
           - service: switch.turn_on
             entity_id: switch.master_humidifier
