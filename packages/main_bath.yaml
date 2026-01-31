@@ -1,4 +1,51 @@
+timer:
+  main_bathroom_fan:
+    name: Main Bathroom Fan Timer
+    restore: true
+
+template:
+  - binary_sensor:
+      - name: Main Bath Humidity Trigger
+        unique_id: main_bath_humidity_trigger
+        icon: mdi:shower-head
+        state: "{{ states('sensor.main_bath_fan_humidity_derivation') | float(0) | default(0) > 1.0 }}"
+        device_class: running
+        delay_off:
+          hours: 2
+  - fan:
+      - turn_on:
+          - target:
+              entity_id:
+                - light.main_bath_fan
+            action: light.turn_on
+        turn_off:
+          - target:
+              entity_id:
+                - light.main_bath_fan
+            action: light.turn_off
+        unique_id: 16762559-1146-4b6b-b364-1c04beb47b67
+        default_entity_id: fan.main_bathroom_fan
+        name: Main Bathroom Fan
+        state: "{{ is_state('light.main_bath_fan', 'on') }}"
+
 automation:
+  - alias: Main Bath Humidity Notificatoin
+    id: 608e781b-7727-40c6-ae8e-337ac3354885
+    triggers:
+      - platform: state
+        entity_id: binary_sensor.main_bath_humidity_trigger
+        to:
+          - "on"
+          - "off"
+    actions:
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          title: "Main Bath Humidity Trigger 🚿"
+          message: >
+            Sensor is {{ states('binary_sensor.main_bath_humidity_trigger') }}
+          data:
+            url: /lovelace/main-bath
+
   - alias: Set Main Bath Default Local Level for Light
     id: main_bath_set_default_local_level
     trigger:
@@ -49,7 +96,7 @@ automation:
     triggers:
       - trigger: device
         domain: mqtt
-        device_id: e3bc901892c55fbcaa6dd42876632c35
+        device_id: 24606a2c9bf2c14af2ad0305265c97e6
         type: action
         subtype: up_double
     actions:
@@ -61,18 +108,198 @@ automation:
 
   - alias: Main Bath Fan on for humidity
     id: main_bath_on_humidity
-    mode: single
+    mode: queued
+    trace:
+      stored_traces: 30
     triggers:
+      - platform: state
+        entity_id: fan.main_bathroom_fan
+        from: "off"
+        to: "on"
+        id: fan_on
       - platform: numeric_state
-        entity_id: sensor.bathroom_humidity_derivative
+        entity_id: sensor.main_bath_fan_humidity_derivation
         above: 1
+        id: humidity_rise
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.main_bathroom_fan
+        id: timer_finished
+      - platform: state
+        entity_id: fan.main_bathroom_fan
+        from: "on"
+        to: "off"
+        id: fan_off
     conditions:
       - condition: state
         entity_id: group.adults
         state: "home"
     actions:
-      - action: notify.mobile_app_michaels_iphone
-        data:
-          message: "Shower fan should run"
-      - delay:
-          hours: 1
+      - choose:
+          # Fan manually turned on - set timer based on shower likely
+          - conditions: trigger
+            id: fan_on
+            sequence:
+              - if:
+                  - condition: state
+                    entity_id: binary_sensor.main_bath_shower_likely
+                    state: "on"
+                then:
+                  - service: timer.start
+                    target:
+                      entity_id: timer.main_bathroom_fan
+                    data:
+                      duration: "01:00:00"
+                else:
+                  - service: timer.start
+                    target:
+                      entity_id: timer.main_bathroom_fan
+                    data:
+                      duration: "00:15:00"
+            # Humidity rise turns on fan if not already on
+            # sets timer for 1 hour, if the light is on
+          - conditions:
+              - condition: trigger
+                id: humidity_rise
+              - condition: state
+                entity_id: light.main_bath_light
+                state: "on"
+            sequence:
+              - service: fan.turn_on
+                target:
+                  entity_id: fan.main_bathroom_fan
+              - service: timer.start
+                target:
+                  entity_id: timer.main_bathroom_fan
+                data:
+                  duration: "01:00:00"
+              - service: mqtt.publish
+                data:
+                  topic: "zigbee2mqtt/0x20a716fffe018d99/set"
+                  payload: >-
+                    {"led_effect": {"effect": "solid",
+                    "color": "255",
+                    "level": "40",
+                    "duration": "119"}}
+          # Timer finished turns off fan
+          - conditions:
+              - condition: trigger
+                id: timer_finished
+            sequence:
+              - service: fan.turn_off
+                target:
+                  entity_id: fan.main_bathroom_fan
+          # Fan turned off manually - cancel timer
+          - conditions:
+              - condition: trigger
+                id: fan_off
+            sequence:
+              - service: timer.cancel
+                target:
+                  entity_id: timer.main_bathroom_fan
+
+  - alias: Main Light Timer Control
+    id: cc0d87e2-91d1-4573-bdb0-c830e19f5066
+    mode: queued
+    trace:
+      stored_traces: 30
+    trigger:
+      - platform: state
+        entity_id: light.main_bath_light
+        from: "on"
+        to: "off"
+        id: light_off
+      - platform: state
+        entity_id: binary_sensor.main_bath_shower_likely
+        from: "off"
+        to: "on"
+        id: bayesian_occupancy
+      - platform: state
+        entity_id: binary_sensor.main_bath_light_occupancy
+        from: "on"
+        to: "off"
+        id: vacancy
+      - platform: state
+        entity_id: binary_sensor.main_bath_light_occupancy
+        from: "off"
+        to: "on"
+        id: occupancy
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.main_bath_light_timer
+        id: timer_finished
+    conditions:
+      - condition: state
+        entity_id: group.adults
+        state: "home"
+    actions:
+      - choose:
+          # Vacancy starts timer on when light is on
+          - conditions:
+              - condition: trigger
+                id: vacancy
+              - condition: state
+                entity_id: light.main_bath_light
+                state: "on"
+            sequence:
+              - if:
+                  - condition: state
+                    entity_id: binary_sensor.main_bath_shower_likely
+                    state: "off"
+                then:
+                  - service: timer.start
+                    target:
+                      entity_id: timer.main_bath_light_timer
+                    data:
+                      duration: "00:20:00"
+                else:
+                  - service: timer.start
+                    target:
+                      entity_id: timer.main_bath_light_timer
+                    data:
+                      duration: "02:00:00"
+          # Bayesian shower likely extends the timer if timer is active and light is on
+          - conditions:
+              - condition: trigger
+                id: bayesian_occupancy
+              - condition: state
+                entity_id: timer.main_bath_light_timer
+                state: "active"
+              - condition: state
+                entity_id: light.main_bath_light
+                state: "on"
+            sequence:
+              - service: timer.start
+                target:
+                  entity_id: timer.main_bath_light_timer
+                data:
+                  duration: "02:00:00"
+          # Light off or re-occupancy of room cancels timer
+          - conditions:
+              - or:
+                  - condition: trigger
+                    id: light_off
+                  - condition: trigger
+                    id: occupancy
+            sequence:
+              - service: timer.cancel
+                target:
+                  entity_id: timer.main_bath_light_timer
+          # Timer finished turns off light
+          - conditions:
+              - condition: trigger
+                id: timer_finished
+              - condition: state
+                entity_id: light.main_bath_light
+                state: "on"
+            sequence:
+              - service: notify.mobile_app_michaels_iphone
+                data:
+                  message: "💡 Main Bath Light Timer Finished - Turning Off Light"
+                  data:
+                    url: /lovelace/main-bath
+              # - service: light.turn_off
+              #   target:
+              #     entity_id: light.main_bath_light
