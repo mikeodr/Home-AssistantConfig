@@ -138,8 +138,9 @@ automation:
     actions:
       - choose:
           # Fan manually turned on - set timer based on shower likely
-          - conditions: trigger
-            id: fan_on
+          - conditions:
+              - condition: trigger
+                id: fan_on
             sequence:
               - if:
                   - condition: state
