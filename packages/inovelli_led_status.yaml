@@ -14,7 +14,7 @@ script:
         description: "Brightness level"
         example: "100"
       duration:
-        description: "Duration of effect, 255 - permanent"
+        description: "1-60 is in seconds calculated 61-120 is in minutes calculated by(value-60) Example a value of 65 would be 65-60 = 5 minutes - 120-254 Is in hours calculated by(value-120) Example a value of 132 would be 132-120 would be 12 hours. - 255 Indefinitely"
         example: "255"
       entity_id:
         description: "Entities to set the pattern for"
