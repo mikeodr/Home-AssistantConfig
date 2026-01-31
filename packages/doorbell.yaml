@@ -100,6 +100,8 @@ automation:
           message: "Someone is at the front door"
           data:
             tag: "doorbell-notification"
+            push:
+              interruption-level: time-sensitive
       # Snapshot the camera
       - service: camera.snapshot
         continue_on_error: true
@@ -117,6 +119,8 @@ automation:
             clickAction: dashboard-doorbell/doorbell
             image: "/media/local/doorbell/snapshot.jpg"
             tag: "doorbell-notification"
+            push:
+              interruption-level: time-sensitive
             actions:
               - action: "NOT_INTERESTED"
                 title: "Not interested"
@@ -282,6 +286,8 @@ automation:
             image: "/media/local/doorbell/package.jpg"
             tag: "doorbell-package-notification"
             group: "doorbell-package"
+            push:
+              interruption-level: time-sensitive
 
   - alias: Set doorbell message
     id: doorbell_set_message
