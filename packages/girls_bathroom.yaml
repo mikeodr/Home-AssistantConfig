@@ -59,7 +59,7 @@ automation:
                 id: fan_on
               - condition: state
                 entity_id: timer.girls_bathroom_fan
-                state: "inactive"
+                state: "idle"
             sequence:
               - service: timer.start
                 target:
