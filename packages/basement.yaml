@@ -45,7 +45,7 @@ automation:
               - service: input_boolean.turn_on
                 entity_id: input_boolean.basement_auto_lights
 
-  - alias: Basement Light on pir entrance
+  - alias: Basement Hall Light on pir entrance
     id: basement_light_on_pir_entrance
     triggers:
       - platform: state
@@ -77,10 +77,12 @@ automation:
           minutes: 5
         continue_on_timeout: false
       - service: light.turn_on
-        entity_id: light.basement_lights
+        entity_id: light.basement_hall
 
   - alias: Basement Light Presence Control On
     id: basement_light_presence_controls_on
+    trace:
+      stored_traces: 30
     mode: restart
     trigger:
       - platform: state
@@ -137,6 +139,8 @@ automation:
                   entity_id:
                     - light.basement_hall
                     - light.basement_room
+                  data:
+                    transition: 3
         - conditions:
             - condition: trigger
               id: timer_start
@@ -157,25 +161,6 @@ automation:
               entity_id:
                 - light.basement_lights
 
-  - alias: Sync Basement Hall Light to Basement Room Light
-    id: basement_sync_hall_room_lights
-    trigger:
-      - platform: state
-        to: ~
-        entity_id: light.basement_hall
-    condition:
-      - condition: state
-        entity_id: input_boolean.basement_auto_lights
-        state: "on"
-      - condition: state
-        entity_id: alarm_control_panel.alarmo
-        state: "disarmed"
-      - condition: template
-        value_template: "{{ trigger.to_state.state in ['off', 'on'] }}"
-    action:
-      - service: homeassistant.turn_{{ trigger.to_state.state }}
-        entity_id: light.basement_room
-
   - alias: Basement Lights off Night
     id: basement_night_auto_off
     trigger:
@@ -184,10 +169,8 @@ automation:
     action:
       - wait_template: "{{ is_state('binary_sensor.group_basement_presence', 'off') }}"
       - service: light.turn_off
-        entity_id:
-          - light.basement_room
-          - light.basement_hall
-          - light.basement_stairs
+        target:
+          label_id: basement_lights
 
   - alias: Top of basement stairs action control
     id: basement_top_of_stairs_action_control
@@ -325,9 +308,8 @@ automation:
                 state: "disarmed"
               - condition: trigger
                 id: turn_on
-              - condition: state
-                entity_id: sun.sun
-                state: "above_horizon"
+              - condition: time
+                after: "07:30:00"
             sequence:
               - service: light.turn_on
                 entity_id: light.basement_stairs
@@ -337,3 +319,25 @@ automation:
             sequence:
               - service: light.turn_off
                 entity_id: light.basement_stairs
+
+  - alias: Basement Lights off when fully unoccupised
+    id: e7e9dbe0-fb22-4dbe-bd0c-cbebb854339a
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id:
+          - binary_sensor.full_basement_presence
+        from: "on"
+        to: "off"
+        for:
+          minutes: 10
+    actions:
+      - action: light.turn_off
+        data:
+          transition: 90
+        target:
+          entity_id:
+            - light.basement_hall
+            - light.basement_room
+            - light.basement_stairs
+            - light.basement_storage
