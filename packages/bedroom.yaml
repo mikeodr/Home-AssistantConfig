@@ -2,6 +2,9 @@ input_boolean:
   sleeping_in:
     name: Sleeping In
     icon: mdi:alarm-snooze
+  main_bed_humidifier_override:
+    name: Main Bedroom Humidifier Override
+    icon: mdi:air-humidifier
 
 automation:
   - alias: Bedroom Comfort On Evenings
@@ -31,9 +34,13 @@ automation:
         entity_id:
           - switch.master_white_noise
       - if:
-          - condition: numeric_state
-            entity_id: input_number.outside_min_temperature_next_8_hours
-            above: -13
+          - or:
+            - condition: numeric_state
+              entity_id: input_number.outside_min_temperature_next_8_hours
+              above: -13
+            - condition: state
+              entity_id: input_boolean.main_bed_humidifier_override
+              state: "on"
         then:
           - service: switch.turn_on
             entity_id: switch.master_humidifier
