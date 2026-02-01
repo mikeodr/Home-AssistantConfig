@@ -1,0 +1,32 @@
+automation:
+  - alias: Enable/Disable Sleep Mode
+    id: 6b29827e-a147-4553-af19-f73a2a85f114
+    triggers:
+      - platform: state
+        entity_id: alarm_control_panel.alarmo
+        to: armed_night
+        not_from:
+          - unknown
+          - unavailable
+        id: night_mode_enable
+      - platform: state
+        entity_id: alarm_control_panel.alarmo
+        from: armed_night
+        to: disarmed
+        id: night_mode_disabled
+    actions:
+      choose:
+        - conditions:
+            - condition: trigger
+              id: night_mode_enable
+          sequence:
+            - action: switch.turn_on
+              target:
+                label_id: adaptive_lighting_sleep
+        - conditions:
+            - condition: trigger
+              id: night_mode_disabled
+          sequence:
+            - action: switch.turn_off
+              target:
+                label_id: adaptive_lighting_sleep
