@@ -79,8 +79,8 @@ automation:
       - service: light.turn_on
         entity_id: light.basement_hall
 
-  - alias: Basement Light Presence Control On
-    id: basement_light_presence_controls_on
+  - alias: Basement Light Presence Control
+    id: 4d5f4993-7ff3-4473-9917-615148d7d676
     trace:
       stored_traces: 30
     mode: restart
@@ -119,9 +119,6 @@ automation:
               state: "off"
               for:
                 minutes: 6
-            - condition: state
-              entity_id: binary_sensor.workday_sensor
-              state: "on"
             - not:
                 - condition: state
                   entity_id: media_player.basement
@@ -136,9 +133,8 @@ automation:
                   state: "off"
               then:
                 - service: light.turn_on
-                  entity_id:
-                    - light.basement_hall
-                    - light.basement_room
+                  target:
+                    label_id: basement_room_lights
                   data:
                     transition: 3
         - conditions:
@@ -158,8 +154,8 @@ automation:
               state: "off"
           sequence:
             - service: light.turn_off
-              entity_id:
-                - light.basement_lights
+              target:
+                label_id: basement_lights
 
   - alias: Basement Lights off Night
     id: basement_night_auto_off
@@ -336,8 +332,4 @@ automation:
         data:
           transition: 90
         target:
-          entity_id:
-            - light.basement_hall
-            - light.basement_room
-            - light.basement_stairs
-            - light.basement_storage
+          label_id: basement_lights
