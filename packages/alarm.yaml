@@ -1,3 +1,10 @@
+template:
+  - binary_sensor:
+      - default_entity_id: binary_sensor.guests_present
+        name: Guests Home
+        state: "{{ (states('sensor.coreguest') | int) > 0 or states('input_boolean.guests_present') }}"
+        unique_id: afa129d8-36e6-4e22-84c0-cae6c7b9fb4c
+
 automation:
   - alias: "Faux device tracker for twins"
     id: alarm_device_tracker_for_twins

@@ -1,9 +1,5 @@
 template:
   - binary_sensor:
-      - default_entity_id: binary_sensor.guests_present
-        name: Guests Home
-        state: "{{ (states('sensor.coreguest') | int) > 0 or states('input_boolean.guests_present') }}"
-  - binary_sensor:
       - default_entity_id: binary_sensor.waste_dashboard
         state: >-
           {% set garbage_day=states('sensor.waste_current_pickup') | as_datetime -%}
