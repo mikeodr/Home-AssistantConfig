@@ -15,7 +15,7 @@ homeassistant:
   customize:
     input_boolean.quite_mode:
       device_class: sound
-    binary_sensor.nursery_door:
+    binary_sensor.girls_door_contact:
       device_class: door
     input_boolean.girls_home_override:
       device_class: presence
@@ -138,6 +138,8 @@ automation:
 
   - alias: Set Nap Accessories
     id: nursery_set_nap_accessories
+    mode: single
+    max_exceeded: silent
     triggers:
       platform: state
       entity_id: input_boolean.nap_mode
@@ -149,28 +151,33 @@ automation:
                 entity_id: input_boolean.nap_mode
                 state: "on"
             sequence:
-              - parallel:
-                - service: switch.turn_on
-                  entity_id: switch.adaptive_lighting_sleep_mode_girls_room
-                - service: switch.turn_on
-                  entity_id: switch.nursery_white_noise
-                - service: light.turn_off
-                  entity_id: light.nursery_led
-                - service: light.turn_off
-                  entity_id: light.nursery_light
-                - service: light.turn_off
-                  entity_id: light.nursery_light
-                - service: media_player.volume_set
-                  data:
-                    volume_level: 0.15
-                  entity_id: media_player.sonos_living_room
-                - if:
-                    - condition: numeric_state
-                      entity_id: input_number.outside_min_temperature_next_8_hours
-                      above: -13
-                  then:
-                    - service: homeassistant.turn_on
-                      entity_id: fan.nursery_humidifier
+              - service: switch.turn_on
+                entity_id: switch.nursery_white_noise
+              - service: light.turn_off
+                entity_id: light.nursery_led
+              - service: light.turn_off
+                entity_id: light.girls_room_switch
+              - service: light.turn_off
+                entity_id: light.nursery_light
+              - service: light.turn_off
+                entity_id: light.nursery_light
+              - service: media_player.volume_set
+                data:
+                  volume_level: 0.15
+                entity_id: media_player.sonos_living_room
+              - if:
+                  - condition: numeric_state
+                    entity_id: input_number.outside_min_temperature_next_8_hours
+                    above: -13
+                then:
+                  - service: homeassistant.turn_on
+                    entity_id: fan.nursery_humidifier
+              - delay:
+                  seconds: 30
+              - service: switch.turn_on
+                entity_id: switch.adaptive_lighting_sleep_mode_girls_room
+              - service: switch.turn_off
+                entity_id: switch.nursery_power_loss_gate
           # Turning nap off
           - conditions:
               - condition: state
@@ -180,7 +187,7 @@ automation:
               - choose:
                   - conditions:
                       - condition: time
-                        after: "17:00:00"
+                        after: "19:00:00"
                         before: "08:30:00"
                     sequence:
                       - service: scene.turn_on
@@ -449,13 +456,13 @@ automation:
     id: nursery_nap_on_door_open
     triggers:
       - platform: state
-        entity_id: binary_sensor.nursery_door
+        entity_id: binary_sensor.girls_door_contact
         to: "on"
         for:
           minutes: 10
         id: left_open
       - platform: state
-        entity_id: binary_sensor.nursery_door
+        entity_id: binary_sensor.girls_door_contact
         to: "off"
         for:
           minutes: 5
@@ -542,7 +549,7 @@ automation:
     id: nursery_nap_mode_on_forgotten
     triggers:
       - platform: state
-        entity_id: binary_sensor.nursery_door
+        entity_id: binary_sensor.girls_door_contact
         to: "off"
         for:
           minutes: 1
@@ -563,7 +570,7 @@ automation:
     max_exceeded: silent
     triggers:
       - platform: state
-        entity_id: binary_sensor.nursery_door
+        entity_id: binary_sensor.girls_door_contact
         to: "on"
     conditions:
       - condition: state
@@ -850,7 +857,7 @@ automation:
     triggers:
       # Stair Light off
       - platform: state
-        entity_id: binary_sensor.nursery_door
+        entity_id: binary_sensor.girls_door_contact
         to: "on" # Door Open
         not_from:
           - "unknown"
@@ -863,7 +870,7 @@ automation:
         id: lights_off
       # Stair Light on, door closed
       - platform: state
-        entity_id: binary_sensor.nursery_door
+        entity_id: binary_sensor.girls_door_contact
         to: "off" # Door closed
         not_from:
           - "unknown"
@@ -941,7 +948,7 @@ automation:
           entity_id: media_player.bedroom_player
           state: "playing"
     actions:
-      - wait_template: "{{ states('binary_sensor.bedroom_player_online') not in ['offline', 'unknown', 'unavailable'] }}"
+      - wait_template: "{{ states('device_tracker.yoto_player') in ['home'] }}"
         timeout:
           minutes: 30
         continue_on_timeout: false

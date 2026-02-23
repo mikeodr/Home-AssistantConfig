@@ -3,7 +3,7 @@ automation:
     id: homekit_faux_event_nursery
     trigger:
       - platform: state
-        entity_id: binary_sensor.nursery_door
+        entity_id: binary_sensor.girls_door_contact
         to: "on"
     condition:
       - condition: state

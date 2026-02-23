@@ -107,7 +107,7 @@ automation:
         for:
           minutes: 5
       - platform: state
-        entity_id: binary_sensor.nursery_door
+        entity_id: binary_sensor.girls_door_contact
         to: "off"
         for:
           minutes: 10
@@ -150,7 +150,7 @@ automation:
         id: turn_on
       - platform: state
         entity_id:
-          - binary_sensor.nursery_door
+          - binary_sensor.girls_door_contact
           - binary_sensor.bathroom_night_light_occupancy
           - input_boolean.nap_mode
         to: "on"
