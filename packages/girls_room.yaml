@@ -1022,3 +1022,23 @@ automation:
           entity_id:
             - media_player.bedroom_player
             - media_player.merry_and_vivs_player
+
+  - alias: Turn off lights and music when asleep
+    id: 22925104-7521-4775-9701-1b63d4bf912b
+    triggers:
+      - trigger: device
+        domain: mqtt
+        # Upstairs hall light
+        device_id: 67df18469d484ee9d7870f2a5fb692cb
+        type: action
+        subtype: config_double
+    conditions:
+      - condition: state
+        entity_id: input_boolean.nap_mode
+        state: "on"
+      - condition: state
+        entity_id: timer.bedtime_stairs_light_off
+        state: "active"
+    actions:
+      - service: timer.finish
+        entity_id: timer.bedtime_stairs_light_off
