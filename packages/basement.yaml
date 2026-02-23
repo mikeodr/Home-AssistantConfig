@@ -83,7 +83,7 @@ automation:
     id: 4d5f4993-7ff3-4473-9917-615148d7d676
     trace:
       stored_traces: 30
-    mode: restart
+    mode: queued
     trigger:
       - platform: state
         entity_id: binary_sensor.group_basement_presence
@@ -114,11 +114,15 @@ automation:
         - conditions:
             - condition: trigger
               id: lights_on
-            - condition: state
-              entity_id: binary_sensor.group_basement_presence
-              state: "off"
-              for:
-                minutes: 6
+            - condition: template
+              value_template: >
+                {% if trigger.entity_id == 'binary_sensor.group_basement_presence' and trigger.from_state is not none %}
+                  {{ trigger.from_state.state == 'off'
+                     and (as_timestamp(trigger.to_state.last_changed) - as_timestamp(trigger.from_state.last_changed)) >= 360 }}
+                {% else %}
+                  {{ is_state('binary_sensor.group_basement_presence', 'off')
+                     and (as_timestamp(now()) - as_timestamp(states.binary_sensor.group_basement_presence.last_changed)) >= 360 }}
+                {% endif %}
             - not:
                 - condition: state
                   entity_id: media_player.basement
