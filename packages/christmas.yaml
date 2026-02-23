@@ -8,7 +8,7 @@ automation:
         below: 0.25
     conditions:
       - condition: template
-        value_template: "{{ now().month in [11, 12, 1, 2] }}"
+        value_template: "{{ now().month in [11, 12, 1] }}"
     actions:
       service: light.turn_on
       target:
@@ -58,7 +58,7 @@ automation:
         id: turn_off
     condition:
       - condition: template
-        value_template: "{{ now().month in [11, 12, 1, 2] }}"
+        value_template: "{{ now().month in [11, 12, 1] }}"
       - condition: time
         after: "06:00:00"
         before: "22:30:00"
@@ -103,7 +103,7 @@ automation:
         event: enter
     condition:
       - condition: template
-        value_template: "{{ now().month in [11, 12, 1, 2] }}"
+        value_template: "{{ now().month in [11, 12, 1] }}"
       - condition: numeric_state
         entity_id: sun.sun
         attribute: elevation
