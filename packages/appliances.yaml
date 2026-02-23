@@ -20,3 +20,22 @@ automation:
           message: "{{ states('sensor.salt_sensor_salt_level') | round(2) }}% / {{ states('sensor.salt_sensor_vl53l0x_distance') | round(2) }}m"
           data:
             tag: "water-softener-salt-low"
+
+  - alias: ToF Optics Dirty Alert
+    id: 24c1fbfc-9076-4099-a890-b78314decfd3
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.salt_sensor_vl53l0x_distance
+        below: 0.30
+        for:
+          hours: 1
+    actions:
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          title: "Water Softener ToF Sensor Alert"
+          message: "Distance reading is {{ states('sensor.salt_sensor_vl53l0x_distance') | round(2) }}m, which may indicate dirty optics. Please check the sensor."
+          data:
+            tag: "water-softener-tof-optics-dirty"
+            push:
+              badge: 1
+              interruption-evel: time-sensitive
