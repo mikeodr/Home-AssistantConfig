@@ -10,3 +10,4 @@ template:
           off
           {%-endif-%}
         name: waste_dashboard
+        unique_id: 3f3b3e2b-F0c5-4d6b-8e1e-2f4e5b6c7d8e
