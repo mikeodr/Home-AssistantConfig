@@ -94,12 +94,17 @@ template:
           |🚨
           {%- endif -%}
           {%- if is_state('binary_sensor.waste_dashboard', 'on')  -%}
-          {% if 'Garbage' in state_attr('sensor.waste_current_pickup', 'pickup_types') -%}
-          |🗑
-          {%- else -%}
-          |♻
+          |
+          {%- if 'Garbage' in state_attr('sensor.waste_current_pickup', 'pickup_types') | join(' ') -%}
+          🗑
           {%- endif -%}
-          {% if 'Yard Waste' in state_attr('sensor.waste_current_pickup', 'pickup_types') -%}
+          {% if 'Recycling' in state_attr('sensor.waste_current_pickup', 'pickup_types') | join(' ') -%}
+          ♻
+          {%- endif -%}
+          {% if 'Green' in state_attr('sensor.waste_current_pickup', 'pickup_types') | join(' ') -%}
+          🥬
+          {%- endif -%}
+          {% if 'Yard Waste' in state_attr('sensor.waste_current_pickup', 'pickup_types') | join(' ') -%}
           🍂
           {%- endif -%}
           {%- endif -%}
