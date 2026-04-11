@@ -120,3 +120,19 @@ automation:
             url: /lovelace/air-quality
             clickAction: /lovelace/air-quality
             tag: "comfort-co2-high-notification"
+  
+  - alias: Radon Level Alert
+    id: 334562ed-90a7-4979-b0be-509a34e37cb7
+    triggers:
+      - platform: state
+        entity_id:
+          - sensor.airthings_wave_111512_radon_1_day_level
+          - sensor.airthings_wave_111512_radon_longterm_level
+        from: "good"
+        not_to:
+          - unavailable
+          - unknown
+    actions:
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          message: "☢️ Check Radon levels ☢️"
