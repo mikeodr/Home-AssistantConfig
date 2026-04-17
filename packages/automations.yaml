@@ -56,3 +56,6 @@ automation:
       - service: notify.mobile_app_michaels_iphone
         data:
           message: "There is a new Home Assistant release available."
+          data:
+            push:
+              interruption-level: passive
