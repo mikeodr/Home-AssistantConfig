@@ -36,7 +36,7 @@ scene:
       light.nursery_led:
         state: "on"
         brightness: 254
-        color_temp: 311
+        color_temp_kelvin: 3125
 
   - name: nursery_led_on_low
     entities:
@@ -151,14 +151,14 @@ automation:
                 entity_id: input_boolean.nap_mode
                 state: "on"
             sequence:
+              - service: cover.close_cover
+                entity_id: cover.girls_room_cover
               - service: switch.turn_on
                 entity_id: switch.nursery_white_noise
               - service: light.turn_off
                 entity_id: light.nursery_led
               - service: light.turn_off
                 entity_id: light.girls_room_switch
-              - service: light.turn_off
-                entity_id: light.nursery_light
               - service: light.turn_off
                 entity_id: light.nursery_light
               - service: media_player.volume_set
@@ -178,6 +178,13 @@ automation:
                 entity_id: switch.adaptive_lighting_sleep_mode_girls_room
               - service: switch.turn_off
                 entity_id: switch.nursery_power_loss_gate
+              - if:
+                  - condition: state
+                    entity_id: group.adults
+                    state: "home"
+                then:
+                  - service: light.turn_off
+                    entity_id: light.front_hall
           # Turning nap off
           - conditions:
               - condition: state
@@ -188,18 +195,22 @@ automation:
                   - conditions:
                       - condition: time
                         after: "19:00:00"
-                        before: "08:30:00"
+                        before: "07:00:00"
                     sequence:
                       - service: scene.turn_on
                         entity_id: scene.baby_nap_off
                       - service: script.led_strip_on
                         data:
                           scene_id: scene.nursery_led_on
+                      - service: light.turn_off
+                        entity_id: light.girls_night_light
                 default:
                   - service: scene.turn_on
                     entity_id: scene.baby_nap_off
                   - service: light.turn_on
                     entity_id: light.nursery_light
+                  - service: light.turn_off
+                    entity_id: light.girls_night_light
 
   - alias: Nursery Humidifier on evenings
     id: nursery_humidifer_evenings
@@ -366,7 +377,10 @@ automation:
           entity_id: timer.girls_lights_off
         id: timer_finished
       - platform: state
-        entity_id: light.nursery_light
+        entity_id:
+          - light.nursery_light
+          - binary_sensor.girls_room_occupancy
+          - binary_sensor.girls_room_camera_motion
         to: "on"
         id: cancel_timer
     conditions:
@@ -703,10 +717,12 @@ automation:
         entity_id: input_boolean.nap_mode
         to: "on"
     conditions:
-      not:
-        - condition: state
-          entity_id: media_player.apple_tv_living_room
-          state: "playing"
+      - condition: time
+        before: "21:00:00"
+      - not:
+          - condition: state
+            entity_id: media_player.apple_tv_living_room
+            state: "playing"
     actions:
       - service: switch.turn_on
         entity_id: switch.entertainment_switch_relay
@@ -842,6 +858,8 @@ automation:
             entity_id: sun.sun
             attribute: elevation
             below: 4.0
+          - condition: time
+            before: "21:00:00"
         then:
           - service: light.turn_on
             entity_id: light.main_stairs
@@ -852,8 +870,6 @@ automation:
   - alias: Turn off hall lights door open
     id: girls_hall_lights_off_door_open
     mode: restart
-    trace:
-      stored_traces: 50
     triggers:
       # Stair Light off
       - platform: state
