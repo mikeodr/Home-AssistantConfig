@@ -249,12 +249,6 @@ automation:
       - platform: template
         value_template: "{{ 'armed_' in states('alarm_control_panel.alarmo') }}"
         id: turn_off
-    condition:
-      - condition: state
-        entity_id: sensor.season
-        state:
-          - "winter"
-          - "autumn"
     actions:
       - choose:
           - conditions:
@@ -266,6 +260,15 @@ automation:
               - condition: state
                 entity_id: binary_sensor.home_grid_status
                 state: "on"
+              - or:
+                  - condition: state
+                    entity_id: sensor.season
+                    state:
+                      - "winter"
+                      - "autumn"
+                  - condition: numeric_state
+                    entity_id: sensor.kitchener_waterloo_temperature
+                    below: 10
             sequence:
               - service: switch.turn_on
                 entity_id: switch.basement_space_heater
