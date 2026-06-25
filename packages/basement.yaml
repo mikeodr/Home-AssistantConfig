@@ -340,3 +340,36 @@ automation:
           transition: 90
         target:
           label_id: basement_lights
+
+  - alias: Close basement blinds at night
+    id: 18833ebe-05f7-46c9-a457-9a8aaef4e67b
+    triggers:
+      - platform: sun
+        event: sunset
+        offset: "00:15:00"
+      - platform: state
+        entity_id: alarm_control_panel.alarmo
+        to: "armed_night"
+    actions:
+      - service: cover.close_cover
+        entity_id: cover.basement_shades
+
+  - alias: Open basement shades workdays in the morning
+    id: 01d6fd62-8e7a-4999-ad09-0175fbb0b719
+    triggers:
+      - platform: state
+        entity_id: binary_sensor.apollo_msr_2_b30714_radar_target
+        to: "on"
+      - platform: state
+        entity_id: binary_sensor.basement_presence
+        to: "on"
+    conditions:
+      - condition: time
+        after: "08:00:00"
+        before: "10:00:00"
+      - condition: state
+        entity_id: binary_sensor.workday_sensor
+        state: "on"
+    actions:
+      - service: cover.open_cover
+        entity_id: cover.basement_shades
