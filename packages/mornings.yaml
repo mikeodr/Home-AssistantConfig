@@ -16,14 +16,6 @@ automation:
       - condition: time
         after: "05:00:00"
         before: "09:00:00"
-      - or:
-          - condition: numeric_state
-            entity_id: sun.sun
-            attribute: elevation
-            below: 3.0
-          - condition: numeric_state
-            entity_id: sensor.tomorrow_io_home_cloud_cover
-            above: 65
     action:
       - if:
           - condition: state
@@ -55,21 +47,13 @@ automation:
         timeout:
           hours: 1
         continue_on_timeout: false
-      - if:
-          - condition: state
-            entity_id: person.mike
-            state: "home"
-          - condition: state
-            entity_id: binary_sensor.michaels_iphone_focus
-            state: "off"
-        then:
-          - service: light.turn_on
-            target:
-              entity_id:
-                - light.kitchen_light
-                - light.living_room_light
-            data:
-              brightness_pct: 28
-              transition: 120
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.kitchen_light
+            - light.living_room_light
+        data:
+          brightness_pct: 28
+          transition: 120
       - delay:
           hours: 3
