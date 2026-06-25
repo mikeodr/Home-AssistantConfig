@@ -86,15 +86,13 @@ homekit:
         - light
       include_entities:
         # Nursery
-        - switch.nursery_fan
         - switch.nursery_white_noise
         - switch.nap_mode
         # Front Bedroom
         - switch.spare_bedroom_fan
         # Bedroom
-        - switch.master_white_noise
+        - switch.main_bed_white_noise
         - sensor.bedroom_temperature
-        - switch.master_humidifier
         # Living Room
         - sensor.living_room_temperature
         - switch.entertainment_switch_relay
