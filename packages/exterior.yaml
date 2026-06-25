@@ -379,3 +379,33 @@ automation:
             tag: "exterior-lock-jammed"
             push:
               interruption-level: critical
+
+  - alias: Open Garage when arriving home on bike
+    id: 88d4e35e-9e8a-4b5c-b0e7-29575171b526
+    triggers:
+      - platform: state
+        entity_id: person.mike
+        to: "home"
+    conditions:
+      - condition: template
+        value_template: "{{ (now() - trigger.from_state.last_changed).total_seconds() >= 300 }}"
+      - condition: template
+        value_template: "{{ 'Cycling' in (state_attr('sensor.michaels_iphone_activity', 'Types') or []) }}"
+      - condition: state
+        entity_id: binary_sensor.workday_sensor
+        state: "on"
+      - or:
+          - condition: time
+            after: "08:00:00"
+            before: "17:30:00"
+    actions:
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          title: "Welcome Home, Michael!"
+          message: "Opening the garage for you since you arrived on your bike 🚴‍♂️"
+          data:
+            tag: "welcome-home-bike"
+            push:
+              interruption-level: critical
+      - service: cover.open_cover
+        entity_id: cover.garage
