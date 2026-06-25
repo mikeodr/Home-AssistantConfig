@@ -32,15 +32,15 @@ automation:
     actions:
       - service: switch.turn_on
         entity_id:
-          - switch.master_white_noise
+          - switch.main_bed_white_noise
       - if:
           - or:
-            - condition: numeric_state
-              entity_id: input_number.outside_min_temperature_next_8_hours
-              above: -13
-            - condition: state
-              entity_id: input_boolean.main_bed_humidifier_override
-              state: "on"
+              - condition: numeric_state
+                entity_id: input_number.outside_min_temperature_next_8_hours
+                above: -13
+              - condition: state
+                entity_id: input_boolean.main_bed_humidifier_override
+                state: "on"
         then:
           - service: switch.turn_on
             entity_id: switch.master_humidifier
@@ -58,7 +58,7 @@ automation:
         at: "07:30:00"
       - platform: state
         entity_id:
-          - switch.master_white_noise
+          - switch.main_bed_white_noise
         to: "off"
     condition:
       - condition: state
@@ -74,22 +74,22 @@ automation:
     actions:
       - service: homeassistant.turn_off
         entity_id:
-          - switch.master_white_noise
+          - switch.main_bed_white_noise
           - switch.master_humidifier
 
   - alias: Spare Bedroom Fan Toggle
     id: spare_bedroom_fan_toggle
-    trigger:
+    triggers:
       - platform: event
         event_type: "ios_bedtime_event"
-    condition:
+    conditions:
       - condition: state
         entity_id: person.mike
         state: "home"
-    action:
-      service: homeassistant.turn_on
-      entity_id:
-        - switch.spare_bedroom_fan
+    actions:
+      - service: switch.turn_on
+        target:
+          label_id: spare_bedroom_fan
 
   - alias: Reset Sleeping in
     id: bedroom_reset_sleeping_in
@@ -110,6 +110,27 @@ automation:
       - platform: event
         event_type: "ios_wakeup_event"
     action:
-      - service: homeassistant.turn_off
-        entity_id:
-          - switch.spare_bedroom_fan
+      - service: switch.turn_off
+        target:
+          label_id: spare_bedroom_fan
+
+  - alias: Open main bed shades for convection reduction
+    id: 066b113a-f5e3-4658-9449-3e8faa8b2524
+    triggers:
+      - platform: time
+        at: "07:30:00"
+      - platform: state
+        entity_id: switch.main_bed_white_noise
+        to: "off"
+        for:
+          minutes: 5
+    conditions:
+      - condition: state
+        entity_id: switch.main_bed_white_noise
+        state: "off"
+    actions:
+      - service: cover.set_cover_position
+        target:
+          entity_id: cover.main_bed_covers
+        data:
+          position: 3
