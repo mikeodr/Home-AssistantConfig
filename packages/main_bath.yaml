@@ -29,23 +29,6 @@ template:
         state: "{{ is_state('light.main_bath_fan', 'on') }}"
 
 automation:
-  - alias: Main Bath Humidity Notificatoin
-    id: 608e781b-7727-40c6-ae8e-337ac3354885
-    triggers:
-      - platform: state
-        entity_id: binary_sensor.main_bath_humidity_trigger
-        to:
-          - "on"
-          - "off"
-    actions:
-      - service: notify.mobile_app_michaels_iphone
-        data:
-          title: "Main Bath Humidity Trigger 🚿"
-          message: >
-            Sensor is {{ states('binary_sensor.main_bath_humidity_trigger') }}
-          data:
-            url: /lovelace/main-bath
-
   - alias: Set Main Bath Default Local Level for Light
     id: main_bath_set_default_local_level
     trigger:
@@ -121,6 +104,11 @@ automation:
         entity_id: sensor.main_bath_fan_humidity_derivation
         above: 1
         id: humidity_rise
+      - platform: state
+        entity_id: binary_sensor.main_bath_shower_likely
+        from: "off"
+        to: "on"
+        id: shower_likely
       - platform: event
         event_type: timer.finished
         event_data:
@@ -137,6 +125,27 @@ automation:
         state: "home"
     actions:
       - choose:
+          # If fan is on and shower likely flips, set timer for 1 hour
+          - conditions:
+              - condition: trigger
+                id: shower_likely
+              - condition: state
+                entity_id: fan.main_bathroom_fan
+                state: "on"
+            sequence:
+              - service: timer.start
+                target:
+                  entity_id: timer.main_bathroom_fan
+                data:
+                  duration: "01:00:00"
+              - service: mqtt.publish
+                data:
+                  topic: "zigbee2mqtt/0x20a716fffe018d99/set"
+                  payload: >-
+                    {"led_effect": {"effect": "solid",
+                    "color": "255",
+                    "level": "40",
+                    "duration": "119"}}
           # Fan manually turned on - set timer based on shower likely
           - conditions:
               - condition: trigger
@@ -199,6 +208,14 @@ automation:
               - service: timer.cancel
                 target:
                   entity_id: timer.main_bathroom_fan
+              - service: mqtt.publish
+                data:
+                  topic: "zigbee2mqtt/0x20a716fffe018d99/set"
+                  payload: >-
+                    {"led_effect": {"effect": "clear_effect",
+                    "color": "255",
+                    "level": "40",
+                    "duration": "119"}}
 
   - alias: Main Light Timer Control
     id: cc0d87e2-91d1-4573-bdb0-c830e19f5066
@@ -296,11 +313,8 @@ automation:
                 entity_id: light.main_bath_light
                 state: "on"
             sequence:
-              - service: notify.mobile_app_michaels_iphone
+              - service: light.turn_off
+                target:
+                  entity_id: light.main_bath_light
                 data:
-                  message: "💡 Main Bath Light Timer Finished - Turning Off Light"
-                  data:
-                    url: /lovelace/main-bath
-              # - service: light.turn_off
-              #   target:
-              #     entity_id: light.main_bath_light
+                  transition: 180
