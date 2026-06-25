@@ -30,3 +30,15 @@ adaptive_lighting:
 wemo:
   static:
     - 192.168.1.229
+
+# Restore Developer Tools to sidebar
+panel_custom:
+  - name: developer-tools
+    sidebar_title: Developer Tools
+    sidebar_icon: mdi:hammer
+    url_path: developer-tools
+    module_url: /api/hassio/app/entrypoint.js
+    embed_iframe: true
+    require_admin: true
+    config:
+      _panel_custom_continuous: true
