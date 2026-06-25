@@ -50,7 +50,8 @@ script:
     icon: "mdi:fan"
     sequence:
       - service: switch.toggle
-        entity_id: switch.spare_bedroom_fan
+        target:
+          label_id: spare_bedroom_fan
 
 template:
   - sensor:
@@ -90,7 +91,9 @@ template:
           |🛡️
           {%- endif -%}
           {%- endif -%}
-          {%- if is_state("alarm_control_panel.master", "triggered") -%}
+          {%- if is_state("alarm_control_panel.shed", "triggered") or
+            is_state("alarm_control_panel.water", "triggered") or
+            is_state("alarm_control_panel.alarmo", "triggered") -%}
           |🚨
           {%- endif -%}
           {%- if is_state('binary_sensor.waste_dashboard', 'on')  -%}
