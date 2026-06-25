@@ -138,8 +138,8 @@ automation:
     trigger:
       - platform: state
         entity_id:
-          - switch.front_porch
-          - switch.side_door
+          - light.front_porch
+          - light.side_door
         to: "off"
         for:
           minutes: 2
