@@ -4,32 +4,19 @@ template:
         unique_id: energy_hydro_tou_state
         icon: mdi:transmission-tower
         state: >-
-          {# Holidays and weekends #}
-          {% if states('binary_sensor.workday_sensor') == 'off' %}
-            Off Peak
-          {% else %}
-          {# Everything else #}
-            {% if now().hour < 7 or now().hour >= 19 %}
-              Off Peak
-            {% elif now().hour >= 7 and now().hour < 11 %}
-              {% if now().month >= 5 and now().month <= 10 %}
-                Mid Peak
-              {% else %}
-                On Peak
-              {% endif %}
-            {% elif now().hour >= 11 and now().hour < 17 %}
-              {% if now().month >= 5 and now().month <= 10 %}
-                On Peak
-              {% else %}
-                Mid Peak
-              {% endif %}
-            {% elif now().hour >= 17 and now().hour < 19 %}
-              {% if now().month >= 5 and now().month <= 10 %}
-                Mid Peak
-              {% else %}
-                On Peak
-              {% endif %}
-            {% endif %}
+          {# Ultra-Low Overnight: 11 PM to 7 AM all days #}
+          {% if now().hour < 7 or now().hour >= 23 %}
+            Ultra-Low Overnight
+          {# Weekends and Holidays: 7 AM to 11 PM #}
+          {% elif states('binary_sensor.workday_sensor') == 'off' %}
+            Weekend Off-peak
+          {# Weekdays #}
+          {% elif now().hour >= 7 and now().hour < 16 %}
+            Mid-peak
+          {% elif now().hour >= 16 and now().hour < 21 %}
+            On-peak
+          {% elif now().hour >= 21 and now().hour < 23 %}
+            Mid-peak
           {% endif %}
 
       - name: Current Hydro TOU Rate
@@ -37,42 +24,53 @@ template:
         icon: mdi:currency-usd
         unit_of_measurement: CAD/kWh
         state: >-
-          {% if states('sensor.current_hydro_time_of_use_state') == 'Off Peak' %}
-            {{ states('sensor.enova_hydro_off_peak_rate') }}
-          {% elif states('sensor.current_hydro_time_of_use_state') == 'Mid Peak' %}
+          {% if states('sensor.current_hydro_time_of_use_state') == 'Ultra-Low Overnight' %}
+            {{ states('sensor.enova_hydro_ultra_low_overnight') }}
+          {% elif states('sensor.current_hydro_time_of_use_state') == 'Weekend Off-peak' %}
+            {{ states('sensor.enova_hydro_weekend_off_peak_rate') }}
+          {% elif states('sensor.current_hydro_time_of_use_state') == 'Mid-peak' %}
             {{ states('sensor.enova_hydro_mid_peak_rate') }}
-          {% elif states('sensor.current_hydro_time_of_use_state') == 'On Peak' %}
+          {% elif states('sensor.current_hydro_time_of_use_state') == 'On-peak' %}
             {{ states('sensor.enova_hydro_on_peak_rate') }}
           {% endif %}
 
 sensor:
   - platform: rest
-    name: Enova Hydro Off Peak Rate
-    unique_id: rest_enova_off_peak_rate
+    name: Enova Hydro Ultra Low Overnight
+    unique_id: 5536daee-8d28-4e84-81cd-6a2cf650eb20
     icon: mdi:currency-usd
     resource: https://www.oeb.ca/_html/calculator/data/BillData.xml
     unit_of_measurement: CAD/kWh
     value_template: >-
       {% set data = value_json['BillDataTable']['BillDataRow'] %}
-      {{ data | selectattr('Dist', 'eq', 'Enova Power Corp.-Kitchener-Wilmot Hydro Rate Zone') | map(attribute='RPPOffP') | first }}
+      {{ data | selectattr('Dist', 'eq', 'Enova Power Corp.-Kitchener-Wilmot Hydro Rate Zone') | map(attribute='ULO_overnight') | first }}
+  - platform: rest
+    name: Enova Hydro Weekend Off Peak Rate
+    unique_id: 4d73b721-a8f1-4b4a-aca5-b31f0e1f36d5
+    icon: mdi:currency-usd
+    resource: https://www.oeb.ca/_html/calculator/data/BillData.xml
+    unit_of_measurement: CAD/kWh
+    value_template: >-
+      {% set data = value_json['BillDataTable']['BillDataRow'] %}
+      {{ data | selectattr('Dist', 'eq', 'Enova Power Corp.-Kitchener-Wilmot Hydro Rate Zone') | map(attribute='ULO_weekendoffp') | first }}
   - platform: rest
     name: Enova Hydro Mid Peak Rate
-    unique_id: rest_enova_mid_peak_rate
+    unique_id: 409cfd46-2699-4741-a223-f119d6111df1
     icon: mdi:currency-usd
     resource: https://www.oeb.ca/_html/calculator/data/BillData.xml
     unit_of_measurement: CAD/kWh
     value_template: >-
       {% set data = value_json['BillDataTable']['BillDataRow'] %}
-      {{ data | selectattr('Dist', 'eq', 'Enova Power Corp.-Kitchener-Wilmot Hydro Rate Zone') | map(attribute='RPPMidP') | first }}
+      {{ data | selectattr('Dist', 'eq', 'Enova Power Corp.-Kitchener-Wilmot Hydro Rate Zone') | map(attribute='ULO_midp') | first }}
   - platform: rest
     name: Enova Hydro On Peak Rate
-    unique_id: rest_enova_on_peak_rate
+    unique_id: beb0cd22-e93b-4c7d-b266-29c2f3b770bf
     icon: mdi:currency-usd
     resource: https://www.oeb.ca/_html/calculator/data/BillData.xml
     unit_of_measurement: CAD/kWh
     value_template: >-
       {% set data = value_json['BillDataTable']['BillDataRow'] %}
-      {{ data | selectattr('Dist', 'eq', 'Enova Power Corp.-Kitchener-Wilmot Hydro Rate Zone') | map(attribute='RPPOnP') | first }}
+      {{ data | selectattr('Dist', 'eq', 'Enova Power Corp.-Kitchener-Wilmot Hydro Rate Zone') | map(attribute='ULO_onp') | first }}
 
 automation:
   - alias: Enable Media Power from switches
@@ -112,10 +110,11 @@ automation:
       - platform: state
         entity_id: sensor.current_hydro_time_of_use_state
         to:
-          - Mid Peak
-          - On Peak
+          - Mid-peak
+          - On-peak
         from:
-          - Off Peak
+          - Ultra-Low Overnight
+          - Weekend Off-peak
         id: power_off
       - platform: state
         entity_id: alarm_control_panel.alarmo
@@ -131,15 +130,17 @@ automation:
         id: power_on
       - platform: state
         entity_id: sensor.current_hydro_time_of_use_state
-        to: Off Peak
+        to:
+          - Ultra-Low Overnight
+          - Weekend Off-peak
         id: power_on
       - platform: state
         entity_id: schedule.tv_power
         to: "on"
         id: power_on
     conditions:
-        - condition: template
-          value_template: "{{ now().date() > (states('input_datetime.holidays_end') | as_datetime | as_local).date() }}"
+      - condition: template
+        value_template: "{{ now().date() > (states('input_datetime.holidays_end') | as_datetime | as_local).date() }}"
     actions:
       choose:
         - conditions:
@@ -171,6 +172,18 @@ automation:
           sequence:
             - service: homeassistant.turn_on
               entity_id: switch.entertainment_switch_relay
+  
+  - alias: Save power on accessories when not home
+    id: 841b496e-7678-43a8-9544-e6046a86fa74
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.alarmo
+        to:
+          - armed_night
+          - armed_vacation
+    actions:
+      - service: switch.turn_off
+        entity_id: switch.paper_printer_power
 
   - alias: Save powerwall on holidays
     id: energy_save_powerwall_on_holidays
@@ -217,15 +230,162 @@ automation:
                 group: "energy"
 
   - alias: Save power on grid outage
-    id: energy_save_power_grid_outage
+    id: 25af6c2e-619d-4aed-bd30-3b75194767f0
     triggers:
       - platform: state
         entity_id: binary_sensor.home_grid_status
         from: "on"
         to: "off"
         id: power_loss
+      - platform: state
+        entity_id: binary_sensor.home_grid_status
+        from: "off"
+        to: "on"
+        id: power_restore
     actions:
-      - service: homeassistant.turn_off
+      - alias: "choose alias (name)"
+        choose:
+        - conditions:
+            - condition: trigger
+              id: power_loss
+          sequence:
+            - service: homeassistant.turn_off
+              target:
+                entity_id:
+                  - switch.basement_space_heater
+                  - switch.hrv_power
+            - service: light.turn_off
+              target:
+                entity_id:
+                  - light.exterior_lights
+            - service: notify.mobile_app_michaels_iphone
+              data:
+                message: "⚡ Power lost - turning off non-essential devices ⚡"
+                data:
+                  tag: "power_loss"
+                  group: "energy"
+        - conditions:
+            - condition: trigger
+              id: power_restore
+          sequence:
+            - service: homeassistant.turn_on
+              target:
+                entity_id:
+                  - switch.hrv_power
+            - service: notify.mobile_app_michaels_iphone
+              data:
+                title: "⚡ Power restored - resuming normal operation ⚡"
+                message: "Re-enable HRV manually"
+                data:
+                  tag: "power_restore"
+                  group: "energy"
+
+  - alias: Powerwall Low
+    id: 1f1e8b8a-77fb-4875-bcbb-c2f7da4d03f2
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.home_percentage_charged
+        below: 22
+    action:
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          message: "🪫 Powerwall low - {{ states('sensor.home_percentage_charged') }} 🪫"
+          data:
+            tag: "powerwall-low"
+            group: "energy"
+
+  - alias: Turn off cooling when Powerwall low
+    id: c1531db5-93ed-4598-822d-bed1df32c734
+    triggers:
+      - platform: numeric_state
+        entity_id: sensor.home_percentage_charged
+        below: 25
+      - platform: state
+        entity_id: binary_sensor.home_grid_status
+        to: "off"
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.home_grid_status
+        state: "off"
+      - condition: numeric_state
+        entity_id: sensor.home_percentage_charged
+        below: 25
+      - condition: state
+        entity_id: climate.my_ecobee
+        state: "cool"
+    actions:
+      - service: climate.turn_off
         target:
-          entity_id:
-            - switch.basement_space_heater
+          entity_id: climate.my_ecobee
+      - service: notify.mobile_app_michaels_iphone
+        data:
+          message: "Powerwall at {{ states('sensor.home_percentage_charged') }}% - thermostat turned off"
+          data:
+            tag: "powerwall-cooling"
+            group: "energy"
+
+  - alias: Pause Powerwall if Car Charging
+    id: 5e22ec2c-43a2-4286-ab58-f5235bedd8ad
+    triggers:
+      - platform: state
+        entity_id: sensor.sparky_charging
+        to: "charging"
+        id: "charging"
+      - platform: state
+        entity_id: sensor.sparky_charging
+        to:
+          - "stopped"
+          - "copmlete"
+          - "disconnected"
+        not_from:
+          - "disconnected"
+          - "unavailable"
+          - "complete"
+        id: "not_charging"
+      - platform: time
+        at: "23:00:00"
+        id: "not_charging"
+    conditions:
+      - condition: state
+        entity_id: device_tracker.sparky_location
+        state: "home"
+    actions:
+      choose:
+        - conditions:
+            - condition: trigger
+              id: charging
+
+            - not:
+                - condition: state
+                  entity_id: sensor.current_hydro_time_of_use_state
+                  state: "Ultra-Low Overnight"
+          sequence:
+            - service: notify.mobile_app_michaels_iphone
+              data:
+                message: "⚡ Car charging - pausing Powerwall backup reserve ⚡"
+                data:
+                  tag: "sparky-charging"
+                  group: "energy"
+            - service: number.set_value
+              entity_id: number.home_backup_reserve
+              data:
+                value: "{{ states('sensor.home_percentage_charged') | int }}"
+        - conditions:
+            - condition: trigger
+              id: not_charging
+          sequence:
+            - if:
+                - condition: numeric_state
+                  entity_id: number.home_backup_reserve
+                  above: 20
+              then:
+                - service: notify.mobile_app_michaels_iphone
+                  data:
+                    message: "Car not charging - resuming Powerwall backup reserve"
+                    data:
+                      tag: "sparky-charging"
+                      group: "energy"
+            - service: number.set_value
+              entity_id: number.home_backup_reserve
+              data:
+                value: 20

@@ -40,7 +40,7 @@ automation:
         entity_id:
           - input_boolean.nap_mode
           - input_boolean.quite_mode
-          - switch.master_white_noise
+          - switch.main_bed_white_noise
           - schedule.doorbell_do_not_distrub
         not_to:
           - "unavailable"
@@ -52,7 +52,7 @@ automation:
                 entity_id:
                   - input_boolean.nap_mode
                   - input_boolean.quite_mode
-                  - switch.master_white_noise
+                  - switch.main_bed_white_noise
                   - schedule.doorbell_do_not_distrub
                 state: "off"
             sequence:
@@ -89,10 +89,11 @@ automation:
     mode: single
     max_exceeded: silent
     triggers:
-      platform: state
-      entity_id: binary_sensor.front_door_doorbell
-      from: "off"
-      to: "on"
+      - platform: state
+        entity_id: event.front_door_doorbell
+        not_to:
+          - "unavailable"
+          - "unknown"
     actions:
       - service: notify.adults
         data:
@@ -254,8 +255,10 @@ automation:
     id: doorbell_package_detected
     triggers:
       - platform: state
-        entity_id: binary_sensor.front_door_package_detected
-        to: "on"
+        entity_id: event.outside_front_door_package
+        not_to:
+          - "unavailable"
+          - "unknown"
     conditions:
       - or:
           - and:
@@ -297,7 +300,7 @@ automation:
         entity_id:
           - switch.nap_mode
           - input_boolean.quite_mode
-          - switch.master_white_noise
+          - switch.main_bed_white_noise
           - schedule.doorbell_do_not_distrub
         to:
           - "on"
@@ -326,7 +329,7 @@ automation:
                 entity_id:
                   - switch.nap_mode
                   - input_boolean.quite_mode
-                  - switch.master_white_noise
+                  - switch.main_bed_white_noise
                   - schedule.doorbell_do_not_distrub
                 match: any
                 state: "on"
@@ -356,7 +359,7 @@ automation:
         entity_id: input_boolean.quite_mode
         state: "off"
       - condition: state
-        entity_id: switch.master_white_noise
+        entity_id: switch.main_bed_white_noise
         state: "off"
       - condition: state
         entity_id: schedule.doorbell_do_not_distrub

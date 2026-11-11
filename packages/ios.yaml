@@ -151,3 +151,29 @@ automation:
       - service: notify.mobile_app_michaels_iphone
         data:
           message: update_complications
+
+  - alias: Force Updates
+    id: 0beb3329-aea4-4787-b410-c616215a70b2
+    trigger:
+      - platform: state
+        entity_id: input_button.update_mike_s_iphone
+        id: mike
+      - platform: state
+        entity_id: input_button.update_tiff_s_iphone
+        id: tiff
+    action:
+      choose:
+        - conditions:
+            - condition: trigger
+              id: mike
+          sequence:
+            - service: notify.mobile_app_michaels_iphone
+              data:
+                message: "request_location_update"
+        - conditions:
+            - condition: trigger
+              id: tiff
+          sequence:
+            - service: notify.mobile_app_tiffanys_iphone
+              data:
+                message: "request_location_update"

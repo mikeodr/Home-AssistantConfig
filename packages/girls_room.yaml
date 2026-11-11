@@ -1,8 +1,3 @@
-input_datetime:
-  girls_wakeup_time:
-    name: Girls Wakeup Time
-    has_time: true
-
 input_boolean:
   nap_mode:
     name: Nap Mode
@@ -27,6 +22,10 @@ timer:
     restore: true
   bedtime_stairs_light_off:
     name: Turn off Stairs Lights
+    duration: 00:45:00
+    restore: true
+  yoto_stop_playing:
+    name: Stop Yoto Playing after asleep
     duration: 00:45:00
     restore: true
 
@@ -202,15 +201,11 @@ automation:
                       - service: script.led_strip_on
                         data:
                           scene_id: scene.nursery_led_on
-                      - service: light.turn_off
-                        entity_id: light.girls_night_light
                 default:
                   - service: scene.turn_on
                     entity_id: scene.baby_nap_off
                   - service: light.turn_on
                     entity_id: light.nursery_light
-                  - service: light.turn_off
-                    entity_id: light.girls_night_light
 
   - alias: Nursery Humidifier on evenings
     id: nursery_humidifer_evenings
@@ -363,72 +358,72 @@ automation:
                   tag: "nursery-temp-warning"
                   group: "nursery-notification"
 
-  - alias: Turn nursery off if forgotten
-    id: nursery_off_if_forgotten
-    mode: queued
-    max: 15
-    triggers:
-      - platform: template
-        value_template: "{{ is_state('binary_sensor.girls_room_camera_motion', 'off') and is_state('binary_sensor.girls_room_occupancy', 'off') }}"
-        id: timer_start
-      - platform: event
-        event_type: timer.finished
-        event_data:
-          entity_id: timer.girls_lights_off
-        id: timer_finished
-      - platform: state
-        entity_id:
-          - light.nursery_light
-          - binary_sensor.girls_room_occupancy
-          - binary_sensor.girls_room_camera_motion
-        to: "on"
-        id: cancel_timer
-    conditions:
-      - or:
-          - condition: state
-            entity_id: light.nursery_light
-            state: "on"
-          - condition: state
-            entity_id: light.nursery_led
-            state: "on"
-      - condition: state
-        entity_id: input_boolean.nap_mode
-        state: "off"
-      - condition: time
-        before: "19:00:00"
-    actions:
-      - choose:
-          - conditions:
-              - condition: trigger
-                id: cancel_timer
-            sequence:
-              - service: timer.cancel
-                entity_id: timer.girls_lights_off
-          - conditions:
-              - condition: trigger
-                id: timer_start
-            sequence:
-              - service: timer.start
-                entity_id: timer.girls_lights_off
-          - conditions:
-              - condition: trigger
-                id: timer_finished
-              - or:
-                  - condition: state
-                    entity_id: light.nursery_light
-                    state: "on"
-                  - condition: state
-                    entity_id: light.nursery_led
-                    state: "on"
-            sequence:
-              - service: light.turn_on
-                entity_id: light.nursery_led
-              - delay: 10
-              - service: light.turn_off
-                entity_id: light.nursery_light
-              - delay: 30
-              - service: light.turn_off
-                entity_id: light.nursery_led
+  # - alias: Turn nursery off if forgotten
+  #   id: nursery_off_if_forgotten
+  #   mode: queued
+  #   max: 15
+  #   triggers:
+  #     - platform: template
+  #       value_template: "{{ is_state('binary_sensor.girls_room_camera_motion', 'off') and is_state('binary_sensor.girls_room_occupancy', 'off') }}"
+  #       id: timer_start
+  #     - platform: event
+  #       event_type: timer.finished
+  #       event_data:
+  #         entity_id: timer.girls_lights_off
+  #       id: timer_finished
+  #     - platform: state
+  #       entity_id:
+  #         - light.nursery_light
+  #         - binary_sensor.girls_room_occupancy
+  #         - binary_sensor.girls_room_camera_motion
+  #       to: "on"
+  #       id: cancel_timer
+  #   conditions:
+  #     - or:
+  #         - condition: state
+  #           entity_id: light.nursery_light
+  #           state: "on"
+  #         - condition: state
+  #           entity_id: light.nursery_led
+  #           state: "on"
+  #     - condition: state
+  #       entity_id: input_boolean.nap_mode
+  #       state: "off"
+  #     - condition: time
+  #       before: "19:00:00"
+  #   actions:
+  #     - choose:
+  #         - conditions:
+  #             - condition: trigger
+  #               id: cancel_timer
+  #           sequence:
+  #             - service: timer.cancel
+  #               entity_id: timer.girls_lights_off
+  #         - conditions:
+  #             - condition: trigger
+  #               id: timer_start
+  #           sequence:
+  #             - service: timer.start
+  #               entity_id: timer.girls_lights_off
+  #         - conditions:
+  #             - condition: trigger
+  #               id: timer_finished
+  #             - or:
+  #                 - condition: state
+  #                   entity_id: light.nursery_light
+  #                   state: "on"
+  #                 - condition: state
+  #                   entity_id: light.nursery_led
+  #                   state: "on"
+  #           sequence:
+  #             - service: light.turn_on
+  #               entity_id: light.nursery_led
+  #             - delay: 10
+  #             - service: light.turn_off
+  #               entity_id: light.nursery_light
+  #             - delay: 30
+  #             - service: light.turn_off
+  #               entity_id: light.nursery_led
 
   - alias: Turn off nursery accessories if forgotten
     id: nursery_turn_off_white_noise_forgotten
@@ -452,13 +447,18 @@ automation:
           entity_id: "{{ trigger.entity_id }}"
 
   - alias: Turn off nap mode via light switch
-    id: nursery_nap_off_via_lightswitch
+    id: d9197edd-2537-4612-81d7-dd5bdf516c53
     triggers:
       - platform: state
         entity_id: light.nursery_light
         from: "off"
         to: "on"
+        for:
+          minutes: 5
     conditions:
+      - condition: time
+        after: "06:30:00"
+        before: "10:00:00"
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "on"
@@ -600,20 +600,6 @@ automation:
             after: "01:30:00"
             before: "07:00:00"
     actions:
-      - repeat:
-          for_each: >
-            {{ states.person | selectattr('state', 'eq', 'home') | map(attribute='attributes.notifier') | list}}
-          sequence:
-            - service: "{{ repeat.item }}"
-              data:
-                title: "Nursery Door Opened!"
-                message: >
-                  Someone has left the nursery
-                data:
-                  url: /lovelace/girls-room
-                  clickAction: /lovelace/girls-room
-                  tag: "nursery-escape-warning"
-                  group: "nursery-notification"
       - choose:
           - conditions:
               - condition: state
@@ -627,53 +613,6 @@ automation:
           # again quickly.
           minutes: 3
 
-  - alias: Set the girls wakeup time
-    id: nursery_set_girls_wakeup_time
-    triggers:
-      - platform: time
-        at: "09:00:00"
-    actions:
-      - service: calendar.get_events
-        target:
-          entity_id: calendar.ontario_holidays
-        data:
-          duration:
-            hours: 24
-        response_variable: holidays
-      - service: input_datetime.set_datetime
-        target:
-          entity_id: input_datetime.girls_wakeup_time
-        data:
-          time: >
-            {%- if holidays["calendar.ontario_holidays"]["events"]| count > 0 -%}
-              07:30:00
-            {%- elif (now() + timedelta(hours=24)).isoweekday() in [6, 7] -%}
-              07:30:00
-            {%- else -%}
-              07:00:00
-            {%- endif -%}
-
-  - alias: Let the girls out of bed
-    id: nursery_let_girls_out_of_bed_time_trigger
-    triggers:
-      - platform: time
-        at: input_datetime.girls_wakeup_time
-    conditions:
-      - or:
-          - condition: state
-            entity_id: group.adults
-            state: "home"
-          - condition: state
-            entity_id: binary_sensor.guests_present
-            state: "on"
-      - condition: time
-        before: input_datetime.holidays_end
-    actions:
-      - wait_template: '{{ not is_state("light.nursery_led", "unavailable") }}'
-      - service: script.led_strip_on
-        data:
-          scene_id: scene.nursery_led_on
-
   - alias: Reenable nursery light on power loss
     id: nusery_led_strip_reenable
     triggers:
@@ -686,7 +625,6 @@ automation:
         from: "on"
       - platform: time
         at:
-          - input_datetime.girls_wakeup_time
           - "18:30:00" # On for bedtime
     actions:
       # Wait for the switch we want to turn on to be available
@@ -867,6 +805,54 @@ automation:
           - service: light.turn_off
             entity_id: light.main_stairs
 
+  - alias: Turn off Yoto Music when asleep
+    id: 7fc5c488-6cb2-4cf7-b008-47a0115054ef
+    triggers:
+      - platform: state
+        entity_id: input_boolean.nap_mode
+        to: "on"
+        id: door_closed
+      - platform: state
+        entity_id: binary_sensor.girls_door_contact
+        to: "on"
+        id: door_open
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.yoto_stop_playing
+        id: stop_yoto_playing
+      - platform: state
+        entity_id: binary_sensor.girls_door_contact
+        to: "off"
+        id: door_closed
+    conditions:
+      - condition: state
+        entity_id: input_boolean.nap_mode
+        state: "on"
+    actions:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: door_closed
+            sequence:
+              - service: timer.start
+                entity_id: timer.yoto_stop_playing
+          - conditions:
+              - condition: trigger
+                id: door_open
+            sequence:
+              - service: timer.cancel
+                entity_id: timer.yoto_stop_playing
+          - conditions:
+              - condition: trigger
+                id: stop_yoto_playing
+            sequence:
+              - action: media_player.media_stop
+                target:
+                  entity_id:
+                    - media_player.bedroom_player
+                    - media_player.merry_and_vivs_player
+
   - alias: Turn off hall lights door open
     id: girls_hall_lights_off_door_open
     mode: restart
@@ -925,7 +911,8 @@ automation:
 
   - alias: Link Switch LED to light state
     id: girls_linked_led_to_light_state
-    mode: restart
+    mode: single
+    max_exceeded: silent
     triggers:
       - platform: state
         entity_id: light.nursery_light
@@ -936,8 +923,10 @@ automation:
       - condition: template
         value_template: '{{ trigger.to_state.state in ["off", "on"] }}'
     actions:
-      service: light.turn_{{ trigger.to_state.state }}
-      entity_id: light.girls_room_switch
+      - service: light.turn_{{ trigger.to_state.state }}
+        entity_id: light.girls_room_switch
+      - delay:
+          seconds: 5
 
   - alias: Mute Girls Speaker at bedtime
     id: girls_mute_speaker_at_bedtime
@@ -968,41 +957,45 @@ automation:
         timeout:
           minutes: 30
         continue_on_timeout: false
-      - action: input_boolean.toggle
+      - delay:
+          seconds: 5 # Let it fully come online
+      # - action: input_boolean.toggle
+      #   target:
+      #     entity_id: input_boolean.girls_yoto_selection
+      # - if:
+      #     - condition: state
+      #       entity_id: input_boolean.girls_yoto_selection
+      #       state: "on"
+      #   then:
+      - alias: Meditation
+        action: media_player.play_media
+        data:
+          media_content_id: "7AzCP-01-01" # Bedtime meditation
+          media_content_type: music
         target:
-          entity_id: input_boolean.girls_yoto_selection
-      - if:
-          - condition: state
-            entity_id: input_boolean.girls_yoto_selection
-            state: "on"
-        then:
-          - action: media_player.play_media
-            data:
-              media_content_id: "7AzCP-01-01" # Bedtime meditation
-              media_content_type: music
-            target:
-              entity_id: media_player.bedroom_player
-          - delay:
-              seconds: 3
-          - action: media_player.volume_set
-            data:
-              volume_level: 0.5
-            target:
-              entity_id: media_player.bedroom_player
-        else:
-          - action: media_player.play_media
-            data:
-              media_content_id: "42qYs-00-01" # Moon Music
-              media_content_type: music
-            target:
-              entity_id: media_player.bedroom_player
-          - delay:
-              seconds: 3
-          - action: media_player.volume_set
-            data:
-              volume_level: 0.3125
-            target:
-              entity_id: media_player.bedroom_player
+          entity_id: media_player.bedroom_player
+      - delay:
+          seconds: 3
+      - action: media_player.volume_set
+        data:
+          volume_level: 0.5
+        target:
+          entity_id: media_player.bedroom_player
+        # else:
+        #   - alias: Moon Music
+        #     action: media_player.play_media
+        #     data:
+        #       media_content_id: "42qYs-00-01" # Moon Music
+        #       media_content_type: music
+        #     target:
+        #       entity_id: media_player.bedroom_player
+        #   - delay:
+        #       seconds: 3
+        #   - action: media_player.volume_set
+        #     data:
+        #       volume_level: 0.3125
+        #     target:
+        #       entity_id: media_player.bedroom_player
 
   - alias: Auto sleep timer for Yotos overnight
     id: girls_yoto_auto_sleep_players_overnight
@@ -1059,9 +1052,37 @@ automation:
       - condition: state
         entity_id: input_boolean.nap_mode
         state: "on"
-      - condition: state
-        entity_id: timer.bedtime_stairs_light_off
-        state: "active"
     actions:
       - service: timer.finish
         entity_id: timer.bedtime_stairs_light_off
+      - service: timer.finish
+        entity_id: timer.yoto_stop_playing
+
+  - alias: Turn off girls lights if forgotten
+    id: 435a68e0-c9f8-496a-b313-546631cc9d49
+    mode: single
+    triggers:
+      - trigger: motion.cleared
+        target:
+          area_id: 591640619ece45269ce3c6a8c71f4b7e
+        options:
+          behavior: all
+          for:
+            hours: 0
+            minutes: 20
+            seconds: 0
+    conditions:
+      - condition: state
+        entity_id: input_boolean.nap_mode
+        state:
+          - "off"
+        for:
+          hours: 0
+          minutes: 10
+          seconds: 0
+    actions:
+      - action: light.turn_off
+        metadata: {}
+        target:
+          area_id: 591640619ece45269ce3c6a8c71f4b7e
+        data: {}

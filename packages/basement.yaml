@@ -250,6 +250,9 @@ automation:
         value_template: "{{ 'armed_' in states('alarm_control_panel.alarmo') }}"
         id: turn_off
     actions:
+      - condition: state
+        entity_id: binary_sensor.home_grid_status
+        state: "on"
       - choose:
           - conditions:
               - condition: trigger

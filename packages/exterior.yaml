@@ -143,7 +143,13 @@ automation:
         to: "off"
         for:
           minutes: 2
+      - trigger: state
+        entity_id: binary_sensor.home_grid_status
+        to: "on"
     condition:
+      - condition: state
+        entity_id: binary_sensor.home_grid_status
+        state: "on"
       - not:
           - condition: template
             value_template: "{{ now().month == 10 and now().day == 31 and now().hour > 17 }}"
@@ -264,6 +270,9 @@ automation:
         entity_id: sun.sun
         attribute: elevation
         below: 0.25
+      - not:
+          - condition: template
+            value_template: "{{ now().month not in [9, 10] }}"
     action:
       - service: light.turn_on
         entity_id: light.exterior_lights
@@ -389,8 +398,12 @@ automation:
     conditions:
       - condition: template
         value_template: "{{ (now() - trigger.from_state.last_changed).total_seconds() >= 300 }}"
-      - condition: template
-        value_template: "{{ 'Cycling' in (state_attr('sensor.michaels_iphone_activity', 'Types') or []) }}"
+      - or:
+          - condition: state
+            entity_id: sensor.michaels_iphone_activity
+            state: "Cycling"
+          - condition: template
+            value_template: "{{ 'Cycling' in (state_attr('sensor.michaels_iphone_activity', 'Types') or []) }}"
       - condition: state
         entity_id: binary_sensor.workday_sensor
         state: "on"

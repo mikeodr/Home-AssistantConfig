@@ -40,28 +40,78 @@ automation:
             state: "off"
     action:
       - variables:
-          climate_restore_state: "{{ states('climate.my_ecobee') }}"
-      - service: notify.adults
+          action_turn_off: "TURN_OFF_CLIMATE_{{ context.id }}"
+      - service: notify.mobile_app_michaels_iphone
         data:
           title: "A Door or window has been left open"
-          message: "Disabling thermostat"
+          message: "Adjusting thermostat"
           data:
             tag: "front-door-open-warning"
             push:
               interruption-level: critical
-      - service: climate.turn_off
-        target:
-          entity_id: climate.my_ecobee
+            actions:
+              - action: "{{ action_turn_off }}"
+                title: "Turn Off Thermostat"
+                activationMode: "background"
+                authenticationRequired: true
+                destructive: true
+                behavior: "default"
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: climate.my_ecobee
+                state:
+                  - "heat"
+                  - "cool"
+            sequence:
+              - action: climate.set_temperature
+                data:
+                  temperature: >
+                    {% if is_state('climate.my_ecobee', 'cool') %}
+                      {{ state_attr('climate.my_ecobee', 'temperature') | float + 5 }}
+                    {% else %}
+                      {{ state_attr('climate.my_ecobee', 'temperature') | float - 5 }}
+                    {% endif %}
+                target:
+                  entity_id: climate.my_ecobee
+          - conditions:
+              - condition: state
+                entity_id: climate.my_ecobee
+                state: "heat_cool"
+            sequence:
+              - action: climate.set_temperature
+                data:
+                  target_temp_low: "{{ state_attr('climate.my_ecobee', 'target_temp_low') | float - 5 }}"
+                  target_temp_high: "{{ state_attr('climate.my_ecobee', 'target_temp_high') | float + 5 }}"
+                target:
+                  entity_id: climate.my_ecobee
       - wait_for_trigger:
           - platform: template
             value_template: >
               {{ is_state('binary_sensor.doors', 'off') and is_state('binary_sensor.windows', 'off') }}
-      - service: climate.set_hvac_mode
-        target:
-          entity_id: climate.my_ecobee
-        data:
-          hvac_mode: "{{ climate_restore_state }}"
-      - service: notify.adults
+          - platform: event
+            event_type: mobile_app_notification_action
+            event_data:
+              action: "{{ action_turn_off }}"
+      - if:
+          - condition: template
+            value_template: >
+              {{ wait.trigger is not none
+                 and wait.trigger.platform == 'event'
+                 and wait.trigger.event is not none
+                 and wait.trigger.event.data is not none
+                 and wait.trigger.event.data.action == action_turn_off }}
+        then:
+          - action: button.press
+            entity_id: button.my_ecobee_clear_hold
+          - action: climate.set_hvac_mode
+            data:
+              hvac_mode: "off"
+            target:
+              entity_id: climate.my_ecobee
+      - action: button.press
+        entity_id: button.my_ecobee_clear_hold
+      - service: notify.mobile_app_michaels_iphone
         data:
           message: "clear_notification"
           data:

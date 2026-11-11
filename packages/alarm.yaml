@@ -4,32 +4,29 @@ template:
         name: Guests Home
         state: "{{ (states('sensor.coreguest') | int) > 0 or states('input_boolean.guests_present') }}"
         unique_id: afa129d8-36e6-4e22-84c0-cae6c7b9fb4c
+  - binary_sensor:
+      - default_entity_id: binary_sensor.armed_vacation
+        name: Armed Vacation
+        state: "{{ is_state('alarm_control_panel.alarmo', 'armed_vacation') }}"
+        unique_id: 445e305f-6770-40df-874b-a05a9c904191
+  - device_tracker:
+      - default_entity_id: device_tracker.faux_girls_home
+        name: Faux Girls Home
+        unique_id: be025b87-912d-42d4-b93f-0855f90b9124
+        availability: "{{ states('input_boolean.girls_home_override') in ['on', 'off'] }}"
+        in_zones: "{{ ['zone.home'] if is_state('input_boolean.girls_home_override', 'on') else [] }}"
 
 automation:
-  - alias: "Faux device tracker for twins"
-    id: alarm_device_tracker_for_twins
-    trigger:
-      - platform: state
-        entity_id: input_boolean.girls_home_override
-        to: ~
-    condition:
-      condition: template
-      value_template: "{{ trigger.to_state.state in ['off', 'on'] }}"
-    action:
-      - service: device_tracker.see
-        data_template:
-          dev_id: faux_girls_home
-          location_name: "{{ 'home' if 'on' == trigger.to_state.state else 'not_home' }}"
-    mode: single
-    max_exceeded: silent
-
   - alias: Guests Present Reminder
     id: alarm_guests_present_reminder
     trigger:
       - platform: state
         entity_id: group.presence_home
-        to: "not_home"
+        from: "not_home"
+        to: "home"
     condition:
+      - condition: template
+        value_template: "{{ (now() - trigger.from_state.last_changed).total_seconds() >= 3600 }}"
       - condition: state
         entity_id: binary_sensor.guests_present
         state: "on"
@@ -68,7 +65,7 @@ automation:
           - "unknown"
     conditions:
       - condition: state
-        entity_id: binary_sensor.guests_present
+        entity_id: input_boolean.guests_present
         state: "off"
       - condition: state
         entity_id: device_tracker.faux_girls_home
@@ -126,11 +123,11 @@ automation:
                 - basement
                 - main_floor
           - service: cover.close_cover
-            entity_id: cover.garage
+            target:
+              label_id: close_at_night
           - service: lock.lock
             entity_id:
               - lock.locks
-      - wait_template: "{{ is_state('cover.garage', 'closed') }}"
       - service: homeassistant.turn_off
         entity_id: media_player.living_room_tv
       - wait_template: "{{ is_state('binary_sensor.group_basement_presence', 'off') }}"
@@ -167,8 +164,7 @@ automation:
     action:
       - service: lock.lock
         entity_id:
-          - lock.front_door
-          - lock.side_door
+          - lock.locks
 
   - alias: Alert armed state and garage open
     id: alarm_alert_garage_left_open
@@ -238,14 +234,13 @@ automation:
             - main_floor
 
   - alias: Set Switch Status LEDs
-    id: alarm_set_switch_status_leds
+    id: 2838617e-642c-4ea8-ba71-c17bfdf1a9f0
     mode: queued
     max: 10
     trigger:
       - platform: state
         entity_id:
           - lock.locks
-          - cover.garage
           - binary_sensor.doors
         not_from:
           - "unknown"
@@ -253,8 +248,15 @@ automation:
         not_to:
           - "unknown"
           - "unavailable"
-          - "opening"
-          - "closing"
+      - platform: state
+        entity_id:
+          - cover.garage
+        to:
+          - "open"
+          - "closed"
+        not_from:
+          - "unknown"
+          - "unavailable"
       - platform: state
         entity_id: cover.garage
         to: "closing"
@@ -309,6 +311,7 @@ automation:
                     - light.main_bath_light
                     - light.basement_stairs
                     - light.basement_hall
+                    - light.laundry_room
         default:
           - variables:
               duration: >-
@@ -390,7 +393,9 @@ automation:
     triggers:
       - platform: state
         entity_id:
-          - alarm_control_panel.master
+          - alarm_control_panel.alarmo
+          - alarm_control_panel.shed
+          - alarm_control_panel.water
         to:
           - "triggered"
     actions:
@@ -502,3 +507,24 @@ automation:
               - service: alarm_control_panel.alarm_disarm
                 target:
                   entity_id: alarm_control_panel.shed
+
+  - alias: Close Blinds on armed vacation state
+    id: c2137ec7-2d6d-4621-b534-0799ccd0a4c3
+    triggers:
+      - platform: state
+        entity_id: alarm_control_panel.alarmo
+        to:
+          - armed_vacation
+    actions:
+      - action: cover.set_cover_position
+        continue_on_error: true
+        data:
+          position: 30
+        target:
+          entity_id: cover.kitchen_cover
+      - service: cover.close_cover
+        target:
+          floor_id:
+            - top_floor
+            - basement
+          area_id: powder_room

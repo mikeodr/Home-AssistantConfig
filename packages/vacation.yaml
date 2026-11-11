@@ -15,6 +15,18 @@ automation:
         entity_id: input_boolean.guests_present
         state: "off"
     action:
+      - action: calendar.get_events
+        target:
+          entity_id: calendar.house_planning
+        data:
+          duration:
+            minutes: 1
+        response_variable: agenda
+      - condition: template
+        value_template: >
+          {{ agenda['calendar.house_planning'].events
+             | selectattr('summary', 'search', 'Cleaners')
+             | list | count == 0 }}
       - service: select.select_option
         entity_id: select.my_ecobee_current_mode
         data:

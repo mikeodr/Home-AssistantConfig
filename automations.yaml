@@ -14,9 +14,8 @@
     metadata: {}
     data:
       message: Internet Disconnected
-  - action: notify.persistent_notification
-    metadata: {}
-    data: {}
+  - delay:
+      minutes: 5
   mode: single
 - id: '1765204692120'
   alias: Battery Notes - Battery Threshold
@@ -113,4 +112,179 @@
     device_id: efa11b49368feb5eca6fd9b8153251e0
     entity_id: 93069828a30dc124a2b0eb7ecb200bad
     domain: light
+  mode: single
+- id: '1776534203553'
+  alias: Vivian's Playlist
+  description: ''
+  triggers:
+  - trigger: tag
+    tag_id: 04-9C-43-68-70-00-00
+  conditions: []
+  actions:
+  - action: music_assistant.play_media
+    metadata: {}
+    data:
+      media_type: playlist
+      enqueue: replace
+      media_id: I Love that, baby
+    target:
+      entity_id: media_player.basement
+  mode: single
+- id: '1776534711971'
+  alias: Meredith Playlist
+  description: ''
+  triggers:
+  - trigger: tag
+    tag_id: 75628583-bc70-9448-8145-7d52efbeb786
+  conditions: []
+  actions:
+  - action: music_assistant.play_media
+    metadata: {}
+    target:
+      entity_id:
+      - media_player.basement
+    data:
+      media_type: playlist
+      media_id: Party dance me
+  mode: single
+- id: '1776535033302'
+  alias: Tag Golden is scanned
+  description: ''
+  triggers:
+  - trigger: tag
+    tag_id: 464a9ca1-6dd1-492b-bd54-30095babbf03
+  conditions: []
+  actions:
+  - action: music_assistant.play_media
+    metadata: {}
+    data:
+      media_id: Golden - HUNTR/X
+      media_type: track
+    target:
+      entity_id: media_player.basement
+  mode: single
+- id: '1776537959490'
+  alias: Basement Music Control
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - event.bilresa_dual_button_button_1
+    id: Back
+  - trigger: state
+    entity_id:
+    - event.bilresa_dual_button_button_2
+    id: Forward
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - Back
+      sequence:
+      - action: media_player.media_previous_track
+        metadata: {}
+        target:
+          entity_id: media_player.sonos_basement
+        data: {}
+    - conditions:
+      - condition: trigger
+        id:
+        - Forward
+      sequence:
+      - action: media_player.media_next_track
+        metadata: {}
+        target:
+          entity_id: media_player.sonos_basement
+        data: {}
+  mode: single
+- id: '1777215963751'
+  alias: Takedown Play
+  description: ''
+  triggers:
+  - trigger: tag
+    tag_id: b6ec69e7-4972-dcab-3176-efd01e5ce383
+  conditions: []
+  actions:
+  - action: music_assistant.play_media
+    metadata: {}
+    data:
+      media_id: Takedown - HUNTR/X
+      media_type: track
+    target:
+      entity_id: media_player.basement
+  mode: single
+- id: '1778354504167'
+  alias: Garage Battery Charger
+  description: ''
+  use_blueprint:
+    path: Blackshome/battery-charger-notifications.yaml
+    input:
+      charger_switch: switch.garage_battery
+      trigger_options:
+      - button_trigger_enabled
+      power_sensor: sensor.garage_battery_power
+      button_trigger: input_button.charge_batteries
+      include_start_notify: enable_start_notify_options
+      start_notify_device:
+      - 0f1add8ea641663a2bd8ac41e3f65e77
+      start_notify_tag: garage-batteries
+      start_notify_interruption_level: time-sensitive
+      include_end_notify: enable_end_notify_options
+      end_notify_device:
+      - 0f1add8ea641663a2bd8ac41e3f65e77
+      end_notify_tag: garage-batteries
+      end_notify_interruption_level: time-sensitive
+      include_entity_off_end_option: entity_off_enabled
+      entity_off_end:
+      - switch.garage_battery
+- id: '1784330652386'
+  alias: Turn on Casper Glow and pause at nightlight level
+  description: ''
+  use_blueprint:
+    path: homeassistant/casper_glow_turn_on_pause_nightlight.yaml
+    input:
+      glow_device: cbf1607e6868e63a559dda8bbd5376b7
+      bedtime: '19:00:00'
+      pause_at_remaining: 3
+- id: '1793216599032'
+  alias: SolarEdge Failure Notification
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.solaredge_se7600h_problem
+    to:
+    - 'on'
+    id: generated-V492
+  - trigger: state
+    entity_id:
+    - binary_sensor.solaredge_se7600h_problem
+    to:
+    - 'off'
+    id: generated-CBHF
+  conditions: []
+  actions:
+  - choose:
+    - conditions: []
+      sequence: []
+    - conditions:
+      - condition: trigger
+        id:
+        - generated-V492
+      sequence:
+      - action: notify.mobile_app_michaels_iphone
+        metadata: {}
+        data:
+          message: SolarEdge Production failed
+    - conditions:
+      - condition: trigger
+        id:
+        - generated-CBHF
+      sequence:
+      - action: notify.mobile_app_michaels_iphone
+        metadata: {}
+        data:
+          message: SolarEdge production restored
   mode: single

@@ -1,0 +1,24 @@
+automation:
+  - alias: Set blind activation time
+    id: 3bcfcb46-f5f4-43b3-845c-996bba92dcb9
+    triggers:
+      - platform: state
+        entity_id: binary_sensor.workday_sensor
+    actions:
+      - if:
+          - condition: state
+            entity_id: binary_sensor.workday_sensor
+            state: "on"
+        then: 
+          - service: input_datetime.set_datetime
+            target:
+              entity_id: input_datetime.blind_start_schedule
+            data:
+              time: "08:30:00"
+        else:
+          - service: input_datetime.set_datetime
+            target:
+              entity_id: input_datetime.blind_start_schedule
+            data:
+              time: "10:00:00"
+        

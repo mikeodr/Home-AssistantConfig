@@ -28,3 +28,37 @@ automation:
         before: "04:00:00"
     actions:
       - event: goodnight_event
+
+  - alias: Close Stairs Blinds at Girls Bedtime
+    id: 56d26278-744b-4383-9b91-600fb8bbcc39
+    triggers:
+      - platform: time
+        at: "19:00:00"
+      - platform: sun
+        event: sunset
+    actions:
+      - service: cover.close_cover
+        target:
+          entity_id: 
+            - cover.stairs_covers
+            - cover.main_bedroom_cover_right
+      - if:
+          - condition: state
+            entity_id: binary_sensor.main_bedroom_window_contact
+            state: "off"
+        then:
+          - service: cover.close_cover
+            target:
+              entity_id: cover.main_bedroom_cover_left
+      - if:
+          - condition: state
+            entity_id: binary_sensor.front_bedroom_window_contact
+            state: "off"
+        then:
+          - service: cover.close_cover
+            target:
+              entity_id: cover.front_bedroom_cover
+      - service: cover.close_cover
+        entity_id:
+          - cover.main_bath_cover
+          - cover.girls_bathroom_cover

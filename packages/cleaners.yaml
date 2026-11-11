@@ -1,0 +1,124 @@
+automation:
+  - alias: Open blinds for cleaners
+    id: 5c84e558-6323-4fce-8cc3-f1ea32280efb
+    mode: queued
+    triggers:
+      - platform: calendar
+        event: start
+        entity_id: calendar.house_planning
+    conditions:
+      - condition: template
+        value_template: "{{ 'Cleaners' in trigger.calendar_event.summary}}"
+    actions:
+      - service: cover.open_cover
+        target:
+          label_id: open_for_cleaners
+
+  - alias: Disable auto blinds for cleaners
+    id: 135e4e04-0d2f-40a1-9bdf-92c30ccbd933
+    mode: queued
+    trigger:
+      - platform: calendar
+        event: start
+        entity_id: calendar.house_planning
+        id: disable_blinds
+      - platform: calendar
+        event: end
+        entity_id: calendar.house_planning
+        id: enable_blinds
+    conditions:
+      - condition: template
+        value_template: "{{ 'Cleaners' in trigger.calendar_event.summary}}"
+    actions:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: disable_blinds
+            sequence:
+              - action: homeassistant.turn_off
+                target:
+                  label_id: disable_for_cleaners
+          - conditions:
+              - condition: trigger
+                id: enable_blinds
+            sequence:
+              - action: homeassistant.turn_on
+                target:
+                  label_id: disable_for_cleaners
+
+  - alias: Enable Cleaners Lock Code
+    id: lock_enable_cleaner_code
+    mode: queued
+    trigger:
+      - platform: calendar
+        event: start
+        entity_id: calendar.house_planning
+        offset: "-03:00:00"
+        id: set_lock
+      - platform: calendar
+        event: start
+        entity_id: calendar.house_planning
+        id: set_lock
+      - platform: calendar
+        event: end
+        entity_id: calendar.house_planning
+        id: clear_lock
+    condition:
+      - condition: template
+        value_template: "{{ 'Cleaners' in trigger.calendar_event.summary}}"
+    action:
+      choose:
+        - conditions:
+            - condition: trigger
+              id: set_lock
+          sequence:
+            - service: zwave_js.set_lock_usercode
+              data:
+                code_slot: "15"
+                usercode: !secret cleaners_door_code
+              target:
+                entity_id:
+                  - lock.front_door
+                  - lock.side_door
+            - service: notify.mobile_app_michaels_iphone
+              data:
+                message: "Setting cleaners lock code"
+                data:
+                  tag: "cleaners-code"
+            - service: alarm_control_panel.alarm_disarm
+              target:
+                entity_id: alarm_control_panel.alarmo
+        - conditions:
+            - condition: trigger
+              id: clear_lock
+          sequence:
+            - service: zwave_js.clear_lock_usercode
+              data:
+                code_slot: "15"
+              target:
+                entity_id:
+                  - lock.front_door
+                  - lock.side_door
+            - service: notify.mobile_app_michaels_iphone
+              data:
+                message: "Clearing cleaners lock code"
+                data:
+                  tag: "cleaners-code"
+            - choose:
+                - conditions:
+                    - condition: state
+                      entity_id: group.presence_home
+                      state: "not_home"
+                  sequence:
+                    - if:
+                        - condition: numeric_state
+                          entity_id: sensor.home_nearest_distance
+                          above: 55000
+                      then:
+                        - service: alarm_control_panel.alarm_arm_vacation
+                          target:
+                            entity_id: alarm_control_panel.alarmo
+                      else:
+                        - service: alarm_control_panel.alarm_arm_away
+                          target:
+                            entity_id: alarm_control_panel.alarmo

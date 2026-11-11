@@ -1,3 +1,8 @@
+input_boolean:
+  living_room_auto_lights:
+    name: Living Room Auto Lights
+    icon: mdi:lightbulb-auto
+
 automation:
   - alias: Turn living room lights on when dark
     id: living_room_lights_on_when_dark
@@ -127,6 +132,20 @@ automation:
         type: action
         subtype: down_triple
         id: garage_down_trigger
+      - trigger: device
+        domain: mqtt
+        # Living Room Light
+        device_id: c2fce543d85f8ffccd89691a42f784d9
+        type: action
+        subtype: down_double
+        id: door_lock_trigger
+      - trigger: device
+        domain: mqtt
+        # Living Room Light
+        device_id: c2fce543d85f8ffccd89691a42f784d9
+        type: action
+        subtype: up_double
+        id: door_unlock_trigger
     action:
       - choose:
           - conditions:
@@ -269,6 +288,12 @@ automation:
         below: 5.0
       - condition: time
         before: "21:30:00"
+      - condition: state
+        entity_id: binary_sensor.home_grid_status
+        state: "on"
+      - not:
+          - condition: template
+            value_template: "{{ now().month == 10 and now().day == 31 and now().hour > 17 }}"
     actions:
       - service: light.turn_on
         entity_id: light.front_hall
@@ -299,3 +324,105 @@ automation:
         data:
           entity_id: switch.adaptive_lighting_adapt_brightness_living_room
           transition: 90
+
+  - alias: Close Blinds at night alarm armed
+    id: 97be03cd-5356-449d-871d-cc44dbf21816
+    triggers:
+      - platform: state
+        entity_id: alarm_control_panel.alarmo
+        to: "armed_night"
+        not_from:
+          - unknown
+          - unavailable
+        id: armed_night
+      - platform: time
+        at: "22:00:00"
+        id: time_trigger
+    actions:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: armed_night
+            sequence:
+              - service: cover.close_cover
+                entity_id: cover.living_room_shades
+          - conditions:
+              - condition: trigger
+                id: time_trigger
+              - condition: state
+                entity_id: alarm_control_panel.alarmo
+                state:
+                  - "armed_vacation"
+                  - "armed_away"
+            sequence:
+              - delay:
+                  minutes: "{{ range(0, 31) | random }}"
+              - service: cover.close_cover
+                entity_id: cover.living_room_shades
+
+  # - alias: Living Room Unoccupied Lights off
+  #   id: 2fc23d51-e858-44b9-9a01-7a7e6d2266fc
+  #   triggers:
+  #     - platform: state
+  #       entity_id: binary_sensor.living_room_presence_group
+  #       from: "on"
+  #       to: "off"
+  #       for:
+  #         minutes: 15
+  #   conditions:
+  #     - condition: state
+  #       entity_id: binary_sensor.guests_present
+  #       state: "off"
+  #     - condition: state
+  #       entity_id: input_boolean.living_room_auto_lights
+  #       state: "on"
+  #     - condition: state
+  #       entity_id: light.living_room_light_group
+  #       state: "on"
+  #     - condition: state
+  #       entity_id: alarm_control_panel.alarmo
+  #       state: "disarmed"
+  #     - condition: state
+  #       entity_id: input_boolean.nap_mode
+  #       state: "off"
+  #     - condition: time
+  #       before: "19:00:00"
+  #     - and:
+  #         - condition: state
+  #           entity_id: media_player.living_room_tv
+  #           state: "off"
+  #         - condition: state
+  #           entity_id: media_player.apple_tv_living_room
+  #           state: "off"
+  #         - not:
+  #             - condition: state
+  #               entity_id: media_player.sonos_living_room
+  #               state: "playing"
+  #   actions:
+  #     - service: notify.mobile_app_michaels_iphone
+  #       data:
+  #         title: "Living Room Lights"
+  #         message: "💡 Living Room Lights Would Turn off 💡"
+
+  - alias: Open shades for convection heat effect
+    id: 61de7dfe-62ed-4592-8bbb-e36718d9a794
+    triggers:
+      - platform: time
+        at: "07:15:00"
+    actions:
+      - service: cover.set_cover_position
+        data:
+          position: 5
+        target:
+          entity_id: cover.living_room_shades
+
+  - alias: Close shades for nighttime
+    id: 3a1aa06e-390a-4a10-821b-f23f7e211087
+    triggers:
+      - platform: time
+        at: "22:30:00"
+    actions:
+      - service: cover.close_cover
+        entity_id:
+          # - cover.living_room_shades
+          - cover.powder_room_cover

@@ -1,0 +1,83 @@
+automation:
+  []
+  # - alias: Plex play media for the girls
+  #   id: plex_play_media_for_girls
+  #   mode: single
+  #   # Hide warnings when triggered while in delay.
+  #   max_exceeded: silent
+  #   variables:
+  #     # Map scanner device ID to media player entity ID
+  #     media_players:
+  #       49134246-ECC0-4A27-ACD7-51EFF6810254: media_player.plex_plex_for_apple_tv_living_room
+  #     # Map tag ID to content
+  #     tags:
+  #       6df5ec3d-fa16-4184-b57b-7039b625e8c1:
+  #         media_content_id: >
+  #           {"library_name": "Movies", "title": "Kiki's Delivery Service"}
+  #         media_content_type: movie
+  #       04-B1-C6-62-2F-64-80:
+  #         media_content_id: >
+  #           {"library_name": "Movies", "title": "My Neighbor Totoro"}
+  #         media_content_type: movie
+  #       04-B1-C6-62-2F-64:
+  #         media_content_id: >
+  #           {"library_name": "Movies", "title": "Ponyo"}
+  #         media_content_type: movie
+  #       B1-C6-62-2F-64:
+  #         media_content_id: >
+  #           {"library_name": "TV Shows", "title": "Bluey", "episode.unwatched": [true, false], "episode.inProgress: [true, false], resume: 1"}
+  #         media_content_type: EPISODE
+  #   trigger:
+  #     platform: event
+  #     event_type: tag_scanned
+  #   condition:
+  #     # Test that we support this device and tag
+  #     - "{{ trigger.event.data.tag_id in tags }}"
+  #     - "{{ trigger.event.data.device_id in media_players }}"
+  #   action:
+  #     - variables:
+  #         media_player_entity_id: "{{ media_players[trigger.event.data.device_id] }}"
+  #         media_content_id: "{{ tags[trigger.event.data.tag_id].media_content_id }}"
+  #         media_content_type: "{{ tags[trigger.event.data.tag_id].media_content_type }}"
+  #     - service: homeassistant.turn_on
+  #       entity_id: remote.apple_tv_living_room
+  #     - choose:
+  #         conditions:
+  #           - condition: state
+  #             entity_id: media_player.apple_tv_living_room
+  #             state:
+  #               - paused
+  #               - standby
+  #         sequence:
+  #           - service: remote.send_command
+  #             target:
+  #               entity_id: remote.apple_tv_living_room
+  #             data:
+  #               command: "wakeup"
+  #           - delay: 10
+  #     - choose:
+  #         conditions:
+  #           - condition: state
+  #             entity_id: media_player.plex_plex_for_apple_tv_living_room
+  #             state:
+  #               - unavailable
+  #               - paused
+  #               - idle
+  #         sequence:
+  #           - service: remote.send_command
+  #             target:
+  #               entity_id: remote.apple_tv_living_room
+  #             data:
+  #               delay_secs: 2
+  #               command:
+  #                 - "home"
+  #                 - "home"
+  #                 - "select"
+  #           - delay: 8
+  #     - service: media_player.play_media
+  #       target:
+  #         entity_id: "{{ media_player_entity_id }}"
+  #       data:
+  #         media_content_id: "{{ media_content_id }}"
+  #         media_content_type: "{{ media_content_type }}"
+  #     - delay: 2 # timeout before we allow processing next scan

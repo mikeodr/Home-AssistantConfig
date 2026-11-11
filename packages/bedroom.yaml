@@ -122,12 +122,21 @@ automation:
       - platform: state
         entity_id: switch.main_bed_white_noise
         to: "off"
+        not_from:
+          - "unavailable"
+          - "unknown"
         for:
           minutes: 5
     conditions:
       - condition: state
         entity_id: switch.main_bed_white_noise
         state: "off"
+      - condition: time
+        after: "07:00:00"
+        before: "12:00:00"
+      - condition: state
+        entity_id: cover.main_bed_covers
+        state: "closed"
     actions:
       - service: cover.set_cover_position
         target:

@@ -13,3 +13,54 @@ automation:
       - service: hassio.addon_restart
         data:
           addon: core_nginx_proxy
+
+  - alias: UPS Battery Alarm
+    id: c3665b24-2441-401c-b71a-480db3336141
+    triggers:
+      - platform: template
+        value_template: "{{ 'Alarm' in states('sensor.ups_status') }}"
+        id: alarm
+      - platform: template
+        value_template: "{{ 'Battery Needs Replacement' in states('sensor.ups_status') }}"
+        id: replace_battery
+      - platform: state
+        entity_id: sensor.ups_status
+        to: "Online"
+        id: back_online
+    actions:
+      - choose:
+          - conditions:
+              - or:
+                  - condition: trigger
+                    id: alarm
+                  - condition: trigger
+                    id: replace_battery
+            sequence:
+              - service: notify.mobile_app_michaels_iphone
+                data:
+                  message: >
+                    {% if trigger.id == 'alarm' %}
+                      UPS Alarm: {{ states('sensor.ups_status') }}
+                    {% elif trigger.id == 'replace_battery' %}
+                      UPS Battery Needs Replacement: {{ states('sensor.ups_status') }}
+                    {% endif %}
+                  data:
+                    tag: "ups-battery-alarm"
+                    group: "UPS"
+              - service: persistent_notification.create
+                data:
+                  title: "UPS Battery Alarm"
+                  message: >
+                    {% if trigger.id == 'alarm' %}
+                      UPS Alarm: {{ states('sensor.ups_status') }}
+                    {% elif trigger.id == 'replace_battery' %}
+                      UPS Battery Needs Replacement: {{ states('sensor.ups_status') }}
+                    {% endif %}
+                  notification_id: "ups_battery_alarm"
+          - conditions:
+              - condition: trigger
+                id: back_online
+            sequence:
+              - service: persistent_notification.dismiss
+                data:
+                  notification_id: "ups_battery_alarm"
