@@ -959,21 +959,12 @@ automation:
         continue_on_timeout: false
       - delay:
           seconds: 5 # Let it fully come online
-      # - action: input_boolean.toggle
-      #   target:
-      #     entity_id: input_boolean.girls_yoto_selection
-      # - if:
-      #     - condition: state
-      #       entity_id: input_boolean.girls_yoto_selection
-      #       state: "on"
-      #   then:
-      - alias: Meditation
-        action: media_player.play_media
-        data:
-          media_content_id: "7AzCP-01-01" # Bedtime meditation
-          media_content_type: music
+      - action: media_player.play_media
         target:
           entity_id: media_player.bedroom_player
+        data:
+          media_content_type: "music"
+          media_content_id: "yoto://card/7AzCP/01/01"
       - delay:
           seconds: 3
       - action: media_player.volume_set
