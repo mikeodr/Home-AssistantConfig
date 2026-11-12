@@ -262,9 +262,10 @@ automation:
         entity_id: binary_sensor.doors
         to: "on"
       - platform: state
-        entity_id: binary_sensor.front_door_doorbell
-        from: "off"
-        to: "on"
+        entity_id: event.front_door_doorbell
+        not_to:
+          - "unavailable"
+          - "unknown"
     condition:
       - condition: numeric_state
         entity_id: sun.sun

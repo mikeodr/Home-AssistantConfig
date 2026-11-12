@@ -166,9 +166,10 @@ automation:
     max_exceeded: silent
     triggers:
       - platform: state
-        entity_id: binary_sensor.front_door_doorbell
-        from: "off"
-        to: "on"
+        entity_id: event.front_door_doorbell
+        not_to:
+          - "unavailable"
+          - "unknown"
     conditions:
       - condition: state
         entity_id: group.adults
@@ -230,9 +231,10 @@ automation:
     max_exceeded: silent
     triggers:
       - platform: state
-        entity_id: binary_sensor.front_door_doorbell
-        from: "off"
-        to: "on"
+        entity_id: event.front_door_doorbell
+        not_to:
+          - "unavailable"
+          - "unknown"
     conditions:
       - condition: time
         after: "16:00:00"
