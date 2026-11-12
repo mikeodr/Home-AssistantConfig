@@ -22,6 +22,14 @@ template:
       - name: faux_nursery_homekit_bell
         auto_off: 3
         state: "true"
+  - trigger:
+      - platform: state
+        entity_id: event.front_door_doorbell
+    binary_sensor:
+      - name: front_door_homekit_bell
+        auto_off: 3
+        state: "true"
+        unique_id: front_door_homekit_bell
   - switch:
       - unique_id: homekit_switch_nap_mode
         turn_on:
@@ -61,7 +69,7 @@ homekit:
       camera.front_door_high_resolution_channel:
         video_codec: copy
         support_audio: false
-        linked_doorbell_sensor: binary_sensor.front_door_doorbell
+        linked_doorbell_sensor: binary_sensor.front_door_homekit_bell
 
   - name: Front Door Lock
     mode: accessory
@@ -97,17 +105,15 @@ homekit:
         - sensor.living_room_temperature
         - switch.entertainment_switch_relay
       exclude_entities:
-        - light.tagreader_led
+        - light.tagreader_8bfa06_tagreader_led
         - light.basement_lights
         - light.exterior_lights
         - light.living_room_light_group
         - light.konnected_511a3c_warning_beep
         - light.girls_room_switch
-        - light.girls_fan
-        - light.girls_fan_fan
         - climate.sparky_climate
       exclude_entity_globs:
-        - climant.*sparky*
+        - climate.*sparky*
         - sensor.*sparky*
         - switch.*sparky*
         - cover.*sparky*
