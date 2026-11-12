@@ -28,6 +28,75 @@ automation:
         before: "04:00:00"
     actions:
       - event: goodnight_event
+  
+  - alias: Fast Blind Controls
+    id: d6e5e192-3455-408f-bb3e-663c02e71569
+    mode: single
+    max_exceeded: silent
+    triggers:
+      # Main Bath
+      - trigger: device
+        domain: mqtt
+        device_id: 24606a2c9bf2c14af2ad0305265c97e6
+        type: action
+        subtype: down_triple
+        id: close_blinds
+      # Main Stairs
+      - trigger: device
+        domain: mqtt
+        device_id: 0d619322f1e8664e17f93285090c18bd
+        type: action
+        subtype: down_triple
+        id: close_blinds
+      # Upstairs Hall
+      - trigger: device
+        domain: mqtt
+        device_id: 67df18469d484ee9d7870f2a5fb692cb
+        type: action
+        subtype: down_triple
+        id: close_blinds
+      # Main Bath
+      - trigger: device
+        domain: mqtt
+        device_id: 24606a2c9bf2c14af2ad0305265c97e6
+        type: action
+        subtype: up_triple
+        id: open_blinds
+      # Main Stairs
+      - trigger: device
+        domain: mqtt
+        device_id: 0d619322f1e8664e17f93285090c18bd
+        type: action
+        subtype: up_triple
+        id: open_blinds
+      # Upstairs Hall
+      - trigger: device
+        domain: mqtt
+        device_id: 67df18469d484ee9d7870f2a5fb692cb
+        type: action
+        subtype: up_triple
+        id: open_blinds
+    conditions:
+      - not:
+        - condition: state
+          entity_id: alarm_control_panel.alarmo
+          state: "armed_night"
+    actions:
+      - choose:
+        - conditions:
+            - condition: trigger
+              id: close_blinds
+          sequence:
+            - action: cover.close_cover
+              target:
+                floor_id: top_floor
+        - conditions:
+            - condition: trigger
+              id: open_blinds
+          sequence:
+            - action: cover.open_cover
+              target:
+                floor_id: top_floor
 
   - alias: Close Stairs Blinds at Girls Bedtime
     id: 56d26278-744b-4383-9b91-600fb8bbcc39
