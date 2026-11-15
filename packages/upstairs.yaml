@@ -29,7 +29,7 @@ automation:
     actions:
       - event: goodnight_event
   
-  - alias: Fast Blind Controls
+  - alias: Upstairs Fast Blinds Controls
     id: d6e5e192-3455-408f-bb3e-663c02e71569
     mode: single
     max_exceeded: silent
