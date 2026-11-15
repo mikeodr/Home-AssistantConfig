@@ -43,7 +43,7 @@ automation:
                 state: "on"
         then:
           - service: switch.turn_on
-            entity_id: switch.master_humidifier
+            entity_id: switch.main_bedroom_humidifier
 
   - alias: Bedroom off mornings
     id: bedroom_off_mornings_nursery_active
@@ -75,7 +75,7 @@ automation:
       - service: homeassistant.turn_off
         entity_id:
           - switch.main_bed_white_noise
-          - switch.master_humidifier
+          - switch.main_bedroom_humidifier
 
   - alias: Spare Bedroom Fan Toggle
     id: spare_bedroom_fan_toggle
