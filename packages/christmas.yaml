@@ -1,6 +1,6 @@
 automation:
   - alias: Exterior Christmas Lights On
-    id: xmas_exteior_lights_on
+    id: ec4399fa-4090-4548-90a3-f0d38e481838
     triggers:
       - platform: numeric_state
         entity_id: sun.sun
@@ -15,7 +15,7 @@ automation:
         label_id: outside_christmas_lights
 
   - alias: Exterior Christmas Lights Off
-    id: xmas_exterior_lights_off
+    id: 654120ef-23de-4347-b198-0e2b506d1585
     triggers:
       - platform: time
         at: "23:30:00"
@@ -27,7 +27,7 @@ automation:
         label_id: outside_christmas_lights
 
   - alias: Christmas Tree lights on when living room occupied
-    id: xmas_lights_room_occupied
+    id: 22469b60-7cff-404a-95b1-fb45bfe0e39c
     triggers:
       - platform: state
         entity_id: binary_sensor.living_room_occupancy
@@ -93,7 +93,7 @@ automation:
         label_id: christmas_tree
 
   - alias: Exterior Christmas Lights on arriving home
-    id: external_xmas_lights_on_arrive_home
+    id: 3a04e011-ab4f-4a3e-891c-6d8e785fb5af
     triggers:
       - platform: zone
         entity_id:
