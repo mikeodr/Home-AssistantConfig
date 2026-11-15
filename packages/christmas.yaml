@@ -83,7 +83,7 @@ automation:
                 label_id: christmas_tree
 
   - alias: Christmas Tree off at bedtime
-    id: xmas_tree_lights_off_night
+    id: ecb58d41-3465-4c63-bd4e-55cc9f1fb8b4
     triggers:
       platform: time
       at: "22:30:00"
