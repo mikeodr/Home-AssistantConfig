@@ -308,10 +308,19 @@ automation:
 
   - alias: Garage below freezeing warning
     id: exterior_garage_below_freezing
-    trigger:
-      - platform: numeric_state
-        entity_id: sensor.garage_temperature
-        below: 2.0
+    triggers:
+      - trigger: temperature.crossed_threshold
+        target:
+          area_id: garage
+        options:
+          behavior: each
+          for: '01:00:00'
+          threshold:
+            type: below
+            value:
+              active_choice: number
+              number: 2
+              unit_of_measurement: °C
     action:
       - service: notify.mobile_app_michaels_iphone
         data:
