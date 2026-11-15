@@ -194,7 +194,7 @@ automation:
                 target:
                   entity_id: light.bathroom_night_light
                 data:
-                  brightness_pct: 20
+                  brightness_pct: 5
                   rgb_color: [255, 164, 8]
           - conditions:
               - condition: trigger
